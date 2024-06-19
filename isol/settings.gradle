@@ -1,0 +1,5 @@
+rootProject.name = 'isol'
+include 'server-child'
+include 'server-common'
+include 'server-parent'
+
