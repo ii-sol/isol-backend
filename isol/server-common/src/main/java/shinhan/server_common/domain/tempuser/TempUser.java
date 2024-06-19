@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.entity;
+package shinhan.server_common.domain.tempuser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
