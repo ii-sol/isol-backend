@@ -52,7 +52,8 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest,
+        HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
@@ -68,7 +69,8 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest, HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest,
+        HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
@@ -84,7 +86,8 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{parents-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn,
+        HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
