@@ -16,7 +16,6 @@ import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_parent.domain.user.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 import static shinhan.server_common.global.utils.ApiUtils.error;
 import static shinhan.server_common.global.utils.ApiUtils.success;
@@ -93,7 +92,8 @@ public class UserController {
             return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
         } else {
             return success(phones);
-        }    }
+        }
+    }
 
     @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
@@ -131,9 +131,9 @@ public class UserController {
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
-            jwtService.sendJwtToken();
+            jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success("로그인되었습니다.");
+            return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));
         } catch (AuthException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return error("로그인에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
