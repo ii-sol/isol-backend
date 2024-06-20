@@ -8,8 +8,10 @@ import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.account.entity.AccountHistory;
 import shinhan.server_common.domain.account.repository.AccountHistoryRepository;
 import shinhan.server_common.domain.account.repository.AccountRepository;
+import shinhan.server_common.domain.entity.TempUser;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
+import shinhan.server_common.global.utils.user.UserUtils;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 public class AccountUtils {
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
+    private final UserUtils userUtils;
 
     //받은 계좌객체로 송금하기
     public void transferMoneyByAccount(Account senderAccount, Account recieverAccount, Integer amount, Integer messageCode){
@@ -41,8 +44,21 @@ public class AccountUtils {
     }
 
     //계좌 번호로 계좌 조회
-    public Account getAccount(String accountNum){
+    public Account getAccountByAccountNum(String accountNum){
         return accountRepository.findByAccountNum(accountNum)
+                .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
+    }
+
+    //user의 serialNumber, status로 계좌 조회
+    public Account getAccountByUserSerialNumberAndStatus(Long userSerialNumber, Integer status){
+        TempUser user = userUtils.getUser(userSerialNumber);
+        return accountRepository.findByUserAndStatus(user, status)
+                .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
+    }
+
+    //계좌 번호로 계좌 조회
+    public Account getAccountByUserAndStatus(TempUser user, Integer status){
+        return accountRepository.findByUserAndStatus(user, status)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
     }
 
