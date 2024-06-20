@@ -17,7 +17,10 @@ public enum ErrorCode {
     //알람 예외
     FAILED_NOTIFICATION(HttpStatus.CONFLICT, "알람 보내기에 실패했습니다."),
 
-    NOT_FOUND_MESSAGECODE(HttpStatus.NOT_FOUND, "저장된 알림 메세지 형식을 찾을 수 없습니다.");
+    NOT_FOUND_MESSAGECODE(HttpStatus.NOT_FOUND, "저장된 알림 메세지 형식을 찾을 수 없습니다."),
+
+    //보유수량 부족
+    FAILED_SHORTAGE_MONEY(HttpStatus.CONFLICT,"보유수량이 부족합니다.");
 
     private final HttpStatus status;
     private final String message;
