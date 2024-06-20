@@ -109,12 +109,14 @@ public class JwtService {
         return new UsernamePasswordAuthenticationToken(userInfo.getSn(), null, Collections.singletonList(authority));
     }
 
-    public void sendJwtToken(HttpServletResponse response, JwtTokenResponse jwtTokenResponse) {
+    public void sendJwtToken(JwtTokenResponse jwtTokenResponse) {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         response.setHeader("Authorization", "Bearer " + jwtTokenResponse.getAccessToken());
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken(HttpServletResponse response){
+    public void sendJwtToken(){
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         response.setHeader("Authorization", getAccessToken());
         response.setHeader("Refresh-Token", getRefreshToken());
     }
