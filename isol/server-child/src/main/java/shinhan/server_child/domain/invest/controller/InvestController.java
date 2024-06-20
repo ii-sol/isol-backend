@@ -5,13 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.InvestStockReqDTO;
-import shinhan.server_child.domain.invest.dto.PortfolioResDTO;
+import shinhan.server_child.domain.invest.dto.InvestStockRequest;
+import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.service.InvestService;
 import shinhan.server_common.global.utils.ApiResult;
-
+import shinhan.server_common.global.utils.ApiUtils;
+import static shinhan.server_common.global.utils.ApiUtils.success;
 @RestController
+@RequestMapping("/invest")
 public class InvestController {
 
     InvestService investService;
@@ -22,41 +25,41 @@ public class InvestController {
     }
 
     //투자 거래 내역 조회하기(부모)
-    @GetMapping("/invest/history/{co}")
+    @GetMapping("history/{co}")
     public ApiResult getInvestHistory(@PathVariable("co") int childOrder) {
         return null;
     }
 
     //투자 거래 내역 조회하기(아이)
-    @GetMapping("/invest/history")
-    public ApiResult getInvestHistory() {
+    @GetMapping("/history")
+    public ApiUtils.ApiResult getInvestHistory() {
         String getUserAccount = "01012345678";
-        return ApiResult.responseSuccess(investService.getStockHisttory(getUserAccount));
+        return success(investService.getStockHisttory(getUserAccount));
     }
 
     //포트폴리오 조회하기(부모)
-    @GetMapping("/invest/portfolio/{co}")
+    @GetMapping("/portfolio/{co}")
     public ApiResult getInvestPortfolio(@PathVariable("co") int childOrder) {
         return null;
     }
 
     //포트폴리오 조회하기(아이)
-    @GetMapping("/invest/portfolio")
-    public ApiResult getInvestPortfolio() {
+    @GetMapping("/portfolio")
+    public ApiUtils.ApiResult getInvestPortfolio() {
         String getUserAccountNum = "01012345678";
-        PortfolioResDTO result = investService.getPortfolio(getUserAccountNum);
-        return ApiResult.responseSuccess(result);
+        PortfolioResponse result = investService.getPortfolio(getUserAccountNum);
+        return success(result);
     }
 
     //종목 판매/구매하기
-    @PostMapping("/invest")
-    public ApiResult invest(@RequestBody InvestStockReqDTO investStockReqDTO) {
+    @PostMapping("")
+    public ApiUtils.ApiResult invest(@RequestBody InvestStockRequest investStockRequest) {
         String getUserAccountNum = "01012345678";
-        boolean result = investService.investStock(getUserAccountNum, investStockReqDTO);
+        boolean result = investService.investStock(getUserAccountNum, investStockRequest);
         if (result) {
-            return ApiResult.responseSuccess("거래 성공하였습니다.");
+            return success("거래 성공하였습니다.");
         } else {
-            return ApiResult.responseError("확인 필요");
+            return success("확인 필요");
         }
     }
 //    @GetMapping("/invest/temp")
