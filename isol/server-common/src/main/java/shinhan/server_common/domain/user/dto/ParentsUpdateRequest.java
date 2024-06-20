@@ -8,9 +8,9 @@ import java.sql.Date;
 
 @RequiredArgsConstructor
 @Getter
-@Setter
 public class ParentsUpdateRequest {
 
+    @Setter
     private long serialNum;
     private final String phoneNum;
     private final String name;

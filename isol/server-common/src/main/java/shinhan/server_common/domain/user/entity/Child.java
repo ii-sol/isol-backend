@@ -9,7 +9,6 @@ import java.sql.Date;
 
 @Entity
 @Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,16 +20,21 @@ public class Child {
     private int id;
     @Column(name = "serial_num", nullable = false, unique = true)
     private long serialNum;
+    @Setter
     @Column(name = "phone_num", nullable = false, unique = true)
     private String phoneNum;
+    @Setter
     @Column(nullable = false)
     private String name;
+    @Setter
     @Column(nullable = false)
     private Date birthDate;
     @Column(name = "account_info", nullable = false)
     private String accountInfo;
+    @Setter
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId = 1;
+    @Setter
     @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 50")
     private int score = 50;
 

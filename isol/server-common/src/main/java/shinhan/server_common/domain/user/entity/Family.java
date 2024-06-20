@@ -6,7 +6,6 @@ import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 
 @Entity
 @Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
