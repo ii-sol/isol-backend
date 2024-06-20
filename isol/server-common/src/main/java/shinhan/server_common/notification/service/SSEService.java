@@ -9,6 +9,7 @@ import shinhan.server_common.domain.entity.TempUser;
 import shinhan.server_common.domain.entity.TempUserRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
+import shinhan.server_common.global.utils.user.UserUtils;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
 import shinhan.server_common.notification.entity.Notification;
 import shinhan.server_common.notification.mongo.NotificationRepository;
@@ -31,6 +32,7 @@ public class SSEService {
     private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
     private final TempUserRepository tempUserRepository;
     private final NotificationRepository notificationRepository;
+    private final UserUtils userUtils;
 
     //SSE에 등록
     public SseEmitter subscribe(Long serialNumber) {
@@ -81,7 +83,7 @@ public class SSEService {
 
     //private : 알림 저장하기
     private Notification saveNotification(Long serialNumber, String senderName, Integer functionCode, String message){
-        TempUser receiver = tempUserRepository.findBySerialNumber(serialNumber);
+        TempUser receiver = userUtils.getUser(serialNumber);
 
         Notification notification = Notification.builder()
                 .receiverSerialNumber(serialNumber)
