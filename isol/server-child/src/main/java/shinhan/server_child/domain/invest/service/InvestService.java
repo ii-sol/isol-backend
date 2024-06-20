@@ -14,7 +14,6 @@ import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
-import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.domain.invest.service.StockService;
