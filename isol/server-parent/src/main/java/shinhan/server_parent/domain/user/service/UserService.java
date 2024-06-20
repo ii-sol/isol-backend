@@ -31,18 +31,18 @@ public class UserService {
     private ChildRepository childRepository;
     private FamilyRepository familyRepository;
 
-    private static boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
-        return updatedParents.getPhoneNum().equals(parentsUpdateRequest.getPhoneNum())
-                && updatedParents.getName().equals(parentsUpdateRequest.getName())
-                && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
-                && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
-    }
-
-    public ParentsFindOneResponse getUser(long sn) {
+    public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return parents.convertToUserFindOneResponse();
+    }
+
+    public ChildFindOneResponse getChild(long sn) {
+        Child child = childRepository.findBySerialNum(sn)
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
+        return child.convertToUserFindOneResponse();
     }
 
     public ParentsFindOneResponse updateUser(ParentsUpdateRequest parentsUpdateRequest) {
@@ -65,9 +65,9 @@ public class UserService {
 
     private static boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
         return updatedParents.getPhoneNum().equals(parentsUpdateRequest.getPhoneNum())
-                && updatedParents.getName().equals(parentsUpdateRequest.getName())
-                && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
-                && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
+            && updatedParents.getName().equals(parentsUpdateRequest.getName())
+            && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
+            && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
     public int disconnectFamily(long sn, long childSn) {
