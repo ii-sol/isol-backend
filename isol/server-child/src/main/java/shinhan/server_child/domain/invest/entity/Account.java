@@ -17,8 +17,8 @@ public class Account {
     @Column(name = "account_num", unique = true, nullable = false, length = 255)
     private String accountNum;
 
-    @Column(name = "user_sn", unique = true, nullable = false)
-    private Long userSerialNum;
+//    @Column(name = "user_sn", unique = true, nullable = false)
+//    private Long userSerialNum;
 
     @Column(name = "balance")
     private Integer balance;
