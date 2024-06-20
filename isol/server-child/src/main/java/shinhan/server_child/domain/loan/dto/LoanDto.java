@@ -1,4 +1,4 @@
-package shinhan.loan.dto;
+package shinhan.server_child.domain.loan.dto;
 
 import java.util.Date;
 import lombok.AllArgsConstructor;

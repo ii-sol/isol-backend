@@ -1,4 +1,4 @@
-package shinhan.loan.controller;
+package shinhan.server_child.domain.loan.controller;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sinhan.server2.global.utils.ApiUtils;
-import sinhan.server2.global.utils.ApiUtils.ApiResult;
-import sinhan.server2.loan.dto.LoanDto;
-import sinhan.server2.loan.service.LoanService;
+import shinhan.server_child.domain.loan.dto.LoanDto;
+import shinhan.server_child.domain.loan.service.LoanService;
+import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 
 @RestController
 public class LoanController {
@@ -22,7 +22,7 @@ public class LoanController {
     }
 
     @GetMapping("/loan")
-    public ApiResult<List<LoanDto>> getChildLoan() {
+    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() {
         int childId = 1;
         List<LoanDto> loans = loanService.getLoanByChildId(childId);
 
@@ -33,7 +33,7 @@ public class LoanController {
     }
 
     @PostMapping("/child/loan/create")
-    public ApiResult<String> createChildLoan(@RequestBody LoanDto loan) {
+    public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) {
         loan.setChildId(1);
         loan.setInterestRate(4.5F);
         loan.setStatus(1);
@@ -45,14 +45,14 @@ public class LoanController {
     }
 
     @PostMapping("/loan/accept")
-    public ApiResult<String> acceptChildLoan(@RequestParam int loanId) {
+    public ApiUtils.ApiResult<String> acceptChildLoan(@RequestParam int loanId) {
         loanService.acceptLoan(loanId);
 
         return ApiUtils.success("Loan accepted successfully");
     }
 
     @PostMapping("/loan/refuse")
-    public ApiResult<String> refuseChildLoan(@RequestParam int loanId) {
+    public ApiUtils.ApiResult<String> refuseChildLoan(@RequestParam int loanId) {
         loanService.refuseLoan(loanId);
 
         return ApiUtils.success("Loan refused successfully");

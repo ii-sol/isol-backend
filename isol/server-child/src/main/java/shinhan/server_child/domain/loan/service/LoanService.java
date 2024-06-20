@@ -1,12 +1,13 @@
-package shinhan.loan.service;
+package shinhan.server_child.domain.loan.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sinhan.server2.loan.dto.LoanDto;
-import sinhan.server2.loan.entity.Loan;
-import sinhan.server2.loan.repository.LoanCustomRepository;
-import sinhan.server2.loan.repository.LoanRepository;
+import shinhan.server_child.domain.loan.dto.LoanDto;
+import shinhan.server_child.domain.loan.entity.Loan;
+import shinhan.server_child.domain.loan.repository.LoanCustomRepository;
+import shinhan.server_child.domain.loan.repository.LoanRepository;
+
 
 @Service
 public class LoanService {

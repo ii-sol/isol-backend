@@ -1,12 +1,13 @@
-package shinhan.loan.repository;
+package shinhan.server_child.domain.loan.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import sinhan.server2.loan.dto.LoanDto;
-import sinhan.server2.loan.entity.Loan;
+import shinhan.server_child.domain.loan.dto.LoanDto;
+import shinhan.server_child.domain.loan.entity.Loan;
+
 
 @Repository
 public class LoanCustomRepositoryImpl implements LoanCustomRepository {

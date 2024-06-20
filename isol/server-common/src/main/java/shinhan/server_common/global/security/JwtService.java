@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
-import shinhan.server_common.global.security.secret.Secret;
+import shinhan.server_common.global.security.Secret;
 
 import java.util.ArrayList;
 import java.util.Collections;

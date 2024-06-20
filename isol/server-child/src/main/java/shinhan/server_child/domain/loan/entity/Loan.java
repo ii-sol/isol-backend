@@ -1,4 +1,4 @@
-package shinhan.loan.entity;
+package shinhan.server_child.domain.loan.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sinhan.server2.loan.dto.LoanDto;
+import shinhan.server_child.domain.loan.dto.LoanDto;
 
 @Getter
 @Entity
