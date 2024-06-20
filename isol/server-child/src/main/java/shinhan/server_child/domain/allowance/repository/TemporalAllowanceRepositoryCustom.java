@@ -6,8 +6,8 @@ import shinhan.server_common.domain.entity.TempUser;
 import java.util.List;
 
 public interface TemporalAllowanceRepositoryCustom {
-    List<TemporalAllowance> findByUserSerialNumberAndCreateDate(TempUser tempUser, Integer year, Integer month, Integer csn);
+    List<TemporalAllowance> findByUserSerialNumberAndCreateDate(Long userSerialNumber, Integer year, Integer month, Integer csn);
 
-    List<TemporalAllowance> findByChildSerialNumberAndCreateDateAndStatus(TempUser tempUser, Integer year, Integer month);
+    List<TemporalAllowance> findByChildSerialNumberAndCreateDateAndStatus(Long userSerialNumber, Integer year, Integer month);
 
 }

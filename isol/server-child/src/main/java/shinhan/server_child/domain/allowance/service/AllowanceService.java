@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import shinhan.server_child.domain.allowance.dto.MonthlyAllowanceFindOneResponse;
 import shinhan.server_child.domain.allowance.dto.TemporalAllowanceSaveOneRequest;
 import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllResponse;
@@ -32,13 +33,13 @@ public class AllowanceService {
     private final UserUtils userUtils;
 
     //자식 - 용돈 조르기 신청 여기서 tempUser = 자식
-    //TODO: TemporalAllowance 자체가 부모한테만 있을거라..음..
     public void saveTemporalAllowance(Long userSerialNumber, Long psn, TemporalAllowanceSaveOneRequest request) {
         TempUser parents = userUtils.getUserBySerialNumber(psn);
+        TempUser child = userUtils.getUserBySerialNumber(userSerialNumber);
         // TemporalAllowance 객체 생성
         TemporalAllowance temporalAllowance = TemporalAllowance.builder()
                 .parents(parents)
-                .child(tempUser)
+                .child(child)
                 .content(request.getContent())
                 .price(request.getAmount())
                 .createDate(LocalDateTime.now())
@@ -50,7 +51,7 @@ public class AllowanceService {
     }
 
     //자식 - 용돈 조르기 취소하기
-    public void cancleTemporalAllowance(TempUser tempUser, Integer temporalAllowanceId) {
+    public void cancleTemporalAllowance(Integer temporalAllowanceId) {
         TemporalAllowance findTemporalAllowance = temporalAllowanceRepository.findById(temporalAllowanceId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_TEMPORAL_ALLOWANCE));
 
@@ -59,9 +60,9 @@ public class AllowanceService {
     }
 
     //자식 용돈 조르기 내역 조회 (과거)
-    public List<TemporalChildAllowanceFindAllResponse> findChildTemporalAllowances(TempUser tempUser, Integer year, Integer month) {
+    public List<TemporalChildAllowanceFindAllResponse> findChildTemporalAllowances(Long userSerialNumber, Integer year, Integer month) {
 
-        return temporalAllowanceRepository.findByChildSerialNumberAndCreateDateAndStatus(tempUser, year, month)
+        return temporalAllowanceRepository.findByChildSerialNumberAndCreateDateAndStatus(userSerialNumber, year, month)
                 .stream().map(allowance ->{
                     return TemporalChildAllowanceFindAllResponse.of(allowance, allowance.getParents().getName());
                 })
@@ -69,8 +70,8 @@ public class AllowanceService {
     }
 
     //미승인 용돈 조르기 내역 조회
-    public List<UnAcceptTemporalAllowanceFindAllResponse> findUnacceptTemporalAllowances(TempUser tempUser) {
-        return temporalAllowanceRepository.findByChildSerialNumberAndStatus(tempUser, 1)
+    public List<UnAcceptTemporalAllowanceFindAllResponse> findUnacceptTemporalAllowances(Long userSerialNumber) {
+        return temporalAllowanceRepository.findByChildSerialNumberAndStatus(userSerialNumber, 1)
                 .stream().map(allowance ->{
                     return UnAcceptTemporalAllowanceFindAllResponse.of(allowance, allowance.getParents().getName());
                 })
@@ -78,9 +79,9 @@ public class AllowanceService {
     }
 
     //정기 용돈 조회하기 ( 현재 )
-    public List<MonthlyAllowanceFindOneResponse> findChildMonthlyAllowances(TempUser tempUser) {
+    public List<MonthlyAllowanceFindOneResponse> findChildMonthlyAllowances(Long userSerialNumber) {
         //앞에 tempUser가 맞는지 확인하는거 코드 밑에 getUser사용한다던지
-        return monthlyAllowanceRepository.findByChildSerialNumberAndStatus(tempUser.getSerialNumber(), 3)
+        return monthlyAllowanceRepository.findByChildSerialNumberAndStatus(userSerialNumber, 3)
                 .stream().map(allowance ->{
                     long period = ChronoUnit.MONTHS.between(allowance.getCreateDate(), allowance.getDueDate());
                     return MonthlyAllowanceFindOneResponse.of(allowance, (int)period);

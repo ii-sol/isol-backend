@@ -9,8 +9,6 @@ import shinhan.server_child.domain.allowance.dto.TemporalAllowanceSaveOneRequest
 import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.dto.UnAcceptTemporalAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.service.AllowanceService;
-import shinhan.server_common.domain.entity.TempUser;
-import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
 import java.util.List;
@@ -25,7 +23,6 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class AllowanceController {
 
     private final AllowanceService allowanceService;
-    private final JwtService jwtService;
 //    //아이 - 용돈 조르기
 //    @PostMapping("temporal/create/{psn}")
 //    public ApiUtils.ApiResult saveTemporalAllowance(TempUser tempUser, @RequestParam Long psn, @RequestBody TemporalAllowanceSaveOneRequest request){
@@ -62,38 +59,37 @@ public class AllowanceController {
 //    }
 
     //아이 - 용돈 조르기
-    @PostMapping("temporal/create")
-    public ApiUtils.ApiResult saveTemporalAllowance(@PathVariable("psn") Long psn, @RequestBody TemporalAllowanceSaveOneRequest request) throws AuthException {
-        Long userSerialNumber = jwtService.getUserInfo().getSn();
-        allowanceService.saveTemporalAllowance(userSerialNumber, psn, request);
+    @PostMapping("temporal")
+    public ApiUtils.ApiResult saveTemporalAllowance(@RequestParam("usn") Long usn, @RequestParam("psn") Long psn, @RequestBody TemporalAllowanceSaveOneRequest request) throws AuthException {
+        allowanceService.saveTemporalAllowance(usn, psn, request);
         return success(null);
     }
 
     //아이 - 용돈 조르기 취소
     @PostMapping("temporal/{temporalAllowanceId}")
-    public ApiUtils.ApiResult cancleTemporalAllowance(TempUser tempUser, @RequestParam Integer temporalAllowanceId){
-        allowanceService.cancleTemporalAllowance(tempUser, temporalAllowanceId);
+    public ApiUtils.ApiResult cancleTemporalAllowance( @PathVariable("temporalAllowanceId") Integer temporalAllowanceId){
+        allowanceService.cancleTemporalAllowance(temporalAllowanceId);
         return success(null);
     }
 
     //아이 - 부 모 모두에게서 용돈 조르기 내역 조회(과거, 이미 끝남 - 완료, 취소)
     @GetMapping("temporal/history")
-    public ApiUtils.ApiResult findTemporalAllowances(TempUser tempUser, @RequestParam Integer year, @RequestParam Integer month){
-        List<TemporalChildAllowanceFindAllResponse> response = allowanceService.findChildTemporalAllowances(tempUser, year, month);
+    public ApiUtils.ApiResult findTemporalAllowances(@RequestParam("usn") Long usn, @RequestParam("year") Integer year, @RequestParam("month") Integer month){
+        List<TemporalChildAllowanceFindAllResponse> response = allowanceService.findChildTemporalAllowances(usn, year, month);
         return success(response);
     }
 
     //아이 - 용돈 조르기 내역 조회 (미승인)
     @GetMapping("temporal")
-    public ApiUtils.ApiResult findUnacceptTemporalAllowances(TempUser tempUser){
-        List<UnAcceptTemporalAllowanceFindAllResponse> response = allowanceService.findUnacceptTemporalAllowances(tempUser);
+    public ApiUtils.ApiResult findUnacceptTemporalAllowances(@RequestParam("usn") Long usn){
+        List<UnAcceptTemporalAllowanceFindAllResponse> response = allowanceService.findUnacceptTemporalAllowances(usn);
         return success(response);
     }
 
     //아이 - 정기 용돈 조회 (현재)
     @GetMapping("monthly")
-    public ApiUtils.ApiResult findMonthlyAllowance(TempUser tempUser){
-        List<MonthlyAllowanceFindOneResponse> response = allowanceService.findChildMonthlyAllowances(tempUser);
+    public ApiUtils.ApiResult findMonthlyAllowance(@RequestParam("usn") Long usn){
+        List<MonthlyAllowanceFindOneResponse> response = allowanceService.findChildMonthlyAllowances(usn);
         return success(response);
     }
 }

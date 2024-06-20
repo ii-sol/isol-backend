@@ -13,7 +13,6 @@ import shinhan.server_common.domain.account.repository.AccountHistoryRepository;
 import shinhan.server_common.domain.account.repository.AccountRepository;
 import shinhan.server_common.domain.entity.TempUser;
 import shinhan.server_common.domain.entity.TempUserRepository;
-import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.account.AccountUtils;

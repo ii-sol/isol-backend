@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class TemporalAllowance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
