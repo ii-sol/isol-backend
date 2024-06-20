@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import shinhan.server_common.domain.invest.entity.StockCartDate;
+import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
 
 @Getter
 @Builder
@@ -19,25 +20,25 @@ public class StockFindDetailResponse {
     public String PBR;
     public String PER;
     public String ROE;
-    public String PSR;
+    public String profitGrowth;
     public String changePrice;
     public String changeSign;
     public String changeRate;
     public String ticker;
-    public List<StockCartDate> charts;
+    public List<StockNaverDuraion> charts;
 
-    public StockFindDetailResponse() {
-        this.PSR = "1";
-    }
+//    public StockFindDetailResponse() {
+//        this.PSR = "1";
+//    }
 
-    public void calSPS(int temp){
-        try{
-            Integer sps = Integer.valueOf(temp);
-            Integer tempPSR = Integer.valueOf(PSR);
-            this.PSR = sps*tempPSR+"";
-        }catch (NumberFormatException ex){
-            System.out.println(ex);
-        }
-    }
+//    public void calSPS(int temp){
+//        try{
+//            Integer sps = Integer.valueOf(temp);
+//            Integer tempPSR = Integer.valueOf(PSR);
+//            this.PSR = sps*tempPSR+"";
+//        }catch (NumberFormatException ex){
+//            System.out.println(ex);
+//        }
+//    }
 
 }

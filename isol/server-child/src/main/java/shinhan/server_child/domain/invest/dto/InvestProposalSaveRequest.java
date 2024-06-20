@@ -2,12 +2,15 @@ package shinhan.server_child.domain.invest.dto;
 
 
 import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shinhan.server_child.domain.invest.entity.InvestProposal;
-
+@AllArgsConstructor
 @Builder
 @Getter
+@NoArgsConstructor
 public class InvestProposalSaveRequest {
     String ticker;
     String message;

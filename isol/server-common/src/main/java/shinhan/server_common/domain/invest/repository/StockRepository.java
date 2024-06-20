@@ -4,15 +4,18 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
+import shinhan.server_common.domain.invest.entity.StockDartPoten;
+import shinhan.server_common.domain.invest.entity.StockDartProfit;
 import shinhan.server_common.domain.invest.entity.StockDivideOutput;
 import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
+import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
+import shinhan.server_common.domain.invest.entity.StockNaverIntegration;
+
 @Component
 public class StockRepository {
     @Autowired
@@ -21,6 +24,69 @@ public class StockRepository {
     WebClient webClientF;
     @Autowired
     WebClient webDartClient;
+
+    @Autowired
+    WebClient webNaverDurationClient;
+    @Autowired
+    WebClient webNaverIntegrationClient;
+
+    public StockNaverDuraion[] getApiDuraion(String ticker,String year){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        Date endDate = new Date();
+        Date startDate = new Date();
+
+        String endDateString;
+        String startDateString;
+        if(year.equals("0")){
+            startDate.setMonth(startDate.getMonth()-1);
+        }else if(year.equals("1")){
+            startDate.setYear(startDate.getYear()-1);
+        } else {
+            startDate.setYear(startDate.getYear()-1);
+        }
+        endDateString = simpleDateFormat.format(endDate);
+        startDateString = simpleDateFormat.format(startDate);
+        Mono<StockNaverDuraion[]> mono = webNaverDurationClient.get().uri(
+            uriBuilder -> {
+                return uriBuilder.path(ticker+"/day")
+                    .queryParam("startDateTime", startDateString)
+                    .queryParam("endDateTime", endDateString)
+                    .build();
+            }).retrieve().bodyToMono(StockNaverDuraion[].class);
+        mono.subscribe(
+            result -> System.out.println(result),
+            error-> System.out.println(error)
+        );
+        System.out.println("repo");
+        return mono.block();
+    }
+
+    public StockNaverDuraion[] getApiCurrentDuraion(String ticker){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        Date endDate = new Date();
+        Date startDate = new Date();
+
+        String endDateString;
+        String startDateString;
+        startDate.setDate(startDate.getDay()-2);
+        endDateString = simpleDateFormat.format(endDate);
+        startDateString = simpleDateFormat.format(startDate);
+        System.out.println(startDateString);
+        System.out.println(endDateString);
+        Mono<StockNaverDuraion[]> mono = webNaverDurationClient.get().uri(
+            uriBuilder -> {
+                return uriBuilder.path(ticker+"/day")
+                    .queryParam("startDateTime", startDateString)
+                    .queryParam("endDateTime", endDateString)
+                    .build();
+            }).retrieve().bodyToMono(StockNaverDuraion[].class);
+        mono.subscribe(
+            result -> System.out.println(result.length),
+            error-> System.out.println(error)
+        );
+        System.out.println("repo");
+        return mono.block();
+    }
 
     public StockDuraionPriceOutput getApiCurrentPrice(String ticker,String year){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -70,12 +136,17 @@ public class StockRepository {
                 error -> System.err.println("에러 발생: " + error.getMessage())
             );
         return mono.block();
-//        mono.subscribe(
-//            price -> System.out.println("현재 주가: " + price),
-//            error -> System.err.println("에러 발생: " + error.getMessage())
-//        );
-//        System.out.println(mono);
-//        return mono;
+    }
+
+    public StockNaverIntegration getApiIntegration(String ticker){
+        Mono<StockNaverIntegration> mono = webNaverIntegrationClient.get().uri(
+            uriBuilder -> uriBuilder.path(ticker+"/integration").build()
+        ).retrieve().bodyToMono(StockNaverIntegration.class);
+        mono.subscribe(
+            result -> System.out.println(result),
+            error -> System.out.println(error)
+        );
+        return mono.block();
     }
 
     public StockFianceResponseOutput getApiFiance(String ticker){
@@ -120,12 +191,32 @@ public class StockRepository {
                     ;
                 return uriBuilder.build();
             }).retrieve().bodyToMono(StockDivideOutput.class).block();
-//        mono.subscribe(
-//            price -> System.out.println("현재 주가: " + price),
-//            error -> System.err.println("에러 발생: " + error.getMessage())
-//        );
-//        System.out.println(mono);
-//        return mono;
+    }
+    public StockDartPoten getApiDartPoten(String corpCode){
+        return webDartClient.get().uri(
+            uriBuilder1 -> {
+                UriBuilder uriBuilder =
+                    uriBuilder1.path("")
+                        .queryParam("corp_code","00126380")
+                        .queryParam("bsns_year","2023")
+                        .queryParam("reprt_code","11011")
+                        .queryParam("idx_cl_code","M230000")
+                    ;
+                return uriBuilder.build();
+            }).retrieve().bodyToMono(StockDartPoten.class).block();
     }
 
+    public StockDartProfit getApiDartProfit(String corpCode){
+        return webDartClient.get().uri(
+            uriBuilder1 -> {
+                UriBuilder uriBuilder =
+                    uriBuilder1.path("")
+                        .queryParam("corp_code","00126380")
+                        .queryParam("bsns_year","2023")
+                        .queryParam("reprt_code","11011")
+                        .queryParam("idx_cl_code","M210000")
+                    ;
+                return uriBuilder.build();
+            }).retrieve().bodyToMono(StockDartProfit.class).block();
+    }
 }

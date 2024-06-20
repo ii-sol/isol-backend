@@ -75,22 +75,18 @@ public class ProposalController {
         return ApiResult.responseSuccess(year);
     }
 
-    //종목 제안하기
-    @PostMapping("/stock/{po}")
-    public ApiResult proposeStock(@PathVariable("po") int ParentOrder) {
-        return null;
-    }
 
     //투자 제안하기
     @PostMapping("/invest/{psn}")
-    public ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
+    public ApiUtils.ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
         InvestProposalSaveRequest investProposalSaveRequest) {
-        System.out.println(investProposalSaveRequest.getTicker());
-        System.out.println(investProposalSaveRequest.getQuantity());
-        System.out.println(investProposalSaveRequest.getMessage());
         Long getChildSn = 123123L;
         investProposalService.proposalInvest(getChildSn,parentSn,investProposalSaveRequest);
-        return null;
+        return ApiUtils.success("성공했습니다.");
+    }
+    @GetMapping("/")
+    public String asdf(){
+        return "asdasd";
     }
 
     //투자제안 상세 조회하기
