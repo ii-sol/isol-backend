@@ -16,7 +16,6 @@ import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_parent.domain.user.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 import static shinhan.server_common.global.utils.ApiUtils.error;
 import static shinhan.server_common.global.utils.ApiUtils.success;
@@ -93,7 +92,8 @@ public class UserController {
             return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
         } else {
             return success(phones);
-        }    }
+        }
+    }
 
     @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {

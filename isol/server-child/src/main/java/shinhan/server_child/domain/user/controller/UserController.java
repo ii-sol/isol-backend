@@ -52,8 +52,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest,
-        HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
@@ -69,8 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest,
-        HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
@@ -86,8 +84,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{parents-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn,
-        HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         jwtService.sendJwtToken();
 
@@ -127,8 +124,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/join")
-    public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest,
-        HttpServletResponse response) {
+    public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
@@ -140,8 +136,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/useful-phone")
-    public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest,
-        HttpServletResponse response) {
+    public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest, HttpServletResponse response) {
         if (userService.checkPhone(phoneFindRequest)) {
             return success(true);
         } else {
@@ -151,19 +146,14 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest,
-        HttpServletResponse response) throws AuthException {
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
-            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(
-                user.getSerialNumber());
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSerialNumber());
 
-            myFamilyInfo.forEach(
-                info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
+            myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo),
-                jwtService.createRefreshToken(user.getSerialNumber()));
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
             jwtService.sendJwtToken(jwtTokenResponse);
 
             return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));
@@ -172,8 +162,7 @@ public class UserController {
             return error("로그인에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (Exception ee) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return error("로그인에 실패하였습니다 " + ee.getClass() + ee.getMessage(),
-                HttpStatus.UNAUTHORIZED);
+            return error("로그인에 실패하였습니다 " + ee.getClass() + ee.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
