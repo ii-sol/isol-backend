@@ -32,6 +32,7 @@ public class UserController {
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
+        jwtService.sendJwtToken();
 
         if (userInfo.getSn() == sn) {
             ParentsFindOneResponse parents = userService.getParents(sn);
@@ -54,8 +55,9 @@ public class UserController {
     @PutMapping("/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        parentsUpdateRequest.setSerialNum(userInfo.getSn());
+        jwtService.sendJwtToken();
 
+        parentsUpdateRequest.setSerialNum(userInfo.getSn());
         ParentsFindOneResponse user = userService.updateUser(parentsUpdateRequest);
 
         if (user != null) {
@@ -69,6 +71,7 @@ public class UserController {
     @DeleteMapping("/users/{child-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
+        jwtService.sendJwtToken();
 
         int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
 
@@ -81,11 +84,16 @@ public class UserController {
     }
 
     @GetMapping("/users/phones")
-    public ApiUtils.ApiResult getPhones() {
+    public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
         List<String> phones = userService.getPhones();
+        jwtService.sendJwtToken();
 
-        return phones.isEmpty() ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND) : success(phones);
-    }
+        if (phones.isEmpty()) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
+        } else {
+            return success(phones);
+        }    }
 
     @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
@@ -123,7 +131,7 @@ public class UserController {
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
-            jwtService.sendJwtToken(response, jwtTokenResponse);
+            jwtService.sendJwtToken();
 
             return success("로그인되었습니다.");
         } catch (AuthException e) {
