@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_child.domain.user.dto.*;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.user.dto.*;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.exception.AuthException;
 
 import java.util.List;
 import java.util.Set;
@@ -30,7 +30,7 @@ public class UserController {
     private JwtService jwtService;
 
     @GetMapping("/users/{sn}")
-    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws Exception {
+    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         if (userInfo.getSn() != sn) {
             List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
@@ -46,7 +46,13 @@ public class UserController {
         }
 
         ChildFindOneResponse user = userService.getUser(sn);
-        return user.getSerialNumber() == sn ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+
+        if (user.getSerialNumber() == sn) {
+            return success(user);
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/users")
