@@ -10,7 +10,6 @@ import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
-import shinhan.server_child.domain.invest.entity.Account;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
@@ -106,7 +105,6 @@ public class InvestService {
         StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
             investStockRequest.getTicker(),"0");
         int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
-        Account account = new Account(account_num);
 
         //구매 이력
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
@@ -135,7 +133,6 @@ public class InvestService {
             investStockRequest.getTicker(),"0");
         int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
 
-        Account account = new Account(account_num);
 
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
         Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
