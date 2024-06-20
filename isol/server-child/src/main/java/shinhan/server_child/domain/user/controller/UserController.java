@@ -164,9 +164,9 @@ public class UserController {
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
                 jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo),
                 jwtService.createRefreshToken(user.getSerialNumber()));
-            jwtService.sendJwtToken();
+            jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success("로그인되었습니다.");
+            return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));
         } catch (AuthException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return error("로그인에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
