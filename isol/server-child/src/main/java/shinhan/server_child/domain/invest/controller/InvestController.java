@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
+import shinhan.server_child.domain.invest.service.InvestProposalService;
 import shinhan.server_child.domain.invest.service.InvestService;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
@@ -19,16 +20,11 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class InvestController {
 
     InvestService investService;
-
+    InvestProposalService investProposalService;
     @Autowired
-    InvestController(InvestService investService) {
+    InvestController(InvestService investService,InvestProposalService investProposalService) {
         this.investService = investService;
-    }
-
-    //투자 거래 내역 조회하기(부모)
-    @GetMapping("history/{co}")
-    public ApiResult getInvestHistory(@PathVariable("co") int childOrder) {
-        return null;
+        this.investProposalService = investProposalService;
     }
 
     //투자 거래 내역 조회하기(아이)
@@ -36,12 +32,6 @@ public class InvestController {
     public ApiUtils.ApiResult getInvestHistory() {
         String getUserAccount = "01012345678";
         return success(investService.getStockHisttory(getUserAccount));
-    }
-
-    //포트폴리오 조회하기(부모)
-    @GetMapping("/portfolio/{co}")
-    public ApiResult getInvestPortfolio(@PathVariable("co") int childOrder) {
-        return null;
     }
 
     //포트폴리오 조회하기(아이)
@@ -64,15 +54,4 @@ public class InvestController {
         }
     }
 
-//    @GetMapping("/invest/temp")
-//    public ApiResult temp(){
-//        String result = userService.getTemp(1);
-//        return ApiResult.responseSuccess(result);
-//    }
-
-//    @GetMapping("/invest/insert")
-//    public ApiResult tempInsert(){
-//        userService.save(112312L);
-//        return ApiResult.responseError("asd");
-//    }
 }
