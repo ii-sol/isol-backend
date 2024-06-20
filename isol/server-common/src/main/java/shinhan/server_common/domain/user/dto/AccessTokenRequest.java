@@ -1,4 +1,4 @@
-package shinhan.server_parent.domain.user.dto;
+package shinhan.server_common.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.user.dto;
+package shinhan.server_common.domain.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

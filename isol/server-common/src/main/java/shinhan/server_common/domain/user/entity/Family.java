@@ -1,8 +1,8 @@
-package shinhan.server_child.domain.user.entity;
+package shinhan.server_common.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import shinhan.server_child.domain.user.dto.FamilyFindOneResponse;
+import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 
 @Entity
 @Getter

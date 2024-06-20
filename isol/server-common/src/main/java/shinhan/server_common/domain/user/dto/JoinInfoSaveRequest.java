@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.user.dto;
+package shinhan.server_common.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import shinhan.server_child.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.Parents;
 
 import java.sql.Date;
 
@@ -31,8 +32,13 @@ public class JoinInfoSaveRequest {
     private String accountInfo;
     private Integer profileId;
 
-    public Child convertToUser(long serialNum, PasswordEncoder passwordEncoder) {
+    public Child convertToChild(long serialNum, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(accountInfo);
         return new Child(serialNum, phoneNum, name, birthDate, encodedPassword, profileId);
+    }
+
+    public Parents convertToParents(long serialNum, PasswordEncoder passwordEncoder) {
+        String encodedPassword = passwordEncoder.encode(accountInfo);
+        return new Parents(serialNum, phoneNum, name, birthDate, encodedPassword, profileId);
     }
 }

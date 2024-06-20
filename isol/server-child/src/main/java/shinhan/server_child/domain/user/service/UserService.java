@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.user.dto.*;
-import shinhan.server_child.domain.user.entity.Child;
-import shinhan.server_child.domain.user.entity.Family;
-import shinhan.server_child.domain.user.entity.Parents;
-import shinhan.server_child.domain.user.repository.ChildRepository;
-import shinhan.server_child.domain.user.repository.FamilyRepository;
-import shinhan.server_child.domain.user.repository.ParentsRepository;
-import shinhan.server_common.global.security.dto.FamilyInfoResponse;
+import shinhan.server_common.domain.user.dto.*;
+import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.Family;
+import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.repository.ChildRepository;
+import shinhan.server_common.domain.user.repository.FamilyRepository;
+import shinhan.server_common.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.exception.AuthException;
+import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +29,13 @@ public class UserService {
     private ChildRepository childRepository;
     private ParentsRepository parentsRepository;
     private FamilyRepository familyRepository;
+
+    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
+        return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
+                && updatedChild.getName().equals(childUpdateRequest.getName())
+                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
+                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
+    }
 
     @Transactional
     public ChildFindOneResponse getUser(long sn) {
@@ -55,13 +62,6 @@ public class UserService {
         } else {
             throw new InternalError("회원 정보 변경이 실패하였습니다.");
         }
-    }
-
-    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
-        return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
-                && updatedChild.getName().equals(childUpdateRequest.getName())
-                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
-                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
     }
 
     @Transactional
@@ -119,7 +119,7 @@ public class UserService {
     public ChildFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         long serialNum = childRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
-        Child child = childRepository.save(joinInfoSaveRequest.convertToUser(serialNum, passwordEncoder));
+        Child child = childRepository.save(joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
 
         return child.convertToUserFindOneResponse();
     }
@@ -142,7 +142,7 @@ public class UserService {
 
     @Transactional()
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
-        return familyRepository.findMyFamilyInfo(sn)
+        return familyRepository.findParentsInfo(sn)
                 .stream()
                 .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
                 .collect(Collectors.toList());

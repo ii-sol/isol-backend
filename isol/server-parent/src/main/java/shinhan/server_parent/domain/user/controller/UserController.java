@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_parent.domain.user.dto.*;
-import shinhan.server_parent.domain.user.service.UserService;
+import shinhan.server_common.domain.user.dto.*;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.exception.AuthException;
+import shinhan.server_parent.domain.user.service.UserService;
 
 import java.util.List;
 import java.util.Set;
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ApiUtils.ApiResult updateUser(@Valid@ RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         parentsUpdateRequest.setSerialNum(userInfo.getSn());
 

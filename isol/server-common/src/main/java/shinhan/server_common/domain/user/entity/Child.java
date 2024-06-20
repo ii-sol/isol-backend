@@ -1,9 +1,9 @@
-package shinhan.server_child.domain.user.entity;
+package shinhan.server_common.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Check;
-import shinhan.server_child.domain.user.dto.ChildFindOneResponse;
+import shinhan.server_common.domain.user.dto.ChildFindOneResponse;
 
 import java.sql.Date;
 

@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.user.dto;
+package shinhan.server_common.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import shinhan.server_child.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.entity.Parents;
 
 import java.sql.Date;
 

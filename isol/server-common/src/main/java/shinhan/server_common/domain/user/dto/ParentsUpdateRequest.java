@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.user.dto;
+package shinhan.server_common.domain.user.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,6 @@ public class ParentsUpdateRequest {
     private long serialNum;
     private final String phoneNum;
     private final String name;
-    private final Date birthdate;
+    private final Date birthDate;
     private final int profileId;
 }
