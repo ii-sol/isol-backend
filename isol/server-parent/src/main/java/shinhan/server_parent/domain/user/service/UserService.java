@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
@@ -37,7 +38,6 @@ public class UserService {
                 && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
-    @Transactional
     public ParentsFindOneResponse getUser(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -45,7 +45,6 @@ public class UserService {
         return parents.convertToUserFindOneResponse();
     }
 
-    @Transactional
     public ParentsFindOneResponse updateUser(ParentsUpdateRequest parentsUpdateRequest) {
         Parents parents = parentsRepository.findBySerialNum(parentsUpdateRequest.getSerialNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -64,7 +63,6 @@ public class UserService {
         }
     }
 
-    @Transactional
     public int disconnectFamily(long sn, long childSn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -81,17 +79,14 @@ public class UserService {
         return family.getId();
     }
 
-    @Transactional
     public boolean isFamily(int deletedId) {
         return familyRepository.findById(deletedId).isPresent();
     }
 
-    @Transactional
     public List<String> getPhones() {
         return parentsRepository.findAllPhones();
     }
 
-    @Transactional
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         long serialNum = parentsRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
@@ -100,12 +95,10 @@ public class UserService {
         return parents.convertToUserFindOneResponse();
     }
 
-    @Transactional
     public boolean checkPhone(PhoneFindRequest phoneFindRequest) {
         return parentsRepository.findByPhoneNum(phoneFindRequest.getPhoneNum()).isEmpty();
     }
 
-    @Transactional
     public ParentsFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
         Parents parents = parentsRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
 
@@ -116,7 +109,6 @@ public class UserService {
         return parents.convertToUserFindOneResponse();
     }
 
-    @Transactional()
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findChildInfo(sn)
                 .stream()
