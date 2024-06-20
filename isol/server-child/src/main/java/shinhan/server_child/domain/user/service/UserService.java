@@ -63,6 +63,13 @@ public class UserService {
         }
     }
 
+    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
+        return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
+                && updatedChild.getName().equals(childUpdateRequest.getName())
+                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
+                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
+    }
+
     public int connectFamily(FamilySaveRequest familySaveRequest) {
         Child child = childRepository.findBySerialNum(familySaveRequest.getSn())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -113,7 +120,7 @@ public class UserService {
         long serialNum = childRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
         Child child = childRepository.save(joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
-
+      
         return child.convertToUserFindOneResponse();
     }
 
