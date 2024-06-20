@@ -13,6 +13,7 @@ import shinhan.server_common.domain.account.repository.AccountHistoryRepository;
 import shinhan.server_common.domain.account.repository.AccountRepository;
 import shinhan.server_common.domain.entity.TempUser;
 import shinhan.server_common.domain.entity.TempUserRepository;
+import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.account.AccountUtils;
@@ -37,7 +38,6 @@ public class AccountService {
 
     //계좌 생성하기
     public void createAccount(String phoneNumber, Integer status){
-
         TempUser tempUser = tempUserRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
         String accountNum = makeAccountNumber(phoneNumber, status);

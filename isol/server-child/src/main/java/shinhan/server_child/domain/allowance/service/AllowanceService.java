@@ -33,7 +33,7 @@ public class AllowanceService {
 
     //자식 - 용돈 조르기 신청 여기서 tempUser = 자식
     //TODO: TemporalAllowance 자체가 부모한테만 있을거라..음..
-    public void saveTemporalAllowance(TempUser tempUser, Long psn, TemporalAllowanceSaveOneRequest request) {
+    public void saveTemporalAllowance(Long userSerialNumber, Long psn, TemporalAllowanceSaveOneRequest request) {
         TempUser parents = userUtils.getUserBySerialNumber(psn);
         // TemporalAllowance 객체 생성
         TemporalAllowance temporalAllowance = TemporalAllowance.builder()

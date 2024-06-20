@@ -1,5 +1,6 @@
 package shinhan.server_child.domain.allowance.controller;
 
+import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllRe
 import shinhan.server_child.domain.allowance.dto.UnAcceptTemporalAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.service.AllowanceService;
 import shinhan.server_common.domain.entity.TempUser;
+import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
 import java.util.List;
@@ -23,6 +25,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class AllowanceController {
 
     private final AllowanceService allowanceService;
+    private final JwtService jwtService;
 //    //아이 - 용돈 조르기
 //    @PostMapping("temporal/create/{psn}")
 //    public ApiUtils.ApiResult saveTemporalAllowance(TempUser tempUser, @RequestParam Long psn, @RequestBody TemporalAllowanceSaveOneRequest request){
@@ -60,8 +63,9 @@ public class AllowanceController {
 
     //아이 - 용돈 조르기
     @PostMapping("temporal/create")
-    public ApiUtils.ApiResult saveTemporalAllowance(TempUser tempUser, @PathVariable("psn") Long psn, @RequestBody TemporalAllowanceSaveOneRequest request){
-        allowanceService.saveTemporalAllowance(tempUser, psn, request);
+    public ApiUtils.ApiResult saveTemporalAllowance(@PathVariable("psn") Long psn, @RequestBody TemporalAllowanceSaveOneRequest request) throws AuthException {
+        Long userSerialNumber = jwtService.getUserInfo().getSn();
+        allowanceService.saveTemporalAllowance(userSerialNumber, psn, request);
         return success(null);
     }
 
