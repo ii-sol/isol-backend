@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.child.controller;
+package shinhan.server_child.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_child.domain.child.dto.*;
-import shinhan.server_child.domain.child.service.ChildService;
+import shinhan.server_child.domain.user.dto.*;
+import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
@@ -24,9 +24,9 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @Slf4j
 @RestController
 @AllArgsConstructor
-public class ChildController {
+public class UserController {
 
-    private ChildService childService;
+    private UserService userService;
     private JwtService jwtService;
 
     @GetMapping("/users/{sn}")
@@ -45,7 +45,7 @@ public class ChildController {
             }
         }
 
-        ChildFindOneResponse user = childService.getUser(sn);
+        ChildFindOneResponse user = userService.getUser(sn);
         return user.getSerialNumber() == sn ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
@@ -54,7 +54,7 @@ public class ChildController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         childUpdateRequest.setSerialNum(userInfo.getSn());
 
-        ChildFindOneResponse user = childService.updateUser(childUpdateRequest);
+        ChildFindOneResponse user = userService.updateUser(childUpdateRequest);
 
         if (user != null) {
             return success(user);
@@ -69,9 +69,9 @@ public class ChildController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         familySaveRequest.setSn(userInfo.getSn());
 
-        int cretedId = childService.connectFamily(familySaveRequest);
+        int cretedId = userService.connectFamily(familySaveRequest);
 
-        if (childService.isFamily(cretedId)) {
+        if (userService.isFamily(cretedId)) {
             return success("가족 관계가 생성되었습니다.");
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -83,9 +83,9 @@ public class ChildController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        int deletedId = childService.disconnectFamily(userInfo.getSn(), parentsSn);
+        int deletedId = userService.disconnectFamily(userInfo.getSn(), parentsSn);
 
-        if (childService.isFamily(deletedId)) {
+        if (userService.isFamily(deletedId)) {
             return success("가족 관계가 삭제되었습니다.");
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -95,7 +95,7 @@ public class ChildController {
 
     @GetMapping("/users/phones")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
-        List<String> phones = childService.getPhones();
+        List<String> phones = userService.getPhones();
 
         if (phones.isEmpty()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -109,7 +109,7 @@ public class ChildController {
     public ApiUtils.ApiResult updateScore(@PathVariable("change") int change) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        return success(childService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
+        return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
     @GetMapping("/auth/main")
@@ -119,7 +119,7 @@ public class ChildController {
 
     @PostMapping("/auth/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
-        ChildFindOneResponse user = childService.join(joinInfoSaveRequest);
+        ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
             return success("가입되었습니다.");
@@ -131,7 +131,7 @@ public class ChildController {
 
     @PostMapping("/auth/useful-phone")
     public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest, HttpServletResponse response) {
-        if (childService.checkPhone(phoneFindRequest)) {
+        if (userService.checkPhone(phoneFindRequest)) {
             return success(true);
         } else {
             response.setStatus(HttpStatus.CONFLICT.value());
@@ -142,8 +142,8 @@ public class ChildController {
     @PostMapping("/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
-            ChildFindOneResponse user = childService.login(loginInfoFindRequest);
-            List<FamilyInfoResponse> myFamilyInfo = childService.getFamilyInfo(user.getSerialNumber());
+            ChildFindOneResponse user = userService.login(loginInfoFindRequest);
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSerialNumber());
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
@@ -175,7 +175,7 @@ public class ChildController {
 
         try {
             long sn = jwtService.getUserInfo(refreshToken).getSn();
-            List<FamilyInfoResponse> myFamilyInfo = childService.getFamilyInfo(sn);
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(sn);
 
             String newAccessToken = jwtService.createAccessToken(sn, myFamilyInfo);
             jwtService.sendAccessToken(response, newAccessToken);

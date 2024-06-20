@@ -1,14 +1,14 @@
-package shinhan.server_child.domain.child.repository;
+package shinhan.server_child.domain.user.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import shinhan.server_child.domain.child.dto.FamilyInfoInterface;
-import shinhan.server_child.domain.child.entity.Child;
-import shinhan.server_child.domain.child.entity.Family;
-import shinhan.server_child.domain.child.entity.Parents;
+import shinhan.server_child.domain.user.dto.FamilyInfoInterface;
+import shinhan.server_child.domain.user.entity.Child;
+import shinhan.server_child.domain.user.entity.Family;
+import shinhan.server_child.domain.user.entity.Parents;
 
 import java.util.List;
 import java.util.Optional;

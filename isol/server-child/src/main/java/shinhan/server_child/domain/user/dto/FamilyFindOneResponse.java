@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.child.dto;
+package shinhan.server_child.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

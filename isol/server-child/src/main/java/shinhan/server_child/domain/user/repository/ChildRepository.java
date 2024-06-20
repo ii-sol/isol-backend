@@ -1,9 +1,9 @@
-package shinhan.server_child.domain.child.repository;
+package shinhan.server_child.domain.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
-import shinhan.server_child.domain.child.entity.Child;
+import shinhan.server_child.domain.user.entity.Child;
 
 import java.util.List;
 import java.util.Optional;

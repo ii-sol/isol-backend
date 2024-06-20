@@ -1,8 +1,9 @@
-package shinhan.server_child.domain.child.entity;
+package shinhan.server_child.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import shinhan.server_child.domain.child.dto.ParentsFindOneResponse;
+import org.hibernate.annotations.Check;
+import shinhan.server_child.domain.user.dto.ChildFindOneResponse;
 
 import java.sql.Date;
 
@@ -12,7 +13,8 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Parents {
+@Check(constraints = "score >= 0 AND score <= 100")
+public class Child {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +31,10 @@ public class Parents {
     private String accountInfo;
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId = 1;
+    @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 50")
+    private int score = 50;
 
-    public Parents(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
+    public Child(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
         this.serialNum = serialNum;
         this.phoneNum = phoneNum;
         this.name = name;
@@ -39,7 +43,17 @@ public class Parents {
         this.profileId = profileId;
     }
 
-    public ParentsFindOneResponse convertToUserFindOneResponse() {
-        return new ParentsFindOneResponse(id, serialNum, phoneNum, name, birthDate, profileId);
+    @PrePersist
+    @PreUpdate
+    private void validateScore() {
+        if (this.score < 0) {
+            this.score = 0;
+        } else if (this.score > 100) {
+            this.score = 100;
+        }
+    }
+
+    public ChildFindOneResponse convertToUserFindOneResponse() {
+        return new ChildFindOneResponse(serialNum, phoneNum, name, birthDate, profileId, score);
     }
 }

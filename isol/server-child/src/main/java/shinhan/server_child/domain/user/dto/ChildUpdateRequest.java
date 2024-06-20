@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.child.dto;
+package shinhan.server_child.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

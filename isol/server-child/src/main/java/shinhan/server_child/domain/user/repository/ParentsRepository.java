@@ -1,7 +1,7 @@
-package shinhan.server_child.domain.child.repository;
+package shinhan.server_child.domain.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shinhan.server_child.domain.child.entity.Parents;
+import shinhan.server_child.domain.user.entity.Parents;
 
 import java.util.Optional;
 

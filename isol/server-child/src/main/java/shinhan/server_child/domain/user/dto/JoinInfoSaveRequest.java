@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.child.dto;
+package shinhan.server_child.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import shinhan.server_child.domain.child.entity.Child;
+import shinhan.server_child.domain.user.entity.Child;
 
 import java.sql.Date;
 

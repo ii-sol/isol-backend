@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.child.service;
+package shinhan.server_child.domain.user.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.child.dto.*;
-import shinhan.server_child.domain.child.entity.Child;
-import shinhan.server_child.domain.child.entity.Family;
-import shinhan.server_child.domain.child.entity.Parents;
-import shinhan.server_child.domain.child.repository.ChildRepository;
-import shinhan.server_child.domain.child.repository.FamilyRepository;
-import shinhan.server_child.domain.child.repository.ParentsRepository;
+import shinhan.server_child.domain.user.dto.*;
+import shinhan.server_child.domain.user.entity.Child;
+import shinhan.server_child.domain.user.entity.Family;
+import shinhan.server_child.domain.user.entity.Parents;
+import shinhan.server_child.domain.user.repository.ChildRepository;
+import shinhan.server_child.domain.user.repository.FamilyRepository;
+import shinhan.server_child.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.exception.AuthException;
 
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class ChildService {
+public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private ChildRepository childRepository;

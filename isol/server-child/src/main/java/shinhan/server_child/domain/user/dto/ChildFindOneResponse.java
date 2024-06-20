@@ -1,11 +1,11 @@
-package shinhan.server_child.domain.child.dto;
+package shinhan.server_child.domain.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import shinhan.server_child.domain.child.entity.Child;
+import shinhan.server_child.domain.user.entity.Child;
 
 import java.sql.Date;
 
