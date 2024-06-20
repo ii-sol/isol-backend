@@ -25,10 +25,14 @@ public class TempUser {
     @Column(name = "name")
     String name;
 
+    @Column(name = "phone_number")
+    String phoneNumber;
+
     @Builder
-    public TempUser(Long serialNumber, String name) {
+    public TempUser(Long serialNumber, String name, String phoneNumber) {
         this.serialNumber = serialNumber;
         this.name = name;
+        this.phoneNumber=phoneNumber;
     }
 
 }
