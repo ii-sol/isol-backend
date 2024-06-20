@@ -7,7 +7,7 @@ import shinhan.server_common.domain.entity.TempUser;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    Account findByUserAndStatus(TempUser tempUser, Integer status);
+    Optional<Account> findByUserAndStatus(TempUser tempUser, Integer status);
 
     Optional<Account> findByAccountNum(String accountNum);
 }
