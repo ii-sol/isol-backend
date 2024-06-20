@@ -1,14 +1,11 @@
 package shinhan.server_child.domain.invest.dto;
 
 import lombok.Getter;
-import lombok.Setter;
-import shinhan.server_child.domain.invest.entity.Account;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
 
 @Getter
-@Setter
-public class InvestStockReqDTO {
+public class InvestStockRequest {
     short trading;
     String ticker;
     short quantity;

@@ -3,8 +3,8 @@ package shinhan.server_common.domain.invest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import shinhan.server_common.domain.invest.dto.StockFindCurrentResponseDTO;
-import shinhan.server_common.domain.invest.dto.StockFindDetailResponseDTO;
+import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
+import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
 import shinhan.server_common.domain.invest.entity.StockDivideOutput;
 import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
@@ -26,14 +26,14 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-        public StockFindDetailResponseDTO getStockDetail(String ticker, String year) {
+        public StockFindDetailResponse getStockDetail(String ticker, String year) {
             StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(ticker, year);
             StockDivideOutput stockDivideOutputMono = stockRepository.getApiDivide(ticker);
             StockFianceResponseOutput stockFianceResponseOutput = stockRepository.getApiFiance(ticker);
             System.out.println(stockFianceResponseOutput);
             System.out.println(stockDuraionPriceOutput);
             System.out.println(stockDivideOutputMono);
-            return StockFindDetailResponseDTO.builder()
+            return StockFindDetailResponse.builder()
                 .charts(stockDuraionPriceOutput.getOutput2())
                 .ROE(stockFianceResponseOutput.getOutput().get(0).getRoe())
                 .PBR(stockDuraionPriceOutput.getOutput1().getPbr())
@@ -53,9 +53,9 @@ public class StockService {
             return stockDuraionPriceOutput.getOutput1().getCurrentPrice()*stockFianceResponseOutput.getOutput().get(0).getSps() + "";
         }
 
-        public StockFindCurrentResponseDTO getStockCurrent(String ticker) {
+        public StockFindCurrentResponse getStockCurrent(String ticker) {
             StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(ticker, "0");
-            return StockFindCurrentResponseDTO.builder()
+            return StockFindCurrentResponse.builder()
                 .currentPrice(String.valueOf(stockDuraionPriceOutput.getOutput1().getCurrentPrice()))
                 .changePrice(stockDuraionPriceOutput.getOutput1().getChangePrice())
                 .changeRate(stockDuraionPriceOutput.getOutput1().getChangeRate())

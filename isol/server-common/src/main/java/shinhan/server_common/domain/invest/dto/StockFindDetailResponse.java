@@ -5,15 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import shinhan.server_common.domain.invest.entity.StockCartDate;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @Data
-public class StockFindDetailResponseDTO {
+public class StockFindDetailResponse {
     public String companyName;
     public int currentPrice;
     public String marketCapitalization;
@@ -28,7 +26,7 @@ public class StockFindDetailResponseDTO {
     public String ticker;
     public List<StockCartDate> charts;
 
-    public StockFindDetailResponseDTO() {
+    public StockFindDetailResponse() {
         this.PSR = "1";
     }
 

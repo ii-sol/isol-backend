@@ -6,12 +6,13 @@ import lombok.Setter;
 
 @Builder
 @Getter
-@Setter
-public class InvestTradeDetailResDTO {
+public class InvestTradeDetailResponse {
     String CompanyName;
     short quantity;
     int evaluationAmount;
     double profit;
     int profitAnsLossAmount;
+    @Setter
     double holdingRatio;
+
 }

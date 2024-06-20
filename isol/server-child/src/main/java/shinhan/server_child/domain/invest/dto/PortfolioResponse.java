@@ -2,13 +2,12 @@ package shinhan.server_child.domain.invest.dto;
 
 import java.util.List;
 import lombok.Builder;
-import shinhan.server_child.domain.invest.dto.InvestTradeDetailResDTO;
 
 @Builder
-public class PortfolioResDTO {
+public class PortfolioResponse {
     int totalEvaluationAmount;
     int totalPurchaseAmount;
     double totalProfit;
-    List<InvestTradeDetailResDTO> investTradeList;
+    List<InvestTradeDetailResponse> investTradeList;
 
 }

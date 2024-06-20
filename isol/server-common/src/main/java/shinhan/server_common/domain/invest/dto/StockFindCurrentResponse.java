@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @Data
-public class StockFindCurrentResponseDTO {
+public class StockFindCurrentResponse {
     public String ticker;
     private String companyName;
     public String changePrice;
