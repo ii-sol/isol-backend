@@ -19,11 +19,6 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class NotificationController {
     private final SSEService sseService;
 
-    @GetMapping("/test")
-    public String getTest(){
-        return "test";
-    }
-
     //SSE 연결하기 userSerialNumber -> User 들어오면 바뀔 예정
     @GetMapping("/subscribe/{usn}")
     public SseEmitter subscribeSSE(@PathVariable("usn") Long usn){
