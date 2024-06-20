@@ -32,27 +32,23 @@ public class UserController {
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        if (userInfo.getSn() != sn) {
-            List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
 
-            Set<Long> familyIds = new java.util.HashSet<>();
-            for (FamilyInfoResponse info : familyInfo) {
-                familyIds.add(info.getSn());
+        if (userInfo.getSn() == sn) {
+            ParentsFindOneResponse parents = userService.getParents(sn);
+            if (parents.getSerialNumber() == sn) {
+                return success(parents);
             }
-
-            if (!familyIds.contains(sn)) {
-                throw new AuthException("UNAUTHORIZED");
-            }
-        }
-
-        ParentsFindOneResponse user = userService.getUser(sn);
-
-        if (user.getSerialNumber() == sn) {
-            return success(user);
         } else {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+            for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
+                if (info.getSn() == sn) {
+                    ChildFindOneResponse child = userService.getChild(sn);
+                    return success(child);
+                }
+            }
         }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/users")

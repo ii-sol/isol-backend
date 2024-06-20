@@ -31,18 +31,18 @@ public class UserService {
     private ParentsRepository parentsRepository;
     private FamilyRepository familyRepository;
 
-    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
-        return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
-                && updatedChild.getName().equals(childUpdateRequest.getName())
-                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
-                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
-    }
-
-    public ChildFindOneResponse getUser(long sn) {
+    public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return child.convertToUserFindOneResponse();
+    }
+
+    public ParentsFindOneResponse getParents(long sn) {
+        Parents parents = parentsRepository.findBySerialNum(sn)
+            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+
+        return parents.convertToUserFindOneResponse();
     }
 
     public ChildFindOneResponse updateUser(ChildUpdateRequest childUpdateRequest) {
@@ -65,9 +65,9 @@ public class UserService {
 
     private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
         return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
-                && updatedChild.getName().equals(childUpdateRequest.getName())
-                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
-                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
+            && updatedChild.getName().equals(childUpdateRequest.getName())
+            && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
+            && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
     }
 
     public int connectFamily(FamilySaveRequest familySaveRequest) {
