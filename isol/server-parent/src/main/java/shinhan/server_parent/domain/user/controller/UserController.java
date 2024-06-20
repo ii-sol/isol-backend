@@ -30,7 +30,7 @@ public class UserController {
     private JwtService jwtService;
 
     @GetMapping("/users/{sn}")
-    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws Exception {
+    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         if (userInfo.getSn() != sn) {
             List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
@@ -46,7 +46,13 @@ public class UserController {
         }
 
         ParentsFindOneResponse user = userService.getUser(sn);
-        return user.getSerialNumber() == sn ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+
+        if (user.getSerialNumber() == sn) {
+            return success(user);
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/users")
