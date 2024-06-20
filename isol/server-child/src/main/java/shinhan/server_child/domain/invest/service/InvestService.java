@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.invest.dto.InvestStockRequest;
-import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
-import shinhan.server_child.domain.invest.dto.PortfolioResponse;
-import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
+import shinhan.server_child.domain.invest.dto.InvestStockReqDTO;
+import shinhan.server_child.domain.invest.dto.InvestTradeDetailResDTO;
+import shinhan.server_child.domain.invest.dto.PortfolioResDTO;
+import shinhan.server_child.domain.invest.dto.StockHistoryResDTO;
+import shinhan.server_child.domain.invest.entity.Account;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
@@ -34,29 +35,29 @@ public class InvestService {
         this.stockService = stockService;
     }
 
-    public List<StockHistoryResponse> getStockHisttory(String account){
+    public List<StockHistoryResDTO> getStockHisttory(String account){
         List<StockHistory> result = stockHistoryRepository.findByAccountNum(account);
-        List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
+        List<StockHistoryResDTO> stockHistoryResDTOList = new ArrayList<>();
         for(StockHistory data : result)
         {
-            StockHistoryResponse stockHistoryResponse = StockHistoryResponse.builder()
+            StockHistoryResDTO stockHistoryResDTO = StockHistoryResDTO.builder()
                 .stockPrice(data.getStockPrice())
                 .tradingCode(data.getTradingCode())
                 .companyName(data.getTicker())
                 .quantity(data.getQuantity())
                 .createDate(data.getCreateDate())
                 .build();
-            stockHistoryResponseList.add(stockHistoryResponse);
+            stockHistoryResDTOList.add(stockHistoryResDTO);
         }
-        return stockHistoryResponseList;
+        return stockHistoryResDTOList;
     }
 
-    public PortfolioResponse getPortfolio(String account){
+    public PortfolioResDTO getPortfolio(String account){
         List<Portfolio> portfolioList = portfolioRepository.findByAccountNum(account);
         int totalEvaluationAmount = 0;
         int totalPurchaseAmount = 0;
         double totalProfit = 0;
-        List<InvestTradeDetailResponse> investTradeDetailResponseList = new ArrayList<>();
+        List<InvestTradeDetailResDTO> investTradeDetailResDTOList = new ArrayList<>();
         for(Portfolio data : portfolioList){
             System.out.println(data.getTicker());
             StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(data.getTicker(), "0");
@@ -66,8 +67,8 @@ public class InvestService {
             double profit = (double) currentPrice / averagePrice*100 -100;
             int profitAndLossAmount = (currentPrice-averagePrice) * data.getQuantity();
 
-            investTradeDetailResponseList.add(
-                InvestTradeDetailResponse.builder()
+            investTradeDetailResDTOList.add(
+                InvestTradeDetailResDTO.builder()
                     .CompanyName(companyName)
                     .evaluationAmount(currentPrice)
                     .profit(profit)
@@ -78,46 +79,45 @@ public class InvestService {
             totalEvaluationAmount+=currentPrice*data.getQuantity();
             totalPurchaseAmount=+averagePrice*data.getQuantity();
         }
-        for(InvestTradeDetailResponse data : investTradeDetailResponseList){
+        for(InvestTradeDetailResDTO data :investTradeDetailResDTOList){
             data.setHoldingRatio((double) (data.getEvaluationAmount() * data.getQuantity()) /totalEvaluationAmount);
         }
-        return PortfolioResponse.builder()
+        return PortfolioResDTO.builder()
             .totalProfit((double) totalEvaluationAmount /totalPurchaseAmount*100 -100)
             .totalEvaluationAmount(totalEvaluationAmount)
             .totalPurchaseAmount(totalPurchaseAmount)
-            .investTradeList(investTradeDetailResponseList)
+            .investTradeList(investTradeDetailResDTOList)
             .build();
     }
 
-    public boolean investStock(String account_num, InvestStockRequest investStockRequest){
-        if(investStockRequest.getTrading()==1) {
+    public boolean investStock(String account_num, InvestStockReqDTO investStockReqDTO){
+        if(investStockReqDTO.getTrading()==1) {
             //"주문 매도가 맞지 않습니다."
-            return purchaseStock(account_num, investStockRequest);
+            return purchaseStock(account_num,investStockReqDTO);
         }else {
-            return sellStock(account_num, investStockRequest);
+            return sellStock(account_num,investStockReqDTO);
         }
     }
 
 
-    boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
+    boolean purchaseStock(String account_num,InvestStockReqDTO investStockReqDTO){
         //출금
         //판매 로직
-        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-            investStockRequest.getTicker(),"0");
+        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(investStockReqDTO.getTicker(),"0");
         int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
+        Account account = new Account(account_num);
 
         //구매 이력
-        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
-        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
-            investStockRequest.getTicker());
+        stockHistoryRepository.save(investStockReqDTO.toEntityHistory(account_num,currentPrice));
+        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,investStockReqDTO.getTicker());
         if(prePortfolio.isEmpty()){
-            portfolioRepository.save(investStockRequest.toEntityPortfolio(account_num,currentPrice));
+            portfolioRepository.save(investStockReqDTO.toEntityPortfolio(account_num,currentPrice));
             return true;
         }else{
             int tempSum = prePortfolio.get().getAveragePrice()*prePortfolio.get().getQuantity();
             short tempQuantity = prePortfolio.get().getQuantity();
-            tempSum+= investStockRequest.getQuantity()*currentPrice;
-            tempQuantity+= investStockRequest.getQuantity();
+            tempSum+=investStockReqDTO.getQuantity()*currentPrice;
+            tempQuantity+= investStockReqDTO.getQuantity();
             int averagePrice = tempSum/tempQuantity;
             prePortfolio.get().setQuantity(tempQuantity);
             prePortfolio.get().setAveragePrice(averagePrice);
@@ -128,24 +128,23 @@ public class InvestService {
         //포트폴리오
 
     }
-    boolean sellStock(String account_num, InvestStockRequest investStockRequest){
-        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-            investStockRequest.getTicker(),"0");
+    boolean sellStock(String account_num,InvestStockReqDTO investStockReqDTO){
+        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(investStockReqDTO.getTicker(),"0");
         int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
 
+        Account account = new Account(account_num);
 
-        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
-        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
-            investStockRequest.getTicker());
+        stockHistoryRepository.save(investStockReqDTO.toEntityHistory(account_num,currentPrice));
+        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,investStockReqDTO.getTicker());
         if(prePortfolio.isEmpty()){
 //            portfolioRepository.save(investStockReqDTO.toEntityPortfolio(account_num,currentPrice));
             throw new CustomException( FAILED_SHORTAGE_MONEY);
-        } else if (prePortfolio.get().getQuantity()< investStockRequest.getQuantity()) {
+        } else if (prePortfolio.get().getQuantity()< investStockReqDTO.getQuantity()) {
             throw new CustomException( FAILED_SHORTAGE_MONEY);
         }
         else{
             short tempQuantity = prePortfolio.get().getQuantity();
-            tempQuantity-= investStockRequest.getQuantity();
+            tempQuantity-= investStockReqDTO.getQuantity();
             prePortfolio.get().setQuantity(tempQuantity);
             portfolioRepository.save(prePortfolio.get());
             //입금 로직
