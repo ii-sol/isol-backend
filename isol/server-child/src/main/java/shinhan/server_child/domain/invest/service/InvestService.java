@@ -10,13 +10,11 @@ import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
-import shinhan.server_child.domain.invest.entity.Account;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
-import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
@@ -139,8 +137,7 @@ public class InvestService {
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
             investStockRequest.getTicker());
         int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-
-        Account account = new Account(account_num);
+        
 
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
         Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,

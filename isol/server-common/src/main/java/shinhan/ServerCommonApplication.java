@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import shinhan.server_common.notification.mongo.UserRepository;
+import shinhan.server_common.notification.mongo.NotificationRepository;
 
 // common
 @SpringBootApplication
 @EnableJpaRepositories(excludeFilters = @ComponentScan.Filter(
     type = FilterType.ASSIGNABLE_TYPE,
-    classes = UserRepository.class))
+    classes = NotificationRepository.class))
 @EnableMongoRepositories(basePackages = {"shinhan.server_common.notification.mongo"})
 public class ServerCommonApplication {
 

@@ -15,7 +15,6 @@ import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
 import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
 import shinhan.server_common.domain.invest.entity.StockNaverIntegration;
-
 @Component
 public class StockRepository {
     @Autowired
@@ -87,7 +86,6 @@ public class StockRepository {
         System.out.println("repo");
         return mono.block();
     }
-
     public StockDuraionPriceOutput getApiCurrentPrice(String ticker,String year){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         Date endDate = new Date();
@@ -170,14 +168,7 @@ public class StockRepository {
             price -> System.out.println("현재 주가: " + price),
             error -> System.err.println("에러 발생: " + error.getMessage())
         );
-
         return mono.block();
-//        mono.subscribe(
-//            price -> System.out.println("현재 주가: " + price),
-//            error -> System.err.println("에러 발생: " + error.getMessage())
-//        );
-//        System.out.println(mono);
-//        return mono;
     }
 
     public StockDivideOutput getApiDivide(String ticker){

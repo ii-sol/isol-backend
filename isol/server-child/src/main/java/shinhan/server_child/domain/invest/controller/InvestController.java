@@ -50,5 +50,4 @@ public class InvestController {
             return success("확인 필요");
         }
     }
-
 }
