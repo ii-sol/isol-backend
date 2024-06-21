@@ -4,6 +4,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+.env
+**/global/security/secret/
 
 ### STS ###
 .apt_generated
@@ -36,3 +38,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### DS store ###
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
