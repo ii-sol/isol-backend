@@ -31,7 +31,6 @@ public class UserController {
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         if (userInfo.getSn() == sn) {
             ChildFindOneResponse child = userService.getChild(sn);
@@ -54,7 +53,6 @@ public class UserController {
     @PutMapping("/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         childUpdateRequest.setSerialNum(userInfo.getSn());
         ChildFindOneResponse user = userService.updateUser(childUpdateRequest);
@@ -70,7 +68,6 @@ public class UserController {
     @PostMapping("/users")
     public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         familySaveRequest.setSn(userInfo.getSn());
         int cretedId = userService.connectFamily(familySaveRequest);
@@ -86,7 +83,6 @@ public class UserController {
     @DeleteMapping("/users/{parents-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         int deletedId = userService.disconnectFamily(userInfo.getSn(), parentsSn);
 
@@ -101,7 +97,6 @@ public class UserController {
     @GetMapping("/users/phones")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
         List<String> phones = userService.getPhones();
-        jwtService.sendJwtToken();
 
         if (phones.isEmpty()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
