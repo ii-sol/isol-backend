@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.allowance.repository;
+package shinhan.server_parent.domain.allowance.repository;
 
 
 import shinhan.server_parent.domain.allowance.entity.TemporalAllowance;

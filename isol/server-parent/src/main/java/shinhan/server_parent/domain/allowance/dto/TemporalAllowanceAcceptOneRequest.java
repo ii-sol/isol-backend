@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.allowance.dto;
+package shinhan.server_parent.domain.allowance.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

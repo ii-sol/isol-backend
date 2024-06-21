@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.allowance.service;
+package shinhan.server_parent.domain.allowance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

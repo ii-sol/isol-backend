@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.allowance.repository;
+package shinhan.server_parent.domain.allowance.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
