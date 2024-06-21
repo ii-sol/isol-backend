@@ -16,7 +16,7 @@ import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
 @RestController
-@RequestMapping("/my-stocks")
+@RequestMapping("my-stocks")
 public class MyStockController {
     MyStockService myStockService;
     JwtService jwtService;

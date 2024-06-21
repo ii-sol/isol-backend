@@ -15,7 +15,7 @@ import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
-import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
+import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
@@ -68,19 +68,18 @@ public class InvestService {
         double totalProfit = 0;
         List<InvestTradeDetailResponse> investTradeDetailResponseList = new ArrayList<>();
         for(Portfolio data : portfolioList){
-            StockFindCurrentResponse stockCurrent2 = stockService.getStockCurrent2(
-                data.getTicker());
-            System.out.println(stockCurrent2.getCurrentPrice());
-            double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
+            System.out.println(data.getTicker());
+            StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(data.getTicker(), "0");
+            int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
             int averagePrice = data.getAveragePrice();
-            String companyName = stockCurrent2.getCompanyName();
+            String companyName = stockDuraionPriceOutput.getOutput1().getCompanyName();
             double profit = (double) currentPrice / averagePrice*100 -100;
-            int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
+            int profitAndLossAmount = (currentPrice-averagePrice) * data.getQuantity();
 
             investTradeDetailResponseList.add(
                 InvestTradeDetailResponse.builder()
                     .CompanyName(companyName)
-                    .evaluationAmount((int) currentPrice)
+                    .evaluationAmount(currentPrice)
                     .profit(profit)
                     .quantity(data.getQuantity())
                     .profitAnsLossAmount(profitAndLossAmount)
@@ -114,11 +113,9 @@ public class InvestService {
         //출금
 
         //판매 로직
-//        StockDuraionPriceOutput stockDuraionPriceOutput = stockService.
-            //stockRepository.getApiCurrentPrice(investStockRequest.getTicker(),"0");
-        StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
-            investStockRequest.getTicker());
-        int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
+        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
+            investStockRequest.getTicker(),"0");
+        int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
 
         //구매 이력
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
@@ -143,12 +140,10 @@ public class InvestService {
 
     }
     boolean sellStock(String account_num, InvestStockRequest investStockRequest){
-//        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-//            investStockRequest.getTicker(),"0");
-        StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
-            investStockRequest.getTicker());
-        int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-        
+        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
+            investStockRequest.getTicker(),"0");
+        int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
+
 
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
         Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
