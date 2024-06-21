@@ -37,6 +37,7 @@ public class AccountService {
 
     //계좌 생성하기
     public void createAccount(String phoneNumber, Integer status){
+
         TempUser tempUser = tempUserRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
         String accountNum = makeAccountNumber(phoneNumber, status);
@@ -69,8 +70,8 @@ public class AccountService {
                 .map(history -> {
                             Account senderAccount = accountUtils.getAccountByAccountNum(history.getSenderAccountNum());
                             Account recieverAccount = accountUtils.getAccountByAccountNum(history.getReceiverAccountNum());
-                            TempUser sender = userUtils.getUserBySerialNumber(senderAccount.getUser().getSerialNumber());
-                            TempUser reciever = userUtils.getUserBySerialNumber(recieverAccount.getUser().getSerialNumber());
+                            TempUser sender = userUtils.getUser(senderAccount.getUser().getSerialNumber());
+                            TempUser reciever = userUtils.getUser(recieverAccount.getUser().getSerialNumber());
 
                             return AccountHistoryFindAllResponse.of(history, sender, reciever);
                         }
@@ -83,7 +84,7 @@ public class AccountService {
     public AccountTransmitOneResponse transferMoney(AccountTransmitOneRequest request) {
         Account senderAccount = accountUtils.getAccountByAccountNum(request.getSendAccountNum());
         Account recieverAccount = accountUtils.getAccountByAccountNum(request.getReceiveAccountNum());
-        TempUser reciever = userUtils.getUserBySerialNumber(recieverAccount.getUser().getSerialNumber());
+        TempUser reciever = userUtils.getUser(recieverAccount.getUser().getSerialNumber());
 
         accountUtils.transferMoneyByAccount(senderAccount, recieverAccount, request.getAmount(), 1);
 

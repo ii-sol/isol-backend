@@ -12,6 +12,7 @@ public enum ErrorCode {
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
     INVALID_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "적합하지 않은 전화번호 형식입니다."),
 
+
     //용돈 예외
     NOT_FOUND_TEMPORAL_ALLOWANCE(HttpStatus.NOT_FOUND, "해당되는 용돈 조르기가 없습니다."),
 
