@@ -1,5 +1,7 @@
 package shinhan.server_child.domain.invest.controller;
 
+import static shinhan.server_common.global.utils.ApiUtils.success;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +13,8 @@ import shinhan.server_child.domain.invest.dto.MyStockListResponse;
 import shinhan.server_child.domain.invest.service.MyStockService;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
-import static shinhan.server_common.global.utils.ApiUtils.success;
 @RestController
-@RequestMapping("my-stocks")
+@RequestMapping("/my-stocks")
 public class MyStockController {
     MyStockService myStockService;
     MyStockController(MyStockService myStockService){

@@ -38,7 +38,7 @@ public class WebClientConfig {
         headers.add("custtype","P");
         headers.add("tr_id","FHKST03010100");
         return WebClient.builder().baseUrl(PROD).defaultHeaders(headers1 -> {headers1.addAll(headers);})
-        .build();
+            .build();
     }
 
     @Bean
@@ -58,5 +58,15 @@ public class WebClientConfig {
     public WebClient webDartClient(){
         return WebClient.builder().baseUrl(dartUrl+"?crtfc_key="+dartKey)
             .build();
+    }
+
+    @Bean
+    public WebClient webNaverDurationClient(){
+        return WebClient.builder().baseUrl("https://api.stock.naver.com/chart/domestic/index/").build();
+    }
+
+    @Bean
+    public WebClient webNaverIntegrationClient(){
+        return WebClient.builder().baseUrl("https://m.stock.naver.com/api/stock/").build();
     }
 }
