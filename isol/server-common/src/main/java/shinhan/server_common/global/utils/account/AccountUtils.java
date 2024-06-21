@@ -51,7 +51,7 @@ public class AccountUtils {
 
     //user의 serialNumber, status로 계좌 조회
     public Account getAccountByUserSerialNumberAndStatus(Long userSerialNumber, Integer status){
-        TempUser user = userUtils.getUser(userSerialNumber);
+        TempUser user = userUtils.getUserBySerialNumber(userSerialNumber);
         return accountRepository.findByUserAndStatus(user, status)
                 .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
     }
