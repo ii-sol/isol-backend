@@ -21,9 +21,8 @@ public class Account {
     @Column(name = "account_num", unique = true, nullable = false)
     private String accountNum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_sn", referencedColumnName = "serial_num", unique = true, nullable = false)
-    private TempUser user;
+    @Column(name = "user_sn", nullable = false)
+    private Long userSerialNumber;
 
     @Column(name = "balance", nullable = true)
     private int balance;
@@ -32,9 +31,9 @@ public class Account {
     private int status;
 
     @Builder
-    public Account(String accountNum, TempUser user, Integer balance, Integer status) {
+    public Account(String accountNum, Long userSerialNumber, Integer balance, Integer status) {
         this.accountNum = accountNum;
-        this.user = user;
+        this.userSerialNumber = userSerialNumber;
         this.balance = balance;
         this.status = status;
     }

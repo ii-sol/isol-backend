@@ -17,9 +17,9 @@ public class AccountTransmitOneResponse {
     private int amount;
     private int balance;
 
-    public static AccountTransmitOneResponse of(Account account, AccountTransmitOneRequest request, TempUser user){
+    public static AccountTransmitOneResponse of(Account account, AccountTransmitOneRequest request, String recieverName){
         return AccountTransmitOneResponse.builder()
-                .recieverName(user.getName())
+                .recieverName(recieverName)
                 .amount(request.getAmount())
                 .balance(account.getBalance())
                 .build();

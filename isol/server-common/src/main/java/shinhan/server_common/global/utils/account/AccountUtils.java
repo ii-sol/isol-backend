@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 public class AccountUtils {
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
-    private final UserUtils userUtils;
 
     //받은 계좌객체로 송금하기
     public void transferMoneyByAccount(Account senderAccount, Account recieverAccount, Integer amount, Integer messageCode){
@@ -51,14 +50,13 @@ public class AccountUtils {
 
     //user의 serialNumber, status로 계좌 조회
     public Account getAccountByUserSerialNumberAndStatus(Long userSerialNumber, Integer status){
-        TempUser user = userUtils.getUserBySerialNumber(userSerialNumber);
-        return accountRepository.findByUserAndStatus(user, status)
+        return accountRepository.findByUserSerialNumberAndStatus(userSerialNumber, status)
                 .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
     }
 
     //계좌 번호로 계좌 조회
-    public Account getAccountByUserAndStatus(TempUser user, Integer status){
-        return accountRepository.findByUserAndStatus(user, status)
+    public Account getAccountByUserAndStatus(Long userSerialNumber, Integer status){
+        return accountRepository.findByUserSerialNumberAndStatus(userSerialNumber, status)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
     }
 

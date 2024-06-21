@@ -20,10 +20,10 @@ public class AccountHistoryFindAllResponse {
     private int messageCode;
     private LocalDateTime createDate;
 
-    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, TempUser sender, TempUser reciever ){
+    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, String senderName, String recieverName ){
         return AccountHistoryFindAllResponse.builder()
-                .senderName(sender.getName())
-                .recieverName(reciever.getName())
+                .senderName(senderName)
+                .recieverName(recieverName)
                 .amount(accountHistory.getAmount())
                 .messageCode(accountHistory.getMessageCode())
                 .createDate(accountHistory.getCreateDate())
