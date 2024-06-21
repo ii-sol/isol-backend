@@ -26,7 +26,7 @@ public class ChildManage {
     @Column(name = "base_rate", nullable = false)
     private float baseRate = 0;
     @Column(name = "invest_limit", columnDefinition = "MEDIUMINT UNSIGNED")
-    private int investLimit = 999999;
+    private int investLimit = 8300000;
     @Column(name = "loan_limit", columnDefinition = "MEDIUMINT UNSIGNED")
-    private int loanLimit = 999999;
+    private int loanLimit = 8300000;
 }

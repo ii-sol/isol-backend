@@ -21,9 +21,9 @@ public class ChildManageSaveRequest {
     @Min(value = 0, message = "기준 금리는 0원 이상입니다.")
     private int baseRate = 0;
     @Min(value = 0, message = "투자 상한액은 0원 이상입니다.")
-    @Max(value = 8388607, message = "투자 상한액은 8,388,607원 이하입니다.")
-    private int investLimit = 8388607;
+    @Max(value = 8300000, message = "투자 상한액은 8,300,000원 이하입니다.")
+    private int investLimit = 8300000;
     @Min(value = 0, message = "대출 상한액은 0 이상이어야 합니다.")
-    @Max(value = 8388607, message = "대출 상한액은 8,388,607원 이하입니다.")
-    private int loanLimit = 8388607;
+    @Max(value = 8300000, message = "대출 상한액은 8,300,000원 이하입니다.")
+    private int loanLimit = 8300000;
 }
