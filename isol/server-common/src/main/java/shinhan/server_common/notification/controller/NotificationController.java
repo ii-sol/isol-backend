@@ -45,7 +45,7 @@ public class NotificationController {
     }
 
     //알림 전체 삭제하기 - rsn : receiverSerialNumber
-    @DeleteMapping("")
+    @DeleteMapping()
     public ApiUtils.ApiResult deleteNotification() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         sseService.deleteAllNotifications(loginUserSerialNumber);
