@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_child.domain.allowance.entity.ChildTemporalAllowance;
+import shinhan.server_child.domain.allowance.entity.TemporalAllowance;
 
 import java.time.LocalDateTime;
 
@@ -19,12 +19,12 @@ public class TemporalChildAllowanceFindAllResponse {
     private int status;
     private LocalDateTime createDate;
 
-    public static TemporalChildAllowanceFindAllResponse of(ChildTemporalAllowance childTemporalAllowance, String name){
+    public static TemporalChildAllowanceFindAllResponse of(TemporalAllowance temporalAllowance, String name){
         return TemporalChildAllowanceFindAllResponse.builder()
-                .amount(childTemporalAllowance.getPrice())
+                .amount(temporalAllowance.getPrice())
                 .name(name)
-                .status(childTemporalAllowance.getStatus())
-                .createDate(childTemporalAllowance.getCreateDate())
+                .status(temporalAllowance.getStatus())
+                .createDate(temporalAllowance.getCreateDate())
                 .build();
     }
 }
