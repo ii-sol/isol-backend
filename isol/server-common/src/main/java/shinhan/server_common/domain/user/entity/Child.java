@@ -27,7 +27,7 @@ public class Child {
     @Column(nullable = false)
     private String name;
     @Setter
-    @Column(nullable = false)
+    @Column(name = "birth_date", nullable = false)
     private Date birthDate;
     @Column(name = "account_info", nullable = false)
     private String accountInfo;
