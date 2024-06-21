@@ -24,10 +24,7 @@ public class DartController {
     public ApiUtils.ApiResult getStocks(){
         return success("asd");
     }
-    @GetMapping("/naner/{ticker}/{year}")
-    public ApiUtils.ApiResult getDuration(@PathVariable("ticker") String ticker,@PathVariable("year") String year){
-        return success(stockService.getStockDuration(ticker, year));
-    }
+
     //개별 종목 조회하기
     @GetMapping("/{ticker}")
     public ApiUtils.ApiResult getStock(@PathVariable("ticker") String ticker){
@@ -37,7 +34,7 @@ public class DartController {
     }
     @GetMapping("/{ticker}/{year}")
     public ApiUtils.ApiResult getStock(@PathVariable("ticker") String ticker,@PathVariable("year") String year){
-        StockFindDetailResponse result = stockService.getStockDetail2(ticker,year);
+        StockFindDetailResponse result = stockService.getStockDetail(ticker,year);
             return success(result);
         }
 
