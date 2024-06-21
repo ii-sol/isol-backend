@@ -6,5 +6,5 @@ import shinhan.server_common.domain.entity.TempUser;
 import java.util.List;
 
 public interface ChildMonthlyAllowanceRepositoryCustom {
-    public List<ChildMonthlyAllowance> findByUserSerialNumberAndCreateDate(TempUser tempUser, Integer year, Integer month, Integer csn);
+//    public List<ChildMonthlyAllowance> findByUserSerialNumberAndCreateDate(TempUser tempUser, Integer year, Integer month, Integer csn);
 }

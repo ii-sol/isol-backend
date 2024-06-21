@@ -8,5 +8,5 @@ import java.util.List;
 public interface ChildMonthlyAllowanceRepository extends JpaRepository<ChildMonthlyAllowance, Integer>, ChildMonthlyAllowanceRepositoryCustom {
 
 
-    List<ChildMonthlyAllowance> findByChildSerialNumberAndStatus(Long serialNumber, Integer status);
+    List<ChildMonthlyAllowance> findByChildSerialNumAndStatus(Long serialNumber, Integer status);
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ChildTemporalAllowanceRepository extends JpaRepository<ChildTemporalAllowance, Integer>, ChildTemporalAllowanceRepositoryCustom {
 
-    List<ChildTemporalAllowance> findByChildSerialNumberAndStatus(Long userSerialNumber, Integer status);
+    List<ChildTemporalAllowance> findByChildSerialNumAndStatus(Long userSerialNumber, Integer status);
 }
