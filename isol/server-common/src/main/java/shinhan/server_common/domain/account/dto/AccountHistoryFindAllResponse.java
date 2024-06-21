@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shinhan.server_common.domain.account.entity.AccountHistory;
-import shinhan.server_common.domain.entity.TempUser;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +19,10 @@ public class AccountHistoryFindAllResponse {
     private int messageCode;
     private LocalDateTime createDate;
 
-    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, TempUser sender, TempUser reciever ){
+    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, String senderName, String recieverName ){
         return AccountHistoryFindAllResponse.builder()
-                .senderName(sender.getName())
-                .recieverName(reciever.getName())
+                .senderName(senderName)
+                .recieverName(recieverName)
                 .amount(accountHistory.getAmount())
                 .messageCode(accountHistory.getMessageCode())
                 .createDate(accountHistory.getCreateDate())

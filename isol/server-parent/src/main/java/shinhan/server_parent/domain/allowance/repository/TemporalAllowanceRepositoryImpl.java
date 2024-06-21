@@ -11,7 +11,7 @@ public class TemporalAllowanceRepositoryImpl implements TemporalAllowanceReposit
     EntityManager entityManager;
 
     public List<TemporalAllowance> findByUserSerialNumberAndCreateDate(Long userSerialNumber, Integer year, Integer month, Long csn){
-        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parents.serialNumber = :serialNumber AND m.child.serialNumber = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
+        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parents.serialNum = :serialNumber AND m.child.serialNum = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
 
         return entityManager.createQuery(jpql, TemporalAllowance.class)
                 .setParameter("serialNumber", userSerialNumber)
@@ -23,7 +23,7 @@ public class TemporalAllowanceRepositoryImpl implements TemporalAllowanceReposit
 
     @Override
     public List<TemporalAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(Long userSerialNumber, Long csn, Integer status) {
-        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parents.serialNumber = :serialNumber AND m.child.serialNumber = :csn AND m.status = :status";
+        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parents.serialNum = :serialNumber AND m.child.serialNum = :csn AND m.status = :status";
 
         return entityManager.createQuery(jpql, TemporalAllowance.class)
                 .setParameter("serialNumber", userSerialNumber)
