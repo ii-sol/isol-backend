@@ -31,7 +31,6 @@ public class UserController {
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         if (userInfo.getSn() == sn) {
             ParentsFindOneResponse parents = userService.getParents(sn);
@@ -54,7 +53,6 @@ public class UserController {
     @PutMapping("/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         parentsUpdateRequest.setSerialNum(userInfo.getSn());
         ParentsFindOneResponse user = userService.updateUser(parentsUpdateRequest);
@@ -70,7 +68,6 @@ public class UserController {
     @DeleteMapping("/users/{child-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        jwtService.sendJwtToken();
 
         int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
 
@@ -85,7 +82,6 @@ public class UserController {
     @GetMapping("/users/phones")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
         List<String> phones = userService.getPhones();
-        jwtService.sendJwtToken();
 
         if (phones.isEmpty()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
