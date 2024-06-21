@@ -21,7 +21,7 @@ public enum ErrorCode {
 
     NOT_FOUND_MESSAGECODE(HttpStatus.NOT_FOUND, "저장된 알림 메세지 형식을 찾을 수 없습니다."),
 
-
+    //보유수량 부족
     //계좌 예외
     NOT_FOUND_ACCOUNT(HttpStatus.NOT_FOUND, "해당 계좌를 찾을 수 없습니다."),
 
