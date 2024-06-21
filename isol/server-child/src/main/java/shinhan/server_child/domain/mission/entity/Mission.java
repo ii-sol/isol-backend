@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
-import shinhan.server_common.domain.user.entity.Child;
-import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 
 import java.sql.Timestamp;
 
@@ -15,18 +14,17 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Check(constraints = "status IN (1, 2, 3, 4, 5, 6)")
+@Table(name = "mission")
 public class Mission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "INT UNSIGNED")
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "child_sn", referencedColumnName = "serial_num", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Child child;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "parents_sn", referencedColumnName = "serial_num", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Parents parents;
+    @Column(name = "child_sn", nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private long childSn;
+    @Column(name = "parents_sn", nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private long parentsSn;
     @Column(nullable = false, length = 255)
     private String content;
     @Column(nullable = false, columnDefinition = "MEDIUMINT UNSIGNED")
@@ -39,4 +37,8 @@ public class Mission {
     private Timestamp completeDate;
     @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private int status;
+
+    public MissionFindOneResponse convertToMissionFindOneResponse() {
+        return new MissionFindOneResponse(id, childSn, parentsSn, content, price, createDate, dueDate, completeDate, status);
+    }
 }
