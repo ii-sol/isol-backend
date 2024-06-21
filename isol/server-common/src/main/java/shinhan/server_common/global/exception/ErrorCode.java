@@ -26,7 +26,7 @@ public enum ErrorCode {
     //계좌 예외
     NOT_FOUND_ACCOUNT(HttpStatus.NOT_FOUND, "해당 계좌를 찾을 수 없습니다."),
 
-
+    FAILED_NOT_FOUNT_TICKER(HttpStatus.CONFLICT,"주식을 찾을 수 없습니다."),
     //주식 예외
     FAILED_SHORTAGE_MONEY(HttpStatus.CONFLICT,"보유수량이 부족합니다.");
 

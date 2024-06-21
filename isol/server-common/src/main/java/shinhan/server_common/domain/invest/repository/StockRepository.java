@@ -56,7 +56,6 @@ public class StockRepository {
             result -> System.out.println(result),
             error-> System.out.println(error)
         );
-        System.out.println("repo");
         return mono.block();
     }
 
@@ -67,7 +66,7 @@ public class StockRepository {
 
         String endDateString;
         String startDateString;
-        startDate.setDate(startDate.getDay()-2);
+        startDate.setDate(startDate.getDay()-3);
         endDateString = simpleDateFormat.format(endDate);
         startDateString = simpleDateFormat.format(startDate);
         System.out.println(startDateString);

@@ -3,6 +3,7 @@ package shinhan.server_child.domain.invest.dto;
 import java.sql.Date;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @Getter
@@ -14,6 +15,6 @@ public class InvestProposalHistoryResponse {
     short tradingCode;
     String message;
     Date CreateDate;
-    String parentName;
+    @Setter
     String parentAlias;
 }
