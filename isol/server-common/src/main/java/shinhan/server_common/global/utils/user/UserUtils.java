@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import shinhan.server_common.domain.entity.TempUser;
-import shinhan.server_common.domain.entity.TempUserRepository;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.Parents;
 import shinhan.server_common.domain.user.repository.ChildRepository;

@@ -23,10 +23,11 @@ public class NotificationController {
     private final JwtService jwtService;
 
     //SSE 연결하기 userSerialNumber -> User 들어오면 바뀔 예정
-    @GetMapping("/subscribe/{usn}")
-    public SseEmitter subscribeSSE(@PathVariable("usn") Long usn){
+    @GetMapping("/subscribe")
+    public SseEmitter subscribeSSE() throws AuthException {
+        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         System.out.println("asdf");
-        return sseService.subscribe(usn);
+        return sseService.subscribe(loginUserSerialNumber);
     }
 
     //해당 사용자의 모든 알림 가져오기 userSerialNumber -> User 들어오면 바뀔 예정

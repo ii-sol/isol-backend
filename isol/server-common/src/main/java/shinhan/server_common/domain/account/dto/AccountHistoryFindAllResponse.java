@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shinhan.server_common.domain.account.entity.AccountHistory;
-import shinhan.server_common.domain.entity.TempUser;
 
 import java.time.LocalDateTime;
 

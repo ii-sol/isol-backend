@@ -5,7 +5,7 @@ import shinhan.server_child.domain.allowance.entity.ChildMonthlyAllowance;
 
 import java.util.List;
 
-public interface ChildMonthlyAllowanceRepository extends JpaRepository<ChildMonthlyAllowance, Integer>, ChildMonthlyAllowanceRepositoryCustom {
+public interface ChildMonthlyAllowanceRepository extends JpaRepository<ChildMonthlyAllowance, Integer>{
 
 
     List<ChildMonthlyAllowance> findByChildSerialNumAndStatus(Long serialNumber, Integer status);

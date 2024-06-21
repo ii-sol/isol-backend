@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_common.domain.entity.TempUser;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.Parents;
 
