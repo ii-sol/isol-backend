@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shinhan.server_common.domain.entity.TempUser;
+import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.Parents;
 
 import java.time.LocalDateTime;
 
@@ -21,11 +23,11 @@ public class TemporalAllowance {
 
     @OneToOne
     @JoinColumn(name = "parents_sn", referencedColumnName = "serial_num")
-    private TempUser parents;
+    private Parents parents;
 
     @OneToOne
     @JoinColumn(name = "child_sn", referencedColumnName = "serial_num")
-    private TempUser child;
+    private Child child;
 
     private String content;
 
@@ -40,7 +42,7 @@ public class TemporalAllowance {
     private Integer status;
 
     @Builder
-    public TemporalAllowance(TempUser parents, TempUser child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+    public TemporalAllowance(Parents parents, Child child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
         this.parents = parents;
         this.child = child;
         this.content = content;
