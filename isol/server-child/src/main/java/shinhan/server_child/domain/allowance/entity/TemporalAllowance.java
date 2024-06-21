@@ -1,5 +1,6 @@
 package shinhan.server_child.domain.allowance.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,15 +11,14 @@ import shinhan.server_common.domain.user.entity.Parents;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "monthly_allowance")
-public class ChildMonthlyAllowance {
+@Table(name = "temporal_allowance")
+public class TemporalAllowance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
@@ -28,6 +28,8 @@ public class ChildMonthlyAllowance {
     @OneToOne
     @JoinColumn(name = "child_sn", referencedColumnName = "serial_num")
     private Child child;
+
+    private String content;
 
     private Integer price;
 
@@ -40,12 +42,17 @@ public class ChildMonthlyAllowance {
     private Integer status;
 
     @Builder
-    public ChildMonthlyAllowance(Parents parents, Child child, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+    public TemporalAllowance(Parents parents, Child child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
         this.parents = parents;
         this.child = child;
+        this.content = content;
         this.price = price;
         this.createDate = createDate;
         this.dueDate = dueDate;
+        this.status = status;
+    }
+
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

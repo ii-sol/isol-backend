@@ -26,7 +26,6 @@ public class NotificationController {
     @GetMapping("/subscribe")
     public SseEmitter subscribeSSE() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        System.out.println("asdf");
         return sseService.subscribe(loginUserSerialNumber);
     }
 

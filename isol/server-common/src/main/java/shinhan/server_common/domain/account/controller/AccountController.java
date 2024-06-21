@@ -26,8 +26,8 @@ public class AccountController {
     private final JwtService jwtService;
 
     //계좌 개별 조회하기
-    @GetMapping("")
-    public ApiUtils.ApiResult findAccount(@RequestParam("status") Integer status) throws AuthException {
+    @GetMapping("/{status}")
+    public ApiUtils.ApiResult findAccount(@PathVariable("status") Integer status) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         System.out.println(loginUserSerialNumber);
         AccountFindOneResponse response = accountService.findAccount(loginUserSerialNumber, status);

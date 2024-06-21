@@ -33,22 +33,22 @@ public class AllowanceController {
 
     //부모 - 용돈 조르기 수락 거절
     @PostMapping("temporal")
-    public ApiUtils.ApiResult handleAllowanceAcception(@RequestParam("temporalAllowanceId") Integer temporalAllowanceId, @RequestParam("accept") Boolean accept) throws AuthException {
+    public ApiUtils.ApiResult handleAllowanceAcception(@RequestParam("tempId") Integer temporalAllowanceId, @RequestParam("accept") Boolean accept) throws AuthException {
         allowanceService.handleAllowanceAcception(temporalAllowanceId, accept);
         return success(null);
     }
 
     //부모 - 용돈 조르기 내역 조회하기 (미승인된)
-    @GetMapping("history/temporal")
-    public ApiUtils.ApiResult findTemporalAllowances(@RequestParam("csn") Long csn) throws AuthException {
+    @GetMapping("history/temporal/{csn}")
+    public ApiUtils.ApiResult findTemporalAllowances(@PathVariable("csn") Long csn) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         List<TemporalAllowanceFindAllResponse> response = allowanceService.findTemporalAllowances(loginUserSerialNumber, csn);
         return success(response);
     }
 
     //부모 - 정기 용돈 조회하기 (현재 진행중인)
-    @GetMapping("monthly")
-    public ApiUtils.ApiResult findMontlyAllowances( @RequestParam("csn") Long csn) throws AuthException {
+    @GetMapping("monthly/{csn}")
+    public ApiUtils.ApiResult findMontlyAllowances( @PathVariable("csn") Long csn) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         List<MonthlyAllowanceFindAllResponse> response = allowanceService.findMonthlyAllowances(loginUserSerialNumber, csn);
         return success(response);
