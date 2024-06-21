@@ -16,12 +16,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
-import shinhan.server_common.global.security.secret.Secret;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import shinhan.server_common.global.security.secret.Secret;
 
 @Service
 @AllArgsConstructor
@@ -116,7 +116,7 @@ public class JwtService {
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken() {
+    public void sendJwtToken(){
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         response.setHeader("Authorization", getAccessToken());
         response.setHeader("Refresh-Token", getRefreshToken());
