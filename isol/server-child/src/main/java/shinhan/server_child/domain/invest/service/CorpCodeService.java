@@ -23,7 +23,7 @@ public class CorpCodeService {
         List<CorpCode> corpCodeList = corpCodeRepository.findByCorpNameContaining(corpName);
         System.out.println(userSn);
         return corpCodeList.stream().map(x -> {
-            if (stockListRepository.findAllByUserSnAndTicker(userSn, String.valueOf(x.getStockCode())).isEmpty())
+            if (stockListRepository.findAllByUserSnAndTicker(userSn, String.format("%06d",x.getStockCode())).isEmpty())
             {
                 return CorpCodeResponse.builder().isMyStock(false).companyName(x.getCorpName())
                     .build();
