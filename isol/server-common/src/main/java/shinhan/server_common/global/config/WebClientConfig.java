@@ -59,14 +59,4 @@ public class WebClientConfig {
         return WebClient.builder().baseUrl(dartUrl+"?crtfc_key="+dartKey)
                 .build();
     }
-
-    @Bean
-    public WebClient webNaverDurationClient(){
-        return WebClient.builder().baseUrl("https://api.stock.naver.com/chart/domestic/index/").build();
-    }
-
-    @Bean
-    public WebClient webNaverIntegrationClient(){
-        return WebClient.builder().baseUrl("https://m.stock.naver.com/api/stock/").build();
-    }
 }

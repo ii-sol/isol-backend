@@ -25,7 +25,9 @@ public class MyStockService {
         List<MyStockList> result = stockListRepository.findAllByUserSn(userSn);
         List<StockFindCurrentResponse> stockFindCurrentResponseList = new ArrayList<>();
         for(int i=0;i<result.size();i++){
-            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(result.get(i).getTicker());
+            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent(result.get(i).getTicker());
+            System.out.println("여기요여기");
+            System.out.println(stockFindCurrentResponse);
             stockFindCurrentResponseList.add(stockFindCurrentResponse);
         }
         MyStockListResponse myStockListResponse = new MyStockListResponse(
