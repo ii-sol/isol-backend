@@ -2,10 +2,9 @@ package shinhan.server_child.global.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,8 +15,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableConfigurationProperties(DataSourceProperties.class)
-@EnableJpaRepositories(basePackages = "shinhan.server_common.domain.user.repository", entityManagerFactoryRef = "commonEntityManagerFactory", transactionManagerRef = "commonTransactionManager")
+@EnableJpaRepositories(
+        basePackages = "shinhan.server_common.domain.user.repository",
+        entityManagerFactoryRef = "commonEntityManagerFactory",
+        transactionManagerRef = "commonTransactionManager")
 public class CommonDataSourceConfig {
 
     @Value("${COMMON_DB_URL}")
@@ -28,17 +29,21 @@ public class CommonDataSourceConfig {
     private String dbPassword;
 
     @Bean
+    @Primary
     public DataSource commonDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
+
         return dataSource;
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean commonEntityManagerFactory(@Qualifier("commonDataSource") DataSource dataSource) {
+    @Primary
+    public LocalContainerEntityManagerFactoryBean commonEntityManagerFactory(
+            @Qualifier("commonDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("shinhan.server_common.domain.user.entity");
@@ -50,7 +55,9 @@ public class CommonDataSourceConfig {
     }
 
     @Bean
-    public PlatformTransactionManager commonTransactionManager(@Qualifier("commonDataSource") DataSource dataSource) {
+    @Primary
+    public PlatformTransactionManager commonTransactionManager(
+            @Qualifier("commonDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 }

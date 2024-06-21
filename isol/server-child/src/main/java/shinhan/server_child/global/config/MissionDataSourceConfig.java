@@ -37,6 +37,7 @@ public class MissionDataSourceConfig {
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
+
         return dataSource;
     }
 
@@ -45,7 +46,8 @@ public class MissionDataSourceConfig {
             @Qualifier("missionDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("shinhan.server_child.domain.mission.entity");
+        em.setPackagesToScan(
+                "shinhan.server_child.domain.mission.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
