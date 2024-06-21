@@ -50,11 +50,7 @@ public class Child {
     @PrePersist
     @PreUpdate
     private void validateScore() {
-        if (this.score < 0) {
-            this.score = 0;
-        } else if (this.score > 100) {
-            this.score = 100;
-        }
+        this.score = Math.min(Math.max(this.score, 0), 100);
     }
 
     public ChildFindOneResponse convertToUserFindOneResponse() {
