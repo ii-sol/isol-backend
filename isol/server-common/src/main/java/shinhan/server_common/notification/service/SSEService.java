@@ -83,7 +83,7 @@ public class SSEService {
 
     //private : 알림 저장하기
     private Notification saveNotification(Long serialNumber, String senderName, Integer functionCode, String message){
-        TempUser receiver = userUtils.getUserBySerialNumber(serialNumber);
+        TempUser receiver = userUtils.getUser(serialNumber);
 
         Notification notification = Notification.builder()
                 .receiverSerialNumber(serialNumber)
