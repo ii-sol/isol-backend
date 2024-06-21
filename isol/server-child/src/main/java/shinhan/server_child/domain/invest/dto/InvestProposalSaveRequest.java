@@ -27,7 +27,7 @@ public class InvestProposalSaveRequest {
             .parentSn(parentSn)
             .quantity(quantity)
             .ticker(ticker)
-            .TradingCode(tradingCode)
+            .tradingCode(tradingCode)
             .build();
     }
 }

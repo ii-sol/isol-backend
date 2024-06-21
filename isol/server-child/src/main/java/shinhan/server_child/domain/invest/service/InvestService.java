@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import shinhan.server_child.domain.invest.controller.CorpCodeController;
 import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
+import shinhan.server_child.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
@@ -25,24 +27,33 @@ public class InvestService {
     StockService stockService;
     PortfolioRepository portfolioRepository;
     StockHistoryRepository stockHistoryRepository;
+
+    CorpCodeRepository corpCodeRepository;
     InvestService(StockRepository stockRepository,PortfolioRepository portfolioRepository, StockHistoryRepository stockHistoryRepository
-    ,StockService stockService
+    ,StockService stockService, CorpCodeRepository corpCodeRepository
     ){
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
         this.stockHistoryRepository = stockHistoryRepository;
         this.stockService = stockService;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
-    public List<StockHistoryResponse> getStockHisttory(String account){
-        List<StockHistory> result = stockHistoryRepository.findByAccountNum(account);
+    public List<StockHistoryResponse> getStockHisttory(String account,short status){
+        List<StockHistory> result;
+        if(status == 0){
+            result = stockHistoryRepository.findByAccountNum(account);
+        }else
+            result = stockHistoryRepository.findByAccountNumAndTradingCode(account,status);
         List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
         for(StockHistory data : result)
         {
+            String companyName = corpCodeRepository.findByStockCode(Integer.parseInt(data.getTicker())).get().getCorpName();
             StockHistoryResponse stockHistoryResponse = StockHistoryResponse.builder()
                 .stockPrice(data.getStockPrice())
                 .tradingCode(data.getTradingCode())
-                .companyName(data.getTicker())
+                .ticker(data.getTicker())
+                .companyName(companyName)
                 .quantity(data.getQuantity())
                 .createDate(data.getCreateDate())
                 .build();
@@ -102,6 +113,7 @@ public class InvestService {
 
     boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
         //출금
+
         //판매 로직
 //        StockDuraionPriceOutput stockDuraionPriceOutput = stockService.
             //stockRepository.getApiCurrentPrice(investStockRequest.getTicker(),"0");

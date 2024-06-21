@@ -12,4 +12,5 @@ public class StockHistoryResponse {
     private Short quantity; // Use Short for tinyint
     private Short tradingCode; // Use Short for tinyint
     private Date createDate;
+    private String ticker;
 }

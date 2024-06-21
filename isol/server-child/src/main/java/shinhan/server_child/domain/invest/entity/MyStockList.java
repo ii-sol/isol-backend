@@ -26,10 +26,10 @@ public class MyStockList {
 
     @Column(name = "ticker", length = 12)
     private String ticker;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_sn", nullable = false, insertable = false, updatable = false)
-    private TempUser user;  // Assuming a User entity exists with an "id" field
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_sn", nullable = false, insertable = false, updatable = false)
+//    private TempUser user;  // Assuming a User entity exists with an "id" field
 
     // Getters and setters (omitted for brevity)
 

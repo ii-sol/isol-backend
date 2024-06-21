@@ -46,13 +46,6 @@ public class InvestProposal {
     private Short status = 1;
 
     @Column(name ="trading_code",nullable = false)
-    private Short TradingCode = 1;
+    private Short tradingCode = 1;
 
-    // Constructors, getters, and setters
-
-//    public InvestProposal() {
-//        this.createDate = new Timestamp(System.currentTimeMillis());
-//    }
-
-    // Getters and setters omitted for brevity
 }

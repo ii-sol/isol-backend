@@ -27,13 +27,18 @@ public class InvestProposalService {
         investProposalRepository.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
     }
 
-    public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn,int year,int month){
+    public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn,int year,int month,short status){
         LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
         Timestamp startTimeStamp = Timestamp.valueOf(startDateTime);
         Timestamp endTimeStamp = Timestamp.valueOf(endDateTime);
         List<InvestProposalHistoryResponse> investProposalHistoryResponseList = new ArrayList<>();
-        List<InvestProposal> investProposalList = investProposalRepository.findByChildSnAndCreateDateBetween(userSn,startTimeStamp,endTimeStamp);
+        List<InvestProposal> investProposalList;
+        if(status == 0)
+            investProposalList = investProposalRepository.findByChildSnAndCreateDateBetween(userSn,startTimeStamp,endTimeStamp);
+        else
+            investProposalList = investProposalRepository.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
+
         for(InvestProposal data : investProposalList){
             System.out.println(data.getMessage());
             investProposalHistoryResponseList.add(
@@ -42,8 +47,7 @@ public class InvestProposalService {
                     .proposeId(data.getId())
                     .tradingCode(data.getTradingCode())
                     .status(data.getStatus())
-                    .parentAlias("나중에 확인")
-                    .parentName("auth 완성되면")
+                    .parentAlias(String.valueOf(data.getParentSn()))
                     .companyName(data.getTicker())
                     .message(data.getMessage())
                     .quantity(data.getQuantity())

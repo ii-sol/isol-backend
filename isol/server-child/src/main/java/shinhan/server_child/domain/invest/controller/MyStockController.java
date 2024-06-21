@@ -2,6 +2,7 @@ package shinhan.server_child.domain.invest.controller;
 
 import static shinhan.server_common.global.utils.ApiUtils.success;
 
+import jakarta.security.auth.message.AuthException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,14 +12,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_child.domain.invest.dto.MyStockListResponse;
 import shinhan.server_child.domain.invest.service.MyStockService;
+import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
 @RestController
 @RequestMapping("/my-stocks")
 public class MyStockController {
     MyStockService myStockService;
-    MyStockController(MyStockService myStockService){
+    JwtService jwtService;
+    MyStockController(MyStockService myStockService,JwtService jwtService){
         this.myStockService = myStockService;
+        this.jwtService = jwtService;
     }
     //전체 종목 조회하기
 
@@ -29,8 +33,10 @@ public class MyStockController {
     }
     //거래 가능 종목 리스트 조회(아이)
     @GetMapping("")
-    public ApiUtils.ApiResult getMyStock(){
-        MyStockListResponse result = myStockService.findMyStocks(123123L);
+    public ApiUtils.ApiResult getMyStock() throws AuthException {
+        Long loginSn = jwtService.getUserInfo().getSn();
+        System.out.println(loginSn);
+        MyStockListResponse result = myStockService.findMyStocks(loginSn);
         return success(result);
     }
     //거래 가능 종목 리스트 추가(부모)
