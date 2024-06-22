@@ -53,9 +53,6 @@ public class ProposalController {
         ) throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
         Map<Long,String> family = new HashMap<>();
-        for(FamilyInfoResponse result : jwtService.getUserInfo().getFamilyInfo()){
-            System.out.println(result.getName());
-        }
         for(FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo())
         {
             family.put(familyInfoResponse.getSn(),familyInfoResponse.getName());
@@ -78,10 +75,8 @@ public class ProposalController {
     @PostMapping("/invest/{psn}")
     public ApiUtils.ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
         InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
-        Long getChildSn = 123123L;
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        System.out.println(loginUserSerialNumber);
-        investProposalService.proposalInvest(getChildSn,parentSn,investProposalSaveRequest);
+        investProposalService.proposalInvest(loginUserSerialNumber,parentSn,investProposalSaveRequest);
         return ApiUtils.success("성공했습니다.");
     }
 }

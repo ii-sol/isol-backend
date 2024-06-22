@@ -17,13 +17,14 @@ import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
 import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
 import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
 import shinhan.server_common.domain.invest.entity.StockNaverIntegration;
+import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.global.exception.CustomException;
 
 @Service
 public class StockService {
     StockRepository stockRepository;
-
+    CorpCodeRepository corpCodeRepository;
     @Autowired
         WebClient webClientP;
     @Autowired
@@ -32,8 +33,9 @@ public class StockService {
         WebClient webDartClient;
 
 
-    StockService(StockRepository stockRepository){
+    StockService(StockRepository stockRepository , CorpCodeRepository corpCodeRepository){
         this.stockRepository = stockRepository;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
     public StockFindDetailResponse getStockDuration(String ticker, String year){
@@ -107,6 +109,7 @@ public class StockService {
             .changePrice(String.valueOf(changePrice))
             .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(0).getClosePrice()))
             .changeSign(changeSign)
+            .companyName(String.valueOf(corpCodeRepository.findByStockCode(Integer.parseInt(ticker))))
             //companyName 나중에 db 만들고 바꾸기~!!!!
             .companyName(ticker)
             .ticker(ticker)
