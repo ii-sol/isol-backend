@@ -129,6 +129,14 @@ public class UserService {
                 && childManageUpdateRequest.getLoanLimit() == updatedChildManage.getLoanLimit();
     }
 
+    public ChildFindOneResponse getChildManage(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+
+        return parents.convertToUserFindOneResponse();
+    }
+
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         long serialNum = parentsRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
