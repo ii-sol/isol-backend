@@ -27,11 +27,4 @@ public class ChildUpdateRequest {
     private  Date birthDate;
     @NotNull(message = "프로필 번호를 입력해주세요.")
     private  int profileId;
-
-    public ChildUpdateRequest(String phoneNum, String name, Date birthDate, int profileId) {
-        this.phoneNum = phoneNum;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.profileId = profileId;
-    }
 }

@@ -13,7 +13,7 @@ import reactor.netty.http.client.HttpClient;
 @PropertySource("classpath:config.properties")
 public class WebClientConfig {
     HttpClient httpClient = HttpClient.create()
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
     @Value("${DATA.GO.KR.KEY}")
     private String DataKey;
     @Value("${PROD}")
@@ -38,7 +38,7 @@ public class WebClientConfig {
         headers.add("custtype","P");
         headers.add("tr_id","FHKST03010100");
         return WebClient.builder().baseUrl(PROD).defaultHeaders(headers1 -> {headers1.addAll(headers);})
-                .build();
+            .build();
     }
 
     @Bean
@@ -51,12 +51,22 @@ public class WebClientConfig {
         headers.add("custtype","P");
         headers.add("tr_id","FHKST66430300");
         return WebClient.builder().baseUrl(PROD).defaultHeaders(headers1 -> {headers1.addAll(headers);})
-                .build();
+            .build();
     }
 
     @Bean
     public WebClient webDartClient(){
         return WebClient.builder().baseUrl(dartUrl+"?crtfc_key="+dartKey)
-                .build();
+            .build();
+    }
+
+    @Bean
+    public WebClient webNaverDurationClient(){
+        return WebClient.builder().baseUrl("https://api.stock.naver.com/chart/domestic/index/").build();
+    }
+
+    @Bean
+    public WebClient webNaverIntegrationClient(){
+        return WebClient.builder().baseUrl("https://m.stock.naver.com/api/stock/").build();
     }
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.domain.account.service.AccountService;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
@@ -26,6 +27,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class UserController {
 
     private UserService userService;
+    private AccountService accountService;
     private JwtService jwtService;
 
     @GetMapping("/users/{sn}")
@@ -33,21 +35,19 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (userInfo.getSn() == sn) {
-            ParentsFindOneResponse parents = userService.getParents(sn);
-            if (parents.getSerialNumber() == sn) {
-                return success(parents);
-            }
-        } else {
-            for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
-                if (info.getSn() == sn) {
-                    ChildFindOneResponse child = userService.getChild(sn);
-                    return success(child);
-                }
-            }
+            return success(userService.getParents(sn));
+        } else if (isMyFamily(sn)) {
+            return success(userService.getChild(sn));
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    private boolean isMyFamily(long familySn) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        return userInfo.getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 
     @PutMapping("/users")
@@ -69,29 +69,61 @@ public class UserController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
+        if (isMyFamily(childSn)) {
+            int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
 
-        if (userService.isFamily(deletedId)) {
-            return success("가족 관계가 삭제되었습니다.");
-        } else {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return error("가족 관계 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
+
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createRefreshToken(userInfo.getSn()));
+            jwtService.sendJwtToken(jwtTokenResponse);
+
+            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
         }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/phones")
-    public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
-        List<String> phones = userService.getPhones();
+    @GetMapping("/users/score/{child-sn}")
+    public ApiUtils.ApiResult getScore(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (phones.isEmpty()) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
-        } else {
-            return success(phones);
+        if (isMyFamily(childSn)) {
+            return success(userService.getChild(childSn).getScore());
         }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/users/child-manage/{child-sn}")
+    public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        if (isMyFamily(childSn)) {
+            return success(userService.getChildManage(childSn));
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/users/child-manage")
+    public ApiUtils.ApiResult updateChildManage(@Valid @RequestBody ChildManageUpdateRequest childManageUpdateRequest, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        if (isMyFamily(childManageUpdateRequest.getChildSn())) {
+            return success(userService.updateChildManage(childManageUpdateRequest));
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/auth/main")
+
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
@@ -101,6 +133,7 @@ public class UserController {
         ParentsFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
+            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 3);
             return success("가입되었습니다.");
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -126,7 +159,9 @@ public class UserController {
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo),
+                    jwtService.createRefreshToken(user.getSerialNumber()));
             jwtService.sendJwtToken(jwtTokenResponse);
 
             return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));

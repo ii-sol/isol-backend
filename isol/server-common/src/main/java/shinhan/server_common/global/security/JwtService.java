@@ -16,12 +16,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
-import shinhan.server_common.global.security.secret.Secret;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import shinhan.server_common.global.security.secret.Secret;
 
 @Service
 @AllArgsConstructor
@@ -34,7 +34,8 @@ public class JwtService {
 
     private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
-        return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(
+            Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public String createAccessToken(long serialNumber, List<FamilyInfoResponse> familyInfo) {
@@ -62,7 +63,10 @@ public class JwtService {
         }
 
         // 2. JWT parsing
-        Jws<Claims> claims = Jwts.parser().verifyWith(Secret.getJwtKey()).build().parseSignedClaims(token);
+        Jws<Claims> claims = Jwts.parser()
+                .verifyWith(Secret.getJwtKey())
+                .build()
+                .parseSignedClaims(token);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -75,7 +79,10 @@ public class JwtService {
         }
 
         // 2. JWT parsing
-        Jws<Claims> claims = Jwts.parser().verifyWith(Secret.getJwtKey()).build().parseSignedClaims(token);
+        Jws<Claims> claims = Jwts.parser()
+                .verifyWith(Secret.getJwtKey())
+                .build()
+                .parseSignedClaims(token);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -121,7 +128,11 @@ public class JwtService {
 
     public boolean isTokenExpired(String token) {
         try {
-            Claims claims = Jwts.parser().verifyWith(Secret.getJwtKey()).build().parseSignedClaims(token).getPayload();
+            Claims claims = Jwts.parser()
+                    .verifyWith(Secret.getJwtKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
             Date expiration = claims.getExpiration();
             return expiration.before(new Date());
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {

@@ -22,16 +22,4 @@ public class ChildFindOneResponse {
     private Date birthDate;
     private int profileId;
     private int score;
-
-    public static ChildFindOneResponse from(Child child) {
-        return ChildFindOneResponse.builder()
-                .serialNumber(child.getSerialNum())
-                .phoneNum(child.getPhoneNum())
-                .name(child.getName())
-                .birthDate(child.getBirthDate())
-                .profileId(child.getProfileId())
-                .score(child.getScore())
-                .build();
-    }
-
 }
