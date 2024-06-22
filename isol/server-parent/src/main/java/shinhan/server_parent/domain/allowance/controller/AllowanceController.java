@@ -4,13 +4,16 @@ import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.global.quartz.QuartzScheduler;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
+import shinhan.server_common.global.quartz.allowance.dto.MonthlyAllowanceSaveOneRequest;
 import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TotalAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.service.AllowanceService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static shinhan.server_common.global.utils.ApiUtils.success;
@@ -23,6 +26,7 @@ public class AllowanceController {
 
     private final AllowanceService allowanceService;
     private final JwtService jwtService;
+    private final QuartzScheduler quartzScheduler;
     //부모 - 전체 용돈 내역 조회하기
     @GetMapping("history")
     public ApiUtils.ApiResult findTotalAllowances(@RequestParam("year") Integer year, @RequestParam("month") Integer month, @RequestParam("csn") Long csn) throws AuthException {
@@ -52,5 +56,14 @@ public class AllowanceController {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         List<MonthlyAllowanceFindAllResponse> response = allowanceService.findMonthlyAllowances(loginUserSerialNumber, csn);
         return success(response);
+    }
+
+    //부모 - 정기 용돈 생성하기
+    @PostMapping("monthly")
+    public ApiUtils.ApiResult createMonthlyAllowance(@RequestBody MonthlyAllowanceSaveOneRequest request) throws AuthException {
+        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
+        allowanceService.createMonthlyAllowance(loginUserSerialNumber, LocalDateTime.now() ,request);
+        quartzScheduler.scheduleAllowanceJob(loginUserSerialNumber, LocalDateTime.now() ,request);
+        return success(null);
     }
 }

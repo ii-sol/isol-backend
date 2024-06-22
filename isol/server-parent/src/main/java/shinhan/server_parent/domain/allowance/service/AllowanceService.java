@@ -8,7 +8,9 @@ import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.account.AccountUtils;
+import shinhan.server_common.global.utils.user.UserUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
+import shinhan.server_common.global.quartz.allowance.dto.MonthlyAllowanceSaveOneRequest;
 import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TotalAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.entity.MonthlyAllowance;
@@ -31,6 +33,7 @@ public class AllowanceService {
     private final TemporalAllowanceRepository temporalAllowanceRepository;
     private final MonthlyAllowanceRepository monthlyAllowanceRepository;
     private final AccountUtils accountUtils;
+    private final UserUtils userUtils;
 
     // 부모 용돈 내역 조회하기
     public List<TotalAllowanceFindAllResponse> findTotalAllowances(Long userSerialNumber, Integer year, Integer month, Long childSerialNumber) {
@@ -92,5 +95,18 @@ public class AllowanceService {
         LocalDate startDate = startDateTime.toLocalDate();
         LocalDate endDate = dueDateTime.toLocalDate();
         return Period.between(startDate, endDate).getMonths();
+    }
+
+    // 새로운 정기 용돈 repository에 저장하기
+    public void createMonthlyAllowance(Long loginUserSerialNumber, LocalDateTime createDate ,MonthlyAllowanceSaveOneRequest request) {
+        MonthlyAllowance newMonthlyAllowance = MonthlyAllowance.builder()
+                .price(request.getAmount())
+                .parents(userUtils.getParentsBySerialNumber(loginUserSerialNumber))
+                .child(userUtils.getChildBySerialNumber(request.getChildSerialNumber()))
+                .createDate(createDate)
+                .dueDate(createDate.plusMonths(request.getPeriod()))
+                .status(3)
+                .build();
+        monthlyAllowanceRepository.save(newMonthlyAllowance);
     }
 }
