@@ -33,21 +33,19 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (userInfo.getSn() == sn) {
-            ChildFindOneResponse child = userService.getChild(sn);
-            if (child.getSerialNumber() == sn) {
-                return success(child);
-            }
-        } else {
-            for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
-                if (info.getSn() == sn) {
-                    ParentsFindOneResponse parents = userService.getParents(sn);
-                    return success(parents);
-                }
-            }
+            return success(userService.getChild(sn));
+        } else if (isMyFamily(sn)) {
+            return success(userService.getParents(sn));
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    private boolean isMyFamily(long familySn) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        return userInfo.getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 
     @PutMapping("/users")
@@ -70,10 +68,17 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         familySaveRequest.setSn(userInfo.getSn());
-        int cretedId = userService.connectFamily(familySaveRequest);
+        int createdId = userService.connectFamily(familySaveRequest);
 
-        if (userService.isFamily(cretedId)) {
-            return success("가족 관계가 생성되었습니다.");
+        if (userService.isFamily(createdId)) {
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
+
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createRefreshToken(userInfo.getSn()));
+            jwtService.sendJwtToken(jwtTokenResponse);
+
+            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return error("가족 관계 생성에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -84,25 +89,46 @@ public class UserController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        int deletedId = userService.disconnectFamily(userInfo.getSn(), parentsSn);
+        if (isMyFamily(parentsSn)) {
+            int deletedId = userService.disconnectFamily(userInfo.getSn(), parentsSn);
 
-        if (userService.isFamily(deletedId)) {
-            return success("가족 관계가 삭제되었습니다.");
-        } else {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return error("가족 관계 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
+
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createRefreshToken(userInfo.getSn()));
+            jwtService.sendJwtToken(jwtTokenResponse);
+
+            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
         }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/phones")
+    @GetMapping("/users/contacts")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
-        List<String> phones = userService.getPhones();
+        List<ContactsFindOneInterface> contacts = userService.getContacts();
 
-        if (phones.isEmpty()) {
+        if (contacts.isEmpty()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
         } else {
-            return success(phones);
+            return success(contacts);
+        }
+    }
+
+    @GetMapping("/users/score")
+    public ApiUtils.ApiResult getScore( HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        ChildFindOneResponse user = userService.getChild(userInfo.getSn());
+
+        if(user != null){
+            return success(user.getScore());
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 

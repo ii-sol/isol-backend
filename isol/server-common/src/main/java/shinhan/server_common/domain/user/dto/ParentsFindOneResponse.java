@@ -21,15 +21,4 @@ public class ParentsFindOneResponse {
     private String name;
     private Date birthDate;
     private int profileId;
-
-    public static ParentsFindOneResponse from(Parents parents) {
-        return ParentsFindOneResponse.builder()
-                .serialNumber(parents.getSerialNum())
-                .phoneNum(parents.getPhoneNum())
-                .name(parents.getName())
-                .birthDate(parents.getBirthDate())
-                .profileId(parents.getProfileId())
-                .build();
-    }
-
 }
