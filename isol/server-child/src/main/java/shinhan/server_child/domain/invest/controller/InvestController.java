@@ -51,16 +51,21 @@ public class InvestController {
     @GetMapping("/portfolio")
     public ApiUtils.ApiResult getInvestPortfolio() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        String getUserAccountNum = "01012345678";
-        PortfolioResponse result = investService.getPortfolio(getUserAccountNum);
+        Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
+            loginUserSerialNumber, 2);
+        PortfolioResponse result = investService.getPortfolio(accountByUserSerialNumberAndStatus.getAccountNum());
         return success(result);
     }
 
     //종목 판매/구매하기
-    @PostMapping("")
-    public ApiUtils.ApiResult invest(@RequestBody InvestStockRequest investStockRequest) {
-        String getUserAccountNum = "01012345678";
-        boolean result = investService.investStock(getUserAccountNum, investStockRequest);
+    @PostMapping()
+    public ApiUtils.ApiResult invest(@RequestBody InvestStockRequest investStockRequest)
+        throws AuthException {
+        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
+        Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
+            loginUserSerialNumber, 2);
+        boolean result = investService.investStock(
+            accountByUserSerialNumberAndStatus.getAccountNum(), investStockRequest);
         if (result) {
             return success("거래 성공하였습니다.");
         } else {
