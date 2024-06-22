@@ -116,7 +116,7 @@ public class JwtService {
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken(){
+    public void sendJwtToken() {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         response.setHeader("Authorization", getAccessToken());
         response.setHeader("Refresh-Token", getRefreshToken());
