@@ -1,5 +1,7 @@
 package shinhan.server_common.domain.invest.controller;
 
+import static shinhan.server_common.global.utils.ApiUtils.success;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,10 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
 import shinhan.server_common.domain.invest.service.StockService;
-import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
-
-import static shinhan.server_common.global.utils.ApiUtils.success;
 @RestController
 @RequestMapping("/stocks")
 public class DartController {
@@ -24,7 +23,10 @@ public class DartController {
     public ApiUtils.ApiResult getStocks(){
         return success("asd");
     }
-
+    @GetMapping("/naver/{ticker}/{year}")
+    public ApiUtils.ApiResult getDuration(@PathVariable("ticker") String ticker,@PathVariable("year") String year){
+        return success(stockService.getStockDuration(ticker, year));
+    }
     //개별 종목 조회하기
     @GetMapping("/{ticker}")
     public ApiUtils.ApiResult getStock(@PathVariable("ticker") String ticker){
@@ -34,7 +36,7 @@ public class DartController {
     }
     @GetMapping("/{ticker}/{year}")
     public ApiUtils.ApiResult getStock(@PathVariable("ticker") String ticker,@PathVariable("year") String year){
-        StockFindDetailResponse result = stockService.getStockDetail(ticker,year);
+        StockFindDetailResponse result = stockService.getStockDetail2(ticker,year);
             return success(result);
         }
 

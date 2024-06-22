@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import shinhan.server_common.domain.entity.TempUser;
-import shinhan.server_common.domain.entity.TempUserRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.user.UserUtils;
@@ -30,9 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SSEService {
 
     private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
-    private final TempUserRepository tempUserRepository;
     private final NotificationRepository notificationRepository;
-    private final UserUtils userUtils;
 
     //SSE에 등록
     public SseEmitter subscribe(Long serialNumber) {
@@ -83,7 +79,6 @@ public class SSEService {
 
     //private : 알림 저장하기
     private Notification saveNotification(Long serialNumber, String senderName, Integer functionCode, String message){
-        TempUser receiver = userUtils.getUser(serialNumber);
 
         Notification notification = Notification.builder()
                 .receiverSerialNumber(serialNumber)

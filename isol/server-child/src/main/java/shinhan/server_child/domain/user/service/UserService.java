@@ -40,7 +40,7 @@ public class UserService {
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
-            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
         return parents.convertToUserFindOneResponse();
     }
@@ -63,11 +63,11 @@ public class UserService {
         }
     }
 
-    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
+    private boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
         return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
-            && updatedChild.getName().equals(childUpdateRequest.getName())
-            && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
-            && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
+                && updatedChild.getName().equals(childUpdateRequest.getName())
+                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
+                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
     }
 
     public int connectFamily(FamilySaveRequest familySaveRequest) {
@@ -98,12 +98,12 @@ public class UserService {
         return family.getId();
     }
 
-    public boolean isFamily(int deletedId) {
-        return familyRepository.findById(deletedId).isPresent();
+    public boolean isFamily(int id) {
+        return familyRepository.findById(id).isPresent();
     }
 
-    public List<String> getPhones() {
-        return childRepository.findAllPhones();
+    public List<ContactsFindOneInterface> getContacts() {
+        return parentsRepository.findAllContacts();
     }
 
     public int updateScore(ScoreUpdateRequest scoreUpdateRequest) {
@@ -120,7 +120,7 @@ public class UserService {
         long serialNum = childRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
         Child child = childRepository.save(joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
-      
+
         return child.convertToUserFindOneResponse();
     }
 
@@ -128,7 +128,7 @@ public class UserService {
         return childRepository.findByPhoneNum(phoneFindRequest.getPhoneNum()).isEmpty();
     }
 
-    public ChildFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
+    public ChildFindOneResponse login(LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
         Child child = childRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), child.getAccountInfo())) {
