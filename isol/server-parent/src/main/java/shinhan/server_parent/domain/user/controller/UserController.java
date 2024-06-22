@@ -79,19 +79,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/phones")
-    public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
-        List<String> phones = userService.getPhones();
+    @GetMapping("/users/score/{child-sn}")
+    public ApiUtils.ApiResult getScore(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (phones.isEmpty()) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
-        } else {
-            return success(phones);
+        for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
+            if (info.getSn() == childSn) {
+                ChildFindOneResponse child = userService.getChild(childSn);
+                return success(child.getScore());
+            }
         }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/users/child-manage")
+    public ApiUtils.ApiResult getChildManage()
+
+    @PutMapping("/users/child-manage")
+    public ApiUtils.ApiResult updateChildManage(
+            @RequestParam(value = "base-rate", required = false) Float baseRate,
+            @RequestParam(value = "invest-limit", required = false) Integer investLimit,
+            @RequestParam(value = "loan-limit", required = false) Integer loanLimit) {
+
     }
 
     @GetMapping("/auth/main")
+
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
