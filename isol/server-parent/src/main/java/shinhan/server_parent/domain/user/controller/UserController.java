@@ -33,21 +33,20 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (userInfo.getSn() == sn) {
-            ParentsFindOneResponse parents = userService.getParents(sn);
-            if (parents.getSerialNumber() == sn) {
-                return success(parents);
-            }
-        } else {
-            for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
-                if (info.getSn() == sn) {
-                    ChildFindOneResponse child = userService.getChild(sn);
-                    return success(child);
-                }
-            }
+            return success(userService.getParents(sn));
+        } else if (isMyFamily(sn)) {
+            return success(userService.getChild(sn));
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    private boolean isMyFamily(long familySn) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        return userInfo.getFamilyInfo().stream()
+                .anyMatch(info -> info.getSn() == familySn);
     }
 
     @PutMapping("/users")
@@ -69,25 +68,27 @@ public class UserController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
+        if (isMyFamily(childSn)) {
+            int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
 
-        if (userService.isFamily(deletedId)) {
-            return success("가족 관계가 삭제되었습니다.");
-        } else {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return error("가족 관계 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (userService.isFamily(deletedId)) {
+                return success("가족 관계가 삭제되었습니다.");
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return error("가족 관계 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return error("회원 정보 변경이 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/users/score/{child-sn}")
     public ApiUtils.ApiResult getScore(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
-            if (info.getSn() == childSn) {
-                ChildFindOneResponse child = userService.getChild(childSn);
-                return success(child.getScore());
-            }
+        if (isMyFamily(childSn)) {
+            return success(userService.getChild(childSn).getScore());
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -95,25 +96,28 @@ public class UserController {
     }
 
     @GetMapping("/users/child-manage/{child-sn}")
-    public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws jakarta.security.auth.message.AuthException {
+    public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
-            if (info.getSn() == childSn) {
-                ChildManageFindOneResponse childManage = userService.getChildManage(childSn);
-                return success(childManage);
-            }
+        if (isMyFamily(childSn)) {
+            return success(userService.getChildManage(childSn));
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/users/child-manage")
+    @PutMapping("/users/child-manage/{child-sn}")
     public ApiUtils.ApiResult updateChildManage(
+            @PathVariable("child-sn") long childSn,
             @RequestParam(value = "base-rate", required = false) Float baseRate,
             @RequestParam(value = "invest-limit", required = false) Integer investLimit,
-            @RequestParam(value = "loan-limit", required = false) Integer loanLimit) {
+            @RequestParam(value = "loan-limit", required = false) Integer loanLimit,
+            HttpServletResponse response) throws jakarta.security.auth.message.AuthException {
+
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        ChildManageUpdateRequest childManageUpdateRequest = new ChildManageUpdateRequest()
 
     }
 
