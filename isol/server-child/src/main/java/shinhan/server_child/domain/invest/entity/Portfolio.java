@@ -16,7 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Table(name = "portfolio")
 public class Portfolio {
 
@@ -27,10 +26,10 @@ public class Portfolio {
 
     @Column(name = "ticker", length = 12)
     private String ticker;
-
+    @Setter
     @Column(name = "quantity")
     private Short quantity;
-
+    @Setter
     @Column(name = "average_price")
     private Integer averagePrice;
 
