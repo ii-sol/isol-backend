@@ -11,14 +11,16 @@ import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_child.domain.invest.entity.InvestProposal;
 import shinhan.server_child.domain.invest.repository.InvestProposalRepository;
+import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 
 @Service
 public class InvestProposalService {
     InvestProposalRepository investProposalRepository;
-
+    CorpCodeRepository corpCodeRepository;
     @Autowired
-    InvestProposalService(InvestProposalRepository investProposalRepository){
+    InvestProposalService(InvestProposalRepository investProposalRepository,CorpCodeRepository corpCodeRepository){
         this.investProposalRepository = investProposalRepository;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
     public void proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
@@ -40,7 +42,6 @@ public class InvestProposalService {
             investProposalList = investProposalRepository.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
 
         for(InvestProposal data : investProposalList){
-            System.out.println(data.getMessage());
             investProposalHistoryResponseList.add(
                 InvestProposalHistoryResponse.builder()
                     .CreateDate(new Date(data.getCreateDate().getTime()))
@@ -48,11 +49,13 @@ public class InvestProposalService {
                     .tradingCode(data.getTradingCode())
                     .status(data.getStatus())
                     .parentAlias(String.valueOf(data.getParentSn()))
-                    .companyName(data.getTicker())
+                    .companyName(corpCodeRepository.findByStockCode(
+                        Integer.parseInt(data.getTicker())).get().getCorpName())
                     .message(data.getMessage())
                     .quantity(data.getQuantity())
                     .build()
             );
+            System.out.println("asdsadasdasd");
         }
         return investProposalHistoryResponseList;
     }

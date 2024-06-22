@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.controller;
+package shinhan.server_parent.domain.invest.controller;
 
 import jakarta.security.auth.message.AuthException;
 import java.util.List;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.CorpCodeResponse;
-import shinhan.server_child.domain.invest.service.CorpCodeService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
