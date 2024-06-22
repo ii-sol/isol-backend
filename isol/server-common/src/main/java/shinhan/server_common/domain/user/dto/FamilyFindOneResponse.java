@@ -9,10 +9,7 @@ import lombok.Getter;
 public class FamilyFindOneResponse {
 
     private int id;
-    @JsonProperty(value = "child_sn")
     private long childSn;
-    @JsonProperty(value = "parents_sn")
     private long parentsSn;
-    @JsonProperty(value = "parents_alias")
     private String parentsAlias;
 }
