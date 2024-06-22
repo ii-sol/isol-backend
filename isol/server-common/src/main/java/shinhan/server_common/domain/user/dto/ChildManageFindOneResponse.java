@@ -11,10 +11,8 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class ChildManageFIndOneResponse {
+public class ChildManageFindOneResponse {
 
-    private int id;
-    private long childSn;
     private float baseRate;
     private int investLimit;
     private int loanLimit;
