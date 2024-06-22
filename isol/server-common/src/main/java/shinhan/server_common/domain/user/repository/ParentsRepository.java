@@ -14,9 +14,6 @@ public interface ParentsRepository extends JpaRepository<Parents, Integer> {
 
     Optional<Parents> findByPhoneNum(String phoneNum);
 
-    @Query("SELECT c.phoneNum FROM Child c")
-    List<String> findAllPhones();
-
     @Procedure(procedureName = "generate_serial_num")
     Long generateSerialNum();
 }
