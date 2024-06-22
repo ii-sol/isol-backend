@@ -14,7 +14,7 @@ public class MonthlyAllowanceRepositoryImpl implements MonthlyAllowanceRepositor
 
     @Override
     public List<MonthlyAllowance> findByUserSerialNumberAndCreateDate(Long userSerialNumber, Integer year, Integer month, Long csn) {
-        String jpql = "SELECT m FROM MonthlyAllowance m WHERE m.parents.serialNumber = :serialNumber AND m.child.serialNumber = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
+        String jpql = "SELECT m FROM MonthlyAllowance m WHERE m.parents.serialNum = :serialNumber AND m.child.serialNum = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
 
         return entityManager.createQuery(jpql, MonthlyAllowance.class)
                 .setParameter("serialNumber", userSerialNumber)
@@ -26,7 +26,7 @@ public class MonthlyAllowanceRepositoryImpl implements MonthlyAllowanceRepositor
 
     @Override
     public List<MonthlyAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(Long userSerialNumber, Long csn, Integer status) {
-        String jpql = "SELECT m FROM MonthlyAllowance m WHERE m.parents.serialNumber = :serialNumber AND m.child.serialNumber = :csn AND m.status = :status";
+        String jpql = "SELECT m FROM MonthlyAllowance m WHERE m.parents.serialNum = :serialNumber AND m.child.serialNum = :csn AND m.status = :status";
 
         return entityManager.createQuery(jpql, MonthlyAllowance.class)
                 .setParameter("serialNumber", userSerialNumber)
