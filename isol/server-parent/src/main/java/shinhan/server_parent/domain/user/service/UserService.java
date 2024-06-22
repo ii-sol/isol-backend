@@ -10,6 +10,7 @@ import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.repository.ChildManageRepository;
 import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
@@ -30,6 +31,7 @@ public class UserService {
     private ParentsRepository parentsRepository;
     private ChildRepository childRepository;
     private FamilyRepository familyRepository;
+    private ChildManageRepository childManageRepository;
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
@@ -40,7 +42,7 @@ public class UserService {
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
-            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return child.convertToUserFindOneResponse();
     }
@@ -63,11 +65,11 @@ public class UserService {
         }
     }
 
-    private static boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
+    private boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
         return updatedParents.getPhoneNum().equals(parentsUpdateRequest.getPhoneNum())
-            && updatedParents.getName().equals(parentsUpdateRequest.getName())
-            && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
-            && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
+                && updatedParents.getName().equals(parentsUpdateRequest.getName())
+                && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
+                && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
     public int disconnectFamily(long sn, long childSn) {
@@ -88,6 +90,14 @@ public class UserService {
 
     public boolean isFamily(int deletedId) {
         return familyRepository.findById(deletedId).isPresent();
+    }
+
+    public ChildFindOneResponse getChildManage(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+
+        return parents.convertToUserFindOneResponse();
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {

@@ -40,7 +40,7 @@ public class UserService {
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
-            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
         return parents.convertToUserFindOneResponse();
     }
@@ -63,11 +63,11 @@ public class UserService {
         }
     }
 
-    private static boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
+    private boolean isUpdated(ChildUpdateRequest childUpdateRequest, Child updatedChild) {
         return updatedChild.getPhoneNum().equals(childUpdateRequest.getPhoneNum())
-            && updatedChild.getName().equals(childUpdateRequest.getName())
-            && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
-            && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
+                && updatedChild.getName().equals(childUpdateRequest.getName())
+                && updatedChild.getBirthDate().equals(childUpdateRequest.getBirthDate())
+                && updatedChild.getProfileId() == childUpdateRequest.getProfileId();
     }
 
     public int connectFamily(FamilySaveRequest familySaveRequest) {
@@ -120,7 +120,7 @@ public class UserService {
         long serialNum = childRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
         Child child = childRepository.save(joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
-      
+
         return child.convertToUserFindOneResponse();
     }
 
