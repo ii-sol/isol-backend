@@ -102,8 +102,8 @@ public class UserService {
         return familyRepository.findById(id).isPresent();
     }
 
-    public List<String> getPhones() {
-        return childRepository.findAllPhones();
+    public List<ContactsFindOneInterface> getContacts() {
+        return parentsRepository.findAllContacts();
     }
 
     public int updateScore(ScoreUpdateRequest scoreUpdateRequest) {

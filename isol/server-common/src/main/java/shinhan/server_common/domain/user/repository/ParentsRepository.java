@@ -3,6 +3,7 @@ package shinhan.server_common.domain.user.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
+import shinhan.server_common.domain.user.dto.ContactsFindOneInterface;
 import shinhan.server_common.domain.user.entity.Parents;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface ParentsRepository extends JpaRepository<Parents, Integer> {
 
     @Procedure(procedureName = "generate_serial_num")
     Long generateSerialNum();
+
+    @Query("SELECT p.name AS name, p.phoneNum AS phoneNum FROM Parents p")
+    List<ContactsFindOneInterface> findAllContacts();
 }

@@ -106,15 +106,15 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/phones")
+    @GetMapping("/users/contacts")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
-        List<String> phones = userService.getPhones();
+        List<ContactsFindOneInterface> contacts = userService.getContacts();
 
-        if (phones.isEmpty()) {
+        if (contacts.isEmpty()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND);
         } else {
-            return success(phones);
+            return success(contacts);
         }
     }
 
