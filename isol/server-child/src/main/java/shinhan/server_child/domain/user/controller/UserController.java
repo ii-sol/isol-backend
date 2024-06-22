@@ -119,12 +119,12 @@ public class UserController {
     }
 
     @GetMapping("/users/score")
-    public ApiUtils.ApiResult getScore( HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult getScore(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         ChildFindOneResponse user = userService.getChild(userInfo.getSn());
 
-        if(user != null){
+        if (user != null) {
             return success(user.getScore());
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
