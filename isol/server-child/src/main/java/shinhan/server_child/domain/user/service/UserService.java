@@ -128,7 +128,7 @@ public class UserService {
         return childRepository.findByPhoneNum(phoneFindRequest.getPhoneNum()).isEmpty();
     }
 
-    public ChildFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
+    public ChildFindOneResponse login(LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
         Child child = childRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), child.getAccountInfo())) {
