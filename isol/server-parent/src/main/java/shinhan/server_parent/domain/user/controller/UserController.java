@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.domain.account.service.AccountService;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
@@ -26,6 +27,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class UserController {
 
     private UserService userService;
+    private AccountService accountService;
     private JwtService jwtService;
 
     @GetMapping("/users/{sn}")
@@ -131,6 +133,7 @@ public class UserController {
         ParentsFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
+            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 3);
             return success("가입되었습니다.");
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
