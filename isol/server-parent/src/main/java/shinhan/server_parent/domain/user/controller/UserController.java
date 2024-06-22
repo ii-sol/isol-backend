@@ -94,8 +94,20 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/child-manage")
-    public ApiUtils.ApiResult getChildManage()
+    @GetMapping("/users/child-manage/{child-sn}")
+    public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws jakarta.security.auth.message.AuthException {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        for (FamilyInfoResponse info : userInfo.getFamilyInfo()) {
+            if (info.getSn() == childSn) {
+                ChildManageFindOneResponse childManage = userService.getChildManage(childSn);
+                return success(childManage);
+            }
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
 
     @PutMapping("/users/child-manage")
     public ApiUtils.ApiResult updateChildManage(

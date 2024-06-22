@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.ChildManage;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
 import shinhan.server_common.domain.user.repository.ChildManageRepository;
@@ -92,12 +93,14 @@ public class UserService {
         return familyRepository.findById(deletedId).isPresent();
     }
 
-    public ChildFindOneResponse getChildManage(long childSn) {
+    public ChildManageFindOneResponse getChildManage(long childSn) {
         Child child = childRepository.findBySerialNum(childSn)
                 .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
 
-        return parents.convertToUserFindOneResponse();
+        return childManage.convertToChildManageFIndOneResponse();
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
