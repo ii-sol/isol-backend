@@ -124,9 +124,9 @@ public class UserService {
     }
 
     private boolean isChildManageUpdated(ChildManageUpdateRequest childManageUpdateRequest, ChildManage updatedChildManage) {
-        return childManageUpdateRequest.getBaseRate().equals(updatedChildManage.getBaseRate())
-                && childManageUpdateRequest.getInvestLimit().equals(updatedChildManage.getInvestLimit())
-                && childManageUpdateRequest.getLoanLimit().equals(updatedChildManage.getLoanLimit());
+        return childManageUpdateRequest.getBaseRate() == updatedChildManage.getBaseRate()
+                && childManageUpdateRequest.getInvestLimit() == updatedChildManage.getInvestLimit()
+                && childManageUpdateRequest.getLoanLimit() == updatedChildManage.getLoanLimit();
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
