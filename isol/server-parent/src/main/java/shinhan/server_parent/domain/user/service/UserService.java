@@ -90,10 +90,6 @@ public class UserService {
         return familyRepository.findById(deletedId).isPresent();
     }
 
-    public List<String> getPhones() {
-        return parentsRepository.findAllPhones();
-    }
-
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         long serialNum = parentsRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
