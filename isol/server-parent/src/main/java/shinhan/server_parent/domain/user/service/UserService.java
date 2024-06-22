@@ -129,12 +129,14 @@ public class UserService {
                 && childManageUpdateRequest.getLoanLimit() == updatedChildManage.getLoanLimit();
     }
 
-    public ChildFindOneResponse getChildManage(long childSn) {
+    public ChildManageFindOneResponse getChildManage(long childSn) {
         Child child = childRepository.findBySerialNum(childSn)
                 .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
 
-        return parents.convertToUserFindOneResponse();
+        return childManage.convertToChildManageFIndOneResponse();
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
