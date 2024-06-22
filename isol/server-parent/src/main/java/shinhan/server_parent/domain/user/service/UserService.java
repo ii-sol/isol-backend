@@ -1,7 +1,6 @@
 package shinhan.server_parent.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -91,16 +90,6 @@ public class UserService {
 
     public boolean isFamily(int id) {
         return familyRepository.findById(id).isPresent();
-    }
-
-    public ChildManageFindOneResponse getChildManage(long childSn) {
-        Child child = childRepository.findBySerialNum(childSn)
-                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
-
-        ChildManage childManage = childManageRepository.findByChild(child)
-                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
-
-        return childManage.convertToChildManageFIndOneResponse();
     }
 
     public ChildManageFindOneResponse updateChildManage(ChildManageUpdateRequest childManageUpdateRequest) {
