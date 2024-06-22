@@ -98,8 +98,8 @@ public class UserService {
         return family.getId();
     }
 
-    public boolean isFamily(int deletedId) {
-        return familyRepository.findById(deletedId).isPresent();
+    public boolean isFamily(int id) {
+        return familyRepository.findById(id).isPresent();
     }
 
     public List<String> getPhones() {

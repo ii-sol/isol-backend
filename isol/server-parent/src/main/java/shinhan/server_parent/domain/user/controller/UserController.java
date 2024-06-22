@@ -45,8 +45,7 @@ public class UserController {
     private boolean isMyFamily(long familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        return userInfo.getFamilyInfo().stream()
-                .anyMatch(info -> info.getSn() == familySn);
+        return userInfo.getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 
     @PutMapping("/users")
@@ -71,16 +70,18 @@ public class UserController {
         if (isMyFamily(childSn)) {
             int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
 
-            if (userService.isFamily(deletedId)) {
-                return success("가족 관계가 삭제되었습니다.");
-            } else {
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                return error("가족 관계 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
+
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createRefreshToken(userInfo.getSn()));
+            jwtService.sendJwtToken(jwtTokenResponse);
+
+            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
         }
 
-        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return error("회원 정보 변경이 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/users/score/{child-sn}")
@@ -107,18 +108,16 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/users/child-manage/{child-sn}")
-    public ApiUtils.ApiResult updateChildManage(
-            @PathVariable("child-sn") long childSn,
-            @RequestParam(value = "base-rate", required = false) Float baseRate,
-            @RequestParam(value = "invest-limit", required = false) Integer investLimit,
-            @RequestParam(value = "loan-limit", required = false) Integer loanLimit,
-            HttpServletResponse response) throws jakarta.security.auth.message.AuthException {
-
+    @PutMapping("/users/child-manage")
+    public ApiUtils.ApiResult updateChildManage(@Valid @RequestBody ChildManageUpdateRequest childManageUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        ChildManageUpdateRequest childManageUpdateRequest = new ChildManageUpdateRequest()
+        if (isMyFamily(childManageUpdateRequest.getChildSn())) {
+            return success(userService.updateChildManage(childManageUpdateRequest));
+        }
 
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/auth/main")
@@ -157,7 +156,9 @@ public class UserController {
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo),
+                    jwtService.createRefreshToken(user.getSerialNumber()));
             jwtService.sendJwtToken(jwtTokenResponse);
 
             return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));

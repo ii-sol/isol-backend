@@ -89,8 +89,8 @@ public class UserService {
         return family.getId();
     }
 
-    public boolean isFamily(int deletedId) {
-        return familyRepository.findById(deletedId).isPresent();
+    public boolean isFamily(int id) {
+        return familyRepository.findById(id).isPresent();
     }
 
     public ChildManageFindOneResponse getChildManage(long childSn) {
@@ -101,6 +101,32 @@ public class UserService {
                 .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
 
         return childManage.convertToChildManageFIndOneResponse();
+    }
+
+    public ChildManageFindOneResponse updateChildManage(ChildManageUpdateRequest childManageUpdateRequest) {
+        Child child = childRepository.findBySerialNum(childManageUpdateRequest.getChildSn())
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+
+        childManage.setBaseRate(childManageUpdateRequest.getBaseRate());
+        childManage.setInvestLimit(childManageUpdateRequest.getInvestLimit());
+        childManage.setLoanLimit(childManageUpdateRequest.getLoanLimit());
+
+        ChildManage updatedChildManage = childManageRepository.save(childManage);
+
+        if (isChildManageUpdated(childManageUpdateRequest, updatedChildManage)) {
+            return updatedChildManage.convertToChildManageFIndOneResponse();
+        } else {
+            throw new InternalError("아이 관리 정보 변경이 실패하였습니다.");
+        }
+    }
+
+    private boolean isChildManageUpdated(ChildManageUpdateRequest childManageUpdateRequest, ChildManage updatedChildManage) {
+        return childManageUpdateRequest.getBaseRate().equals(updatedChildManage.getBaseRate())
+                && childManageUpdateRequest.getInvestLimit().equals(updatedChildManage.getInvestLimit())
+                && childManageUpdateRequest.getLoanLimit().equals(updatedChildManage.getLoanLimit());
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
