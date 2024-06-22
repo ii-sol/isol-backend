@@ -24,18 +24,11 @@ public class MyStockController {
         this.myStockService = myStockService;
         this.jwtService = jwtService;
     }
-    //전체 종목 조회하기
 
-    //거래 가능 종목 리스트 조회(부모)
-    @GetMapping("/{co}")
-    public ApiResult getMyChildStock(){
-        return ApiResult.responseSuccess("asdf");
-    }
     //거래 가능 종목 리스트 조회(아이)
     @GetMapping("")
     public ApiUtils.ApiResult getMyStock() throws AuthException {
         Long loginSn = jwtService.getUserInfo().getSn();
-        System.out.println(loginSn);
         MyStockListResponse result = myStockService.findMyStocks(loginSn);
         return success(result);
     }
@@ -51,10 +44,11 @@ public class MyStockController {
         return ApiResult.responseSuccess(childOrder);
     }
 
-    //거래 가능 종목 리스트 삭제(부모)
     @DeleteMapping("")
-    public ApiUtils.ApiResult deleteMyStock(@RequestParam("ticker") String ticker){
-        myStockService.delete(123123L,ticker);
+    public ApiUtils.ApiResult deleteMyStock(@RequestParam("ticker") String ticker)
+        throws AuthException {
+        long userSn = jwtService.getUserInfo().getSn();
+        myStockService.delete(userSn,ticker);
         return success("삭제 성공");
     }
 }
