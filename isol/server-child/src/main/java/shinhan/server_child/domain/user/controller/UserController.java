@@ -118,6 +118,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("/users/score")
+    public ApiUtils.ApiResult getScore( HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        ChildFindOneResponse user = userService.getChild(userInfo.getSn());
+
+        if(user != null){
+            return success(user.getScore());
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PutMapping("/users/score/{change}")
     public ApiUtils.ApiResult updateScore(@PathVariable("change") int change) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
