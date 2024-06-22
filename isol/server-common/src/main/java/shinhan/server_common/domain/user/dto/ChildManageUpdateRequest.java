@@ -17,13 +17,13 @@ public class ChildManageUpdateRequest {
     @NotNull(message = "기준금리를 입력해주세요.")
     @DecimalMin(value = "0.0", message = "기준 금리는 0% 이상입니다.")
     @DecimalMax(value = "100.0", message = "기준 금리는 100% 이하입니다.")
-    private Float baseRate;
+    private float baseRate;
     @NotNull(message = "투자 상한액을 입력해주세요.")
     @DecimalMin(value = "0", message = "투자 상한액은 0원 이상입니다.")
     @DecimalMax(value = "8300000", message = "투자 상한액은 8,300,000원 이하입니다.")
-    private Integer investLimit;
+    private int investLimit;
     @NotNull(message = "대출 상한액을 입력해주세요.")
     @DecimalMin(value = "0", message = "대출 상한액은 0원 이상입니다.")
     @DecimalMax(value = "8300000", message = "대출 상한액은 8,300,000원 이하입니다.")
-    private Integer loanLimit;
+    private int loanLimit;
 }
