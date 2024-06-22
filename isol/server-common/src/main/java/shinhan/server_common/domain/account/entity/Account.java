@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shinhan.server_common.domain.entity.TempUser;
 
 @Entity
 @Getter
@@ -20,8 +21,9 @@ public class Account {
     @Column(name = "account_num", unique = true, nullable = false)
     private String accountNum;
 
-    @Column(name = "user_sn", nullable = false)
-    private Long userSerialNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_sn", referencedColumnName = "serial_num", unique = true, nullable = false)
+    private TempUser user;
 
     @Column(name = "balance", nullable = true)
     private int balance;
@@ -30,9 +32,9 @@ public class Account {
     private int status;
 
     @Builder
-    public Account(String accountNum, Long userSerialNumber, Integer balance, Integer status) {
+    public Account(String accountNum, TempUser user, Integer balance, Integer status) {
         this.accountNum = accountNum;
-        this.userSerialNumber = userSerialNumber;
+        this.user = user;
         this.balance = balance;
         this.status = status;
     }

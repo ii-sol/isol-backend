@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_child.domain.allowance.entity.MonthlyAllowance;
+import shinhan.server_child.domain.allowance.entity.ChildMonthlyAllowance;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class MonthlyAllowanceFindOneResponse {
     private LocalDateTime createDate;
     private LocalDateTime dueDate;
 
-    public static MonthlyAllowanceFindOneResponse of(MonthlyAllowance allowance, Integer period){
+    public static MonthlyAllowanceFindOneResponse of(ChildMonthlyAllowance allowance, Integer period){
         return MonthlyAllowanceFindOneResponse.builder()
                 .amount(allowance.getPrice())
                 .name(allowance.getParents().getName())

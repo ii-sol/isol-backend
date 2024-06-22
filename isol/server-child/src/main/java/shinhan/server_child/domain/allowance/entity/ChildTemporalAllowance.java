@@ -6,8 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_common.domain.user.entity.Child;
-import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.entity.TempUser;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "temporal_allowance")
-public class TemporalAllowance {
+public class ChildTemporalAllowance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +22,11 @@ public class TemporalAllowance {
 
     @OneToOne
     @JoinColumn(name = "parents_sn", referencedColumnName = "serial_num")
-    private Parents parents;
+    private TempUser parents;
 
     @OneToOne
     @JoinColumn(name = "child_sn", referencedColumnName = "serial_num")
-    private Child child;
+    private TempUser child;
 
     private String content;
 
@@ -42,7 +41,7 @@ public class TemporalAllowance {
     private Integer status;
 
     @Builder
-    public TemporalAllowance(Parents parents, Child child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+    public ChildTemporalAllowance(TempUser parents, TempUser child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
         this.parents = parents;
         this.child = child;
         this.content = content;

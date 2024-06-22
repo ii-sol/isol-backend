@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AccountHistoryRepositoryCustom {
-    List<AccountHistory> findByAccountAndCreateDateBetween(Account account , LocalDateTime start, LocalDateTime end);
+    List<AccountHistory> findByUserAndCreateDateBetween(Account account , LocalDateTime start, LocalDateTime end);
 }
