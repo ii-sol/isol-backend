@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Check;
+import shinhan.server_common.domain.user.dto.ChildManageFindOneResponse;
 
 @Entity
 @Getter
@@ -29,4 +30,12 @@ public class ChildManage {
     private int investLimit = 8300000;
     @Column(name = "loan_limit", columnDefinition = "MEDIUMINT UNSIGNED")
     private int loanLimit = 8300000;
+
+    public ChildManage(Child child) {
+        childSn = child.getSerialNum();
+    }
+
+    public ChildManageFindOneResponse convertToChildManageFIndOneResponse() {
+        return new ChildManageFindOneResponse(baseRate, investLimit, loanLimit);
+    }
 }
