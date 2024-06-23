@@ -9,6 +9,8 @@ import shinhan.server_child.domain.allowance.dto.TemporalAllowanceSaveOneRequest
 import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.dto.UnAcceptTemporalAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.service.AllowanceService;
+import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.user.entity.Parents;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
