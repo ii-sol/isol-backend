@@ -145,7 +145,7 @@ public class UserController {
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
-    @GetMapping("/users/child-manage/")
+    @GetMapping("/users/child-manage")
     public ApiUtils.ApiResult getChildManage(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
