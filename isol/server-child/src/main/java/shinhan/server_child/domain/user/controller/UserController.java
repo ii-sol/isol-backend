@@ -156,6 +156,7 @@ public class UserController {
 
     @GetMapping("/users/child-manage")
     public ApiUtils.ApiResult getChildManage() throws Exception {
+
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.getChildManage(userInfo.getSn()));
