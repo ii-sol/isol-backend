@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
+import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.global.security.JwtService;
@@ -43,7 +43,7 @@ public class MissionController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
         long sn = userInfo.getSn();
 
-        return mission.getChildSn() != sn && mission.getParentsSn() != sn;
+        return mission.getChildSn() == sn || mission.getParentsSn() == sn;
     }
 
     @GetMapping("/{parents-sn}/ongoing")
@@ -132,7 +132,7 @@ public class MissionController {
     public ApiUtils.ApiResult createMission(@Valid @RequestBody MissionSaveRequest missionSaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if(userInfo.getSn() == missionSaveRequest.getChildSn()){
+        if (userInfo.getSn() == missionSaveRequest.getChildSn()) {
             if (isMyFamily(missionSaveRequest.getParentsSn())) {
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
 
@@ -148,7 +148,7 @@ public class MissionController {
     public ApiUtils.ApiResult updateMission(@Valid @RequestBody MissionAnswerSaveRequest missionAnswerSaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if(userInfo.getSn() == missionAnswerSaveRequest.getChildSn()){
+        if (userInfo.getSn() == missionAnswerSaveRequest.getChildSn()) {
             if (isMyFamily(missionAnswerSaveRequest.getParentsSn())) {
                 MissionFindOneResponse mission = missionService.updateMission(missionAnswerSaveRequest);
 
