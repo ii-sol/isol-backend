@@ -45,7 +45,7 @@ public class MissionService {
         List<Mission> missions = null;
 
         if (status == null) {
-            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month); //
+            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month);
         } else {
             missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month, status);
         }
