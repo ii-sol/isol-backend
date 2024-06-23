@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-public class ApiUtils {
+public class ApiUtils<I extends Number> {
 
     public static <T> ApiResult<T> success(T data) {
         return new ApiResult(true, data, null);
