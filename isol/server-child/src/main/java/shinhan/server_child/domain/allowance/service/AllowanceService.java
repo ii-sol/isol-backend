@@ -61,7 +61,7 @@ public class AllowanceService {
 
         return temporalAllowanceRepository.findByChildSerialNumberAndCreateDateAndStatus(userSerialNumber, year, month)
                 .stream().map(allowance ->{
-                    String parentsName = userUtils.getParentsBySerialNumber(allowance.getParentsSerialNumber()).getName();
+                    String parentsName = userUtils.getParentsAlias(userSerialNumber, allowance.getParentsSerialNumber());
                     return TemporalChildAllowanceFindAllResponse.of(allowance, parentsName);
                 })
                 .toList();
@@ -72,7 +72,7 @@ public class AllowanceService {
 
         return temporalAllowanceRepository.findByChildSerialNumberAndStatus(userSerialNumber, 1)
                 .stream().map(allowance ->{
-                    String parentsName = userUtils.getParentsBySerialNumber(allowance.getParentsSerialNumber()).getName();
+                    String parentsName = userUtils.getParentsAlias(userSerialNumber, allowance.getParentsSerialNumber());
                     return UnAcceptTemporalAllowanceFindAllResponse.of(allowance, parentsName);
                 })
                 .toList();
@@ -83,7 +83,7 @@ public class AllowanceService {
         //앞에 tempUser가 맞는지 확인하는거 코드 밑에 getUser사용한다던지
         return monthlyAllowanceRepository.findByChildSerialNumberAndStatus(userSerialNumber, 3)
                 .stream().map(allowance ->{
-                    String parentsName = userUtils.getParentsBySerialNumber(allowance.getParentsSerialNumber()).getName();
+                    String parentsName = userUtils.getParentsAlias(userSerialNumber, allowance.getParentsSerialNumber());
                     long period = ChronoUnit.MONTHS.between(allowance.getCreateDate(), allowance.getDueDate());
                     return MonthlyAllowanceFindOneResponse.of(allowance, (int)period, parentsName);
                 })
