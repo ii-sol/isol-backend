@@ -6,15 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import shinhan.server_child.domain.invest.controller.CorpCodeController;
 import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
+import shinhan.server_child.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
-import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
+import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
@@ -25,24 +27,33 @@ public class InvestService {
     StockService stockService;
     PortfolioRepository portfolioRepository;
     StockHistoryRepository stockHistoryRepository;
+
+    CorpCodeRepository corpCodeRepository;
     InvestService(StockRepository stockRepository,PortfolioRepository portfolioRepository, StockHistoryRepository stockHistoryRepository
-    ,StockService stockService
+    ,StockService stockService, CorpCodeRepository corpCodeRepository
     ){
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
         this.stockHistoryRepository = stockHistoryRepository;
         this.stockService = stockService;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
-    public List<StockHistoryResponse> getStockHisttory(String account){
-        List<StockHistory> result = stockHistoryRepository.findByAccountNum(account);
+    public List<StockHistoryResponse> getStockHisttory(String account,short status){
+        List<StockHistory> result;
+        if(status == 0){
+            result = stockHistoryRepository.findByAccountNum(account);
+        }else
+            result = stockHistoryRepository.findByAccountNumAndTradingCode(account,status);
         List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
         for(StockHistory data : result)
         {
+            String companyName = corpCodeRepository.findByStockCode(Integer.parseInt(data.getTicker())).get().getCorpName();
             StockHistoryResponse stockHistoryResponse = StockHistoryResponse.builder()
                 .stockPrice(data.getStockPrice())
                 .tradingCode(data.getTradingCode())
-                .companyName(data.getTicker())
+                .ticker(data.getTicker())
+                .companyName(companyName)
                 .quantity(data.getQuantity())
                 .createDate(data.getCreateDate())
                 .build();
@@ -58,18 +69,19 @@ public class InvestService {
         double totalProfit = 0;
         List<InvestTradeDetailResponse> investTradeDetailResponseList = new ArrayList<>();
         for(Portfolio data : portfolioList){
-            System.out.println(data.getTicker());
-            StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(data.getTicker(), "0");
-            int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
+            StockFindCurrentResponse stockCurrent2 = stockService.getStockCurrent2(
+                data.getTicker());
+            System.out.println(stockCurrent2.getCurrentPrice());
+            double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
             int averagePrice = data.getAveragePrice();
-            String companyName = stockDuraionPriceOutput.getOutput1().getCompanyName();
+            String companyName = stockCurrent2.getCompanyName();
             double profit = (double) currentPrice / averagePrice*100 -100;
-            int profitAndLossAmount = (currentPrice-averagePrice) * data.getQuantity();
+            int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
 
             investTradeDetailResponseList.add(
                 InvestTradeDetailResponse.builder()
                     .CompanyName(companyName)
-                    .evaluationAmount(currentPrice)
+                    .evaluationAmount((int) currentPrice)
                     .profit(profit)
                     .quantity(data.getQuantity())
                     .profitAnsLossAmount(profitAndLossAmount)
@@ -101,10 +113,13 @@ public class InvestService {
 
     boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
         //출금
+
         //판매 로직
-        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-            investStockRequest.getTicker(),"0");
-        int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
+//        StockDuraionPriceOutput stockDuraionPriceOutput = stockService.
+            //stockRepository.getApiCurrentPrice(investStockRequest.getTicker(),"0");
+        StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
+            investStockRequest.getTicker());
+        int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
 
         //구매 이력
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
@@ -129,10 +144,12 @@ public class InvestService {
 
     }
     boolean sellStock(String account_num, InvestStockRequest investStockRequest){
-        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-            investStockRequest.getTicker(),"0");
-        int currentPrice = stockDuraionPriceOutput.getOutput1().getCurrentPrice();
-
+//        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
+//            investStockRequest.getTicker(),"0");
+        StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
+            investStockRequest.getTicker());
+        int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
+        
 
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
         Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,

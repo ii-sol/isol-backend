@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import shinhan.server_common.global.security.secret.Secret;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +35,7 @@ public class JwtService {
 
     private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
+
         return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(
             Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
     }
@@ -116,7 +118,7 @@ public class JwtService {
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken(){
+    public void sendJwtToken() {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
         response.setHeader("Authorization", getAccessToken());
         response.setHeader("Refresh-Token", getRefreshToken());

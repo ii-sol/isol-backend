@@ -23,11 +23,10 @@ public class MyStockService {
 
     public MyStockListResponse findMyStocks(Long userSn){
         List<MyStockList> result = stockListRepository.findAllByUserSn(userSn);
+        System.out.println(result.size());
         List<StockFindCurrentResponse> stockFindCurrentResponseList = new ArrayList<>();
         for(int i=0;i<result.size();i++){
-            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent(result.get(i).getTicker());
-            System.out.println("여기요여기");
-            System.out.println(stockFindCurrentResponse);
+            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(result.get(i).getTicker());
             stockFindCurrentResponseList.add(stockFindCurrentResponse);
         }
         MyStockListResponse myStockListResponse = new MyStockListResponse(
