@@ -143,18 +143,4 @@ public class UserService {
                 .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
                 .collect(Collectors.toList());
     }
-
-    public String getParentsAlias(long childSn, long parentsSn) {
-        Child child = childRepository.findBySerialNum(childSn)
-                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
-
-        Parents parents = parentsRepository.findBySerialNum(parentsSn)
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
-
-        Family family = familyRepository
-                .findByChildAndParents(child, parents)
-                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
-
-        return family.getParentsAlias();
-    }
 }
