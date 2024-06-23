@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.global.security.JwtService;
@@ -58,7 +55,7 @@ public class MissionController {
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("진행 중인 미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
     private boolean isMyFamily(long familySn) throws Exception {
@@ -79,7 +76,7 @@ public class MissionController {
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("진행 중인 미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/{parents-sn}/{status}")
@@ -89,11 +86,46 @@ public class MissionController {
         if (isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
 
-            List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, status);
-            return success(missions);
+            if (status >= 1 && status <= 6) {
+                List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, status);
+                return success(missions);
+            } else {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return error("미션의 status는 1 ~ 6입니다.", HttpStatus.BAD_REQUEST);
+            }
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("진행 중인 미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/{parents-sn}/history") //?year={year}&month={month}&status={status}
+    public ApiUtils.ApiResult getMissionsHistory(
+            @PathVariable("parents-sn") long parentsSn,
+            @RequestParam(value = "year") int year,
+            @RequestParam(value = "month") int month,
+            @RequestParam(value = "status", required = false) Integer status,
+            HttpServletResponse response) throws Exception {
+
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        if (isMyFamily(parentsSn)) {
+            long childSn = userInfo.getSn();
+            List<MissionFindOneResponse> missions = null;
+
+            if (status == null) {
+                missions = missionService.getMissions(childSn, parentsSn, 4, 5);
+                return success(missions);
+            } else if (status == 4 || status == 5) {
+                missions = missionService.getMissions(childSn, parentsSn, status);
+                return success(missions);
+            } else {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return error("미션 내역의 status는 4 또는 5입니다.", HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 }
