@@ -105,12 +105,13 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
+        int profileId = claims.getPayload().get("profileId", Integer.class);
 
         TypeReference<List<FamilyInfoResponse>> typeFamilyInfo = new TypeReference<List<FamilyInfoResponse>>() {
         };
         List<FamilyInfoResponse> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
 
-        return new UserInfoResponse(sn, familyInfo);
+        return new UserInfoResponse(sn, profileId, familyInfo);
     }
 
     public Authentication getAuthentication(String token) throws AuthException, ExpiredJwtException {
