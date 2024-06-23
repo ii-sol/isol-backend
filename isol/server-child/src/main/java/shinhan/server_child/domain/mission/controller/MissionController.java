@@ -96,7 +96,7 @@ public class MissionController {
         return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{parents-sn}/history") //?year={year}&month={month}&status={status}
+    @GetMapping("/{parents-sn}/history")
     public ApiUtils.ApiResult getMissionsHistory(
             @PathVariable("parents-sn") long parentsSn,
             @RequestParam(value = "year") int year,
