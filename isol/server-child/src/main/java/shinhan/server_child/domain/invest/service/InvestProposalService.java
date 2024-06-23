@@ -7,24 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_child.domain.invest.entity.InvestProposal;
 import shinhan.server_child.domain.invest.repository.InvestProposalRepository;
+import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 
 @Service
+@Transactional
 public class InvestProposalService {
     InvestProposalRepository investProposalRepository;
-
+    CorpCodeRepository corpCodeRepository;
     @Autowired
-    InvestProposalService(InvestProposalRepository investProposalRepository){
+    InvestProposalService(InvestProposalRepository investProposalRepository,CorpCodeRepository corpCodeRepository){
         this.investProposalRepository = investProposalRepository;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
-    public void proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
+    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
         //알림 서비스
-        System.out.println(investProposalSaveRequest.getTicker());
         investProposalRepository.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
+        return childSn;
     }
 
     public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn,int year,int month,short status){
@@ -40,15 +44,16 @@ public class InvestProposalService {
             investProposalList = investProposalRepository.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
 
         for(InvestProposal data : investProposalList){
-            System.out.println(data.getMessage());
             investProposalHistoryResponseList.add(
                 InvestProposalHistoryResponse.builder()
                     .CreateDate(new Date(data.getCreateDate().getTime()))
                     .proposeId(data.getId())
                     .tradingCode(data.getTradingCode())
                     .status(data.getStatus())
+                    .ticker(data.getTicker())
                     .parentAlias(String.valueOf(data.getParentSn()))
-                    .companyName(data.getTicker())
+                    .companyName(corpCodeRepository.findByStockCode(
+                        Integer.parseInt(data.getTicker())).get().getCorpName())
                     .message(data.getMessage())
                     .quantity(data.getQuantity())
                     .build()

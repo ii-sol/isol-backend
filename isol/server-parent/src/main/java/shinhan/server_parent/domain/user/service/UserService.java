@@ -1,15 +1,16 @@
 package shinhan.server_parent.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.ChildManage;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.repository.ChildManageRepository;
 import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
@@ -27,9 +28,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private ParentsRepository parentsRepository;
-    private ChildRepository childRepository;
-    private FamilyRepository familyRepository;
+    private final ParentsRepository parentsRepository;
+    private final ChildRepository childRepository;
+    private final FamilyRepository familyRepository;
+    private final ChildManageRepository childManageRepository;
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
@@ -40,7 +42,7 @@ public class UserService {
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
-            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return child.convertToUserFindOneResponse();
     }
@@ -63,11 +65,11 @@ public class UserService {
         }
     }
 
-    private static boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
+    private boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
         return updatedParents.getPhoneNum().equals(parentsUpdateRequest.getPhoneNum())
-            && updatedParents.getName().equals(parentsUpdateRequest.getName())
-            && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
-            && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
+                && updatedParents.getName().equals(parentsUpdateRequest.getName())
+                && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
+                && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
     public int disconnectFamily(long sn, long childSn) {
@@ -86,12 +88,40 @@ public class UserService {
         return family.getId();
     }
 
-    public boolean isFamily(int deletedId) {
-        return familyRepository.findById(deletedId).isPresent();
+    public ChildManageFindOneResponse getChildManage(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+
+        return childManage.convertToChildManageFIndOneResponse();
     }
 
-    public List<String> getPhones() {
-        return parentsRepository.findAllPhones();
+    public ChildManageFindOneResponse updateChildManage(ChildManageUpdateRequest childManageUpdateRequest) {
+        Child child = childRepository.findBySerialNum(childManageUpdateRequest.getChildSn())
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+
+        childManage.setBaseRate(childManageUpdateRequest.getBaseRate());
+        childManage.setInvestLimit(childManageUpdateRequest.getInvestLimit());
+        childManage.setLoanLimit(childManageUpdateRequest.getLoanLimit());
+
+        ChildManage updatedChildManage = childManageRepository.save(childManage);
+
+        if (isChildManageUpdated(childManageUpdateRequest, updatedChildManage)) {
+            return updatedChildManage.convertToChildManageFIndOneResponse();
+        } else {
+            throw new InternalError("아이 관리 정보 변경이 실패하였습니다.");
+        }
+    }
+
+    private boolean isChildManageUpdated(ChildManageUpdateRequest childManageUpdateRequest, ChildManage updatedChildManage) {
+        return childManageUpdateRequest.getBaseRate() == updatedChildManage.getBaseRate()
+                && childManageUpdateRequest.getInvestLimit() == updatedChildManage.getInvestLimit()
+                && childManageUpdateRequest.getLoanLimit() == updatedChildManage.getLoanLimit();
     }
 
     public ParentsFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
@@ -106,7 +136,7 @@ public class UserService {
         return parentsRepository.findByPhoneNum(phoneFindRequest.getPhoneNum()).isEmpty();
     }
 
-    public ParentsFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
+    public ParentsFindOneResponse login(LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
         Parents parents = parentsRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), parents.getAccountInfo())) {

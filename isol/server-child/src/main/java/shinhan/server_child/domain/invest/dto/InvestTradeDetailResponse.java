@@ -11,6 +11,7 @@ public class InvestTradeDetailResponse {
     short quantity;
     int evaluationAmount;
     double profit;
+    String ticker;
     int profitAnsLossAmount;
     @Setter
     double holdingRatio;

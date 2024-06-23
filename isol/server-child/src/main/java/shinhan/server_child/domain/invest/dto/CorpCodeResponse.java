@@ -8,4 +8,10 @@ import lombok.Data;
 public class CorpCodeResponse {
     String companyName;
     boolean isMyStock;
+    String ticker;
+    boolean canTrading;
+    String currentPrice;
+    String changePrice;
+    String changeSign;
+    String changeRate;
 }

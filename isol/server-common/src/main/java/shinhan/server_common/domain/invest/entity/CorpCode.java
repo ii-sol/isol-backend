@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.entity;
+package shinhan.server_common.domain.invest.entity;
 
 
 import jakarta.persistence.Entity;

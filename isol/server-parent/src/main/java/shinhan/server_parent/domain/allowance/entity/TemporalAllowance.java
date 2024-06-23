@@ -20,13 +20,11 @@ public class TemporalAllowance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "parents_sn", referencedColumnName = "serial_num")
-    private Parents parents;
+    @Column(name = "parents_sn")
+    private Long parentsSerialNumber;
 
-    @OneToOne
-    @JoinColumn(name = "child_sn", referencedColumnName = "serial_num")
-    private Child child;
+    @Column(name = "child_sn")
+    private Long childSerialNumber;
 
     private String content;
 
@@ -41,9 +39,9 @@ public class TemporalAllowance {
     private Integer status;
 
     @Builder
-    public TemporalAllowance(Parents parents, Child child, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
-        this.parents = parents;
-        this.child = child;
+    public TemporalAllowance(Long parentsSerialNumber, Long childSerialNumber, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+        this.parentsSerialNumber = parentsSerialNumber;
+        this.childSerialNumber = childSerialNumber;
         this.content = content;
         this.price = price;
         this.createDate = createDate;
