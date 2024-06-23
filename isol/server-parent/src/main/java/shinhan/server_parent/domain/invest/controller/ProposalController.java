@@ -1,9 +1,7 @@
-package shinhan.server_child.domain.invest.controller;
-
+package shinhan.server_parent.domain.invest.controller;
 
 import jakarta.security.auth.message.AuthException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
-import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
-import shinhan.server_child.domain.invest.service.InvestProposalService;
-import shinhan.server_child.domain.user.service.UserService;
-import shinhan.server_common.domain.user.dto.ParentsFindOneResponse;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_parent.domain.user.service.UserService;
 
-@RestController
 @Slf4j
 @RequestMapping("/proposal")
+@RestController
 public class ProposalController {
 
     InvestProposalService investProposalService;
@@ -45,7 +39,7 @@ public class ProposalController {
     @GetMapping("/invest/history/{status}")
     public ApiUtils.ApiResult getInvestProposal(@RequestParam("year") int year,
         @RequestParam("month") int month,@PathVariable("status") short status
-        ) throws AuthException {
+    ) throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
         Map<Long,String> family = new HashMap<>();
         for(FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo())
@@ -69,7 +63,7 @@ public class ProposalController {
     //투자 제안하기
     @PostMapping("/invest/{psn}")
     public ApiUtils.ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
-        InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
+    InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         boolean checkParent = false;
         for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
