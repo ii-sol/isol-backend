@@ -1,10 +1,7 @@
 package shinhan.server_child.domain.mission.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Check;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
@@ -39,6 +36,7 @@ public class Mission {
     private Timestamp dueDate;
     @Column(name = "complete_date", columnDefinition = "TIMESTAMP")
     private Timestamp completeDate;
+    @Setter
     @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private int status;
 

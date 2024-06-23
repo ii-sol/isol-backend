@@ -10,7 +10,6 @@ import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.entity.Mission;
 import shinhan.server_child.domain.mission.repository.MissionRepository;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,5 +72,22 @@ public class MissionService {
                 .build();
 
         return missionRepository.save(mission).convertToMissionFindOneResponse();
+    }
+
+    public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) {
+        Mission mission = missionRepository.findById(missionAnswerSaveRequest.getId())
+                .orElseThrow(() -> new NoSuchElementException("미션이 존재하지 않습니다."));
+
+        if (missionAnswerSaveRequest.isAnswer()) {
+            if (mission.getStatus() == 3) {
+                mission.setStatus(6);
+                missionRepository.save(mission).convertToMissionFindOneResponse();
+            }
+        } else if (mission.getStatus() == 2 || mission.getStatus() == 3) {
+            mission.setStatus(5);
+            return missionRepository.save(mission).convertToMissionFindOneResponse();
+        }
+
+        throw new RuntimeException("미션 응답에 대해 반영되지 않았습니다.");
     }
 }

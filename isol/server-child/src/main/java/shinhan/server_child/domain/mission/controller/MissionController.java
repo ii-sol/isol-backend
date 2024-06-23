@@ -143,4 +143,20 @@ public class MissionController {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("미션을 생성할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
+
+    @PutMapping("")
+    public ApiUtils.ApiResult updateMission(@Valid @RequestBody MissionAnswerSaveRequest missionAnswerSaveRequest, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        if(userInfo.getSn() == missionAnswerSaveRequest.getChildSn()){
+            if (isMyFamily(missionAnswerSaveRequest.getParentsSn())) {
+                MissionFindOneResponse mission = missionService.updateMission(missionAnswerSaveRequest);
+
+                return success(mission);
+            }
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("미션을 생성할 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
 }
