@@ -12,7 +12,6 @@ import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_common.domain.invest.entity.InvestProposal;
 import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
-import shinhan.server_common.domain.invest.repository.InvestProposalRepository;
 import shinhan.server_common.domain.invest.repository.InvestProposalResponseRepository;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.global.exception.CustomException;
@@ -21,13 +20,12 @@ import shinhan.server_common.global.exception.ErrorCode;
 @Service
 @Transactional
 public class InvestProposalService {
-    InvestProposalRepository investProposalRepository;
+
     CorpCodeRepository corpCodeRepository;
     InvestProposalResponseRepository investProposalResponseRepository;
     @Autowired
-    InvestProposalService(InvestProposalRepository investProposalRepository,CorpCodeRepository corpCodeRepository
+    InvestProposalService(CorpCodeRepository corpCodeRepository
     ,InvestProposalResponseRepository investProposalResponseRepository){
-        this.investProposalRepository = investProposalRepository;
         this.corpCodeRepository = corpCodeRepository;
         this.investProposalResponseRepository = investProposalResponseRepository;
     }
