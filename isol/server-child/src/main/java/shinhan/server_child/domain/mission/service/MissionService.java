@@ -27,8 +27,15 @@ public class MissionService {
         return mission.convertToMissionFindOneResponse();
     }
 
-    public List<MissionFindOneResponse> getOngoingMissions(long childSn, long parentsSn, int s1, int s2) {
-        List<Mission> missions = missionRepository.findOngoingMissions(childSn, parentsSn, s1, s2);
+    public List<MissionFindOneResponse> getMissions(long childSn, long parentsSn, int s1, int s2) {
+        List<Mission> missions = missionRepository.findMissions(childSn, parentsSn, s1, s2);
+        return missions.stream()
+                .map(Mission::convertToMissionFindOneResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<MissionFindOneResponse> getMissions(long childSn, long parentsSn, int s) {
+        List<Mission> missions = missionRepository.findMissions(childSn, parentsSn, s);
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
