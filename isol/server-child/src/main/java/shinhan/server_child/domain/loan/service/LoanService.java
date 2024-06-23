@@ -67,4 +67,10 @@ public class LoanService {
     public LoanDto findOne(int loanId) {
         return loanCustomRepository.findLoanById(loanId);
     }
+
+    public int findCompleteLoanCount(Long childId){
+        return loanCustomRepository.findCompleteLoanCount(childId);
+    }
+
+
 }

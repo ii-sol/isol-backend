@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.domain.account.service.AccountService;
 import shinhan.server_common.domain.user.dto.*;
@@ -29,6 +30,8 @@ public class UserController {
     private UserService userService;
     private AccountService accountService;
     private JwtService jwtService;
+    private LoanService loanService;
+
 
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
@@ -128,10 +131,16 @@ public class UserController {
     public ApiUtils.ApiResult getScore(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
+        long childId = jwtService.getUserInfo().getSn();
+
         ChildFindOneResponse user = userService.getChild(userInfo.getSn());
 
+        int score = user.getScore();
+
+        score =+ (5 * loanService.findCompleteLoanCount(childId));
+
         if (user != null) {
-            return success(user.getScore());
+            return success(score);
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
@@ -145,8 +154,8 @@ public class UserController {
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
-    @GetMapping("/users/child-manage/")
-    public ApiUtils.ApiResult getChildManage(HttpServletResponse response) throws Exception {
+    @GetMapping("/users/child-manage")
+    public ApiUtils.ApiResult getChildManage() throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.getChildManage(userInfo.getSn()));
