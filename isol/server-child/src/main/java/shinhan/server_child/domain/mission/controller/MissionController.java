@@ -18,7 +18,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/auth/missions")
+@RequestMapping("/missions")
 public class MissionController {
 
     private final MissionService missionService;
@@ -27,17 +27,19 @@ public class MissionController {
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
         UserInfoResponse userInfo = jwtService.getUserInfo();
-        long sn = userInfo.getSn();
 
         MissionFindOneResponse mission = missionService.getMission(id);
-        if (isMissionOwner(mission, sn)) {
+        if (isMissionOwner(mission)) {
             throw new AuthException("미션을 조회할 수 권한이 없습니다.");
         }
 
         return success(mission);
     }
 
-    private boolean isMissionOwner(MissionFindOneResponse mission, long sn) {
+    private boolean isMissionOwner(MissionFindOneResponse mission) throws AuthException {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+        long sn = userInfo.getSn();
+
         return mission.getChildSn() != sn && mission.getParentsSn() != sn;
     }
 }
