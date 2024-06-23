@@ -68,7 +68,7 @@ public class MissionService {
                 .price(missionSaveRequest.getPrice())
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .dueDate(missionSaveRequest.getDueDate())
-                .status(1)
+                .status(2)
                 .build();
 
         return missionRepository.save(mission).convertToMissionFindOneResponse();
