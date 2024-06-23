@@ -16,8 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
-import shinhan.server_common.global.security.Secret;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -31,14 +30,15 @@ public class JwtService {
     private static final String TOKEN_TYPE = "JWT";
     private ObjectMapper objectMapper;
 
-    private String createToken(long sn, Integer profileId, List<FamilyInfoResponse> familyInfo, long expirationTime) {
+    private String createToken(UserInfoResponse userInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder().header()
                 .add("typ", TOKEN_TYPE)
                 .and()
-                .claim("profileId", profileId)
-                .claim("sn", sn)
-                .claim("familyInfo", familyInfo)
+                .claim("sn", userInfo.getSn())
+                .claim("name", userInfo.getName())
+                .claim("profileId", userInfo.getProfileId())
+                .claim("familyInfo", userInfo.getFamilyInfo())
                 .encodePayload(true)
                 .issuedAt(now)
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -49,11 +49,11 @@ public class JwtService {
     }
 
     public String createAccessToken(UserInfoResponse userInfoResponse) {
-        return createToken(userInfoResponse.getSn(), userInfoResponse.getProfileId(), userInfoResponse.getFamilyInfo(), ACCESS_TOKEN_EXPIRATION_TIME);
+        return createToken(userInfoResponse, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
     public String createRefreshToken(long sn) {
-        return createToken(sn, null, null, REFRESH_TOKEN_EXPIRATION_TIME);
+        return createToken(UserInfoResponse.builder().sn(sn).build(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() throws ExpiredJwtException, NullPointerException {
@@ -105,13 +105,14 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
-        int profileId = claims.getPayload().get("profileId", Integer.class);
+        String name = claims.getPayload().get("name", String.class);
+        Integer profileId = claims.getPayload().get("profileId", Integer.class);
 
         TypeReference<List<FamilyInfoResponse>> typeFamilyInfo = new TypeReference<List<FamilyInfoResponse>>() {
         };
         List<FamilyInfoResponse> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
 
-        return new UserInfoResponse(sn, profileId, familyInfo);
+        return UserInfoResponse.builder().sn(sn).name(name).profileId(profileId).familyInfo(familyInfo).build();
     }
 
     public Authentication getAuthentication(String token) throws AuthException, ExpiredJwtException {
@@ -127,14 +128,9 @@ public class JwtService {
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken() {
+    public void sendAccessToken(String accessToken) {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-        response.setHeader("Authorization", getAccessToken());
-        response.setHeader("Refresh-Token", getRefreshToken());
-    }
-
-    public void sendAccessToken(HttpServletResponse httpServletResponse, String accessToken) {
-        httpServletResponse.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Authorization", "Bearer " + accessToken);
     }
 
     public boolean isTokenExpired(String token) {
@@ -149,5 +145,9 @@ public class JwtService {
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             return true;
         }
+    }
+
+    public boolean isMyFamily(long familySn) throws Exception {
+        return getUserInfo().getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 }
