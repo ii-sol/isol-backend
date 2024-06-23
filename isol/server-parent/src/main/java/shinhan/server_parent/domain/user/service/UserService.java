@@ -72,7 +72,7 @@ public class UserService {
                 && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
-    public int disconnectFamily(long sn, long childSn) {
+    public void disconnectFamily(long sn, long childSn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -84,8 +84,6 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
-
-        return family.getId();
     }
 
     public ChildManageFindOneResponse getChildManage(long childSn) {
@@ -149,7 +147,7 @@ public class UserService {
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findChildInfo(sn)
                 .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
+                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
                 .collect(Collectors.toList());
     }
 }

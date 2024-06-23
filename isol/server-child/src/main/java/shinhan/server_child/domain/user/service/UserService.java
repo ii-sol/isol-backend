@@ -84,7 +84,7 @@ public class UserService {
         return family.getId();
     }
 
-    public int disconnectFamily(long sn, long parentsSn) {
+    public void disconnectFamily(long sn, long parentsSn) {
         Child child = childRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -96,8 +96,6 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
-
-        return family.getId();
     }
 
     public boolean isFamily(int id) {
@@ -154,7 +152,7 @@ public class UserService {
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findParentsInfo(sn)
                 .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
+                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
                 .collect(Collectors.toList());
     }
 
