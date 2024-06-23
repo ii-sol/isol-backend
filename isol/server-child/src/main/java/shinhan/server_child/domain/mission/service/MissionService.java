@@ -10,6 +10,7 @@ import shinhan.server_child.domain.mission.repository.MissionRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,6 +28,9 @@ public class MissionService {
     }
 
     public List<MissionFindOneResponse> getOngoingMissions(long childSn, long parentsSn, int s1, int s2) {
-        return missionRepository.findOngoingMissions(childSn, parentsSn, s1, s2);
+        List<Mission> missions = missionRepository.findOngoingMissions(childSn, parentsSn, s1, s2);
+        return missions.stream()
+                .map(Mission::convertToMissionFindOneResponse)
+                .collect(Collectors.toList());
     }
 }
