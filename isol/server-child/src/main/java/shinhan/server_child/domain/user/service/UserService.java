@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.ChildManage;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.repository.ChildManageRepository;
 import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
@@ -26,9 +28,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private ChildRepository childRepository;
-    private ParentsRepository parentsRepository;
-    private FamilyRepository familyRepository;
+    private final ChildRepository childRepository;
+    private final ParentsRepository parentsRepository;
+    private final FamilyRepository familyRepository;
+    private final ChildManageRepository childManageRepository;
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
@@ -81,7 +84,7 @@ public class UserService {
         return family.getId();
     }
 
-    public int disconnectFamily(long sn, long parentsSn) {
+    public void disconnectFamily(long sn, long parentsSn) {
         Child child = childRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -93,13 +96,22 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
-
-        return family.getId();
     }
 
     public boolean isFamily(int id) {
         return familyRepository.findById(id).isPresent();
     }
+
+    public ChildManageFindOneResponse getChildManage(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+
+        return childManage.convertToChildManageFIndOneResponse();
+    }
+
 
     public List<ContactsFindOneInterface> getContacts() {
         return parentsRepository.findAllContacts();
@@ -140,7 +152,21 @@ public class UserService {
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findParentsInfo(sn)
                 .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
+                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public String getParentsAlias(long childSn, long parentsSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        Parents parents = parentsRepository.findBySerialNum(parentsSn)
+                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+
+        Family family = familyRepository
+                .findByChildAndParents(child, parents)
+                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
+
+        return family.getParentsAlias();
     }
 }

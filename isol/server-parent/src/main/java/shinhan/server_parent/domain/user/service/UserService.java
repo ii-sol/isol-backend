@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private ParentsRepository parentsRepository;
-    private ChildRepository childRepository;
-    private FamilyRepository familyRepository;
-    private ChildManageRepository childManageRepository;
+    private final ParentsRepository parentsRepository;
+    private final ChildRepository childRepository;
+    private final FamilyRepository familyRepository;
+    private final ChildManageRepository childManageRepository;
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
@@ -72,7 +72,7 @@ public class UserService {
                 && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
     }
 
-    public int disconnectFamily(long sn, long childSn) {
+    public void disconnectFamily(long sn, long childSn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -84,12 +84,6 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
-
-        return family.getId();
-    }
-
-    public boolean isFamily(int id) {
-        return familyRepository.findById(id).isPresent();
     }
 
     public ChildManageFindOneResponse getChildManage(long childSn) {
@@ -153,7 +147,7 @@ public class UserService {
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findChildInfo(sn)
                 .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getName()))
+                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
                 .collect(Collectors.toList());
     }
 }

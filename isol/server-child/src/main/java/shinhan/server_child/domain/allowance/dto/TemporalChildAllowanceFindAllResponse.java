@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TemporalChildAllowanceFindAllResponse {
-
+    private int id;
     private int amount;
     private String name;
     private int status;
@@ -21,6 +21,7 @@ public class TemporalChildAllowanceFindAllResponse {
 
     public static TemporalChildAllowanceFindAllResponse of(TemporalAllowance temporalAllowance, String name){
         return TemporalChildAllowanceFindAllResponse.builder()
+                .id(temporalAllowance.getId())
                 .amount(temporalAllowance.getPrice())
                 .name(name)
                 .status(temporalAllowance.getStatus())
