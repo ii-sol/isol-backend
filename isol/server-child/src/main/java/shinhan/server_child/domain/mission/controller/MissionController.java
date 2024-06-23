@@ -80,7 +80,7 @@ public class MissionController {
     public ApiUtils.ApiResult getMissions(@PathVariable("parents-sn") long parentsSn, @PathVariable("status") int status, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (isMyFamily(parentsSn)) {
+        if (jwtService.isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
 
             if (status >= 1 && status <= 6) {
