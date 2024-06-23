@@ -97,6 +97,7 @@ public class ProposalController {
     public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,
         @RequestBody ResponseInvestProposal responseInvestProposal)
         throws AuthException {
+        System.out.println(responseInvestProposal.getMessage());
         Long psn = jwtService.getUserInfo().getSn();
         boolean b = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
             responseInvestProposal);

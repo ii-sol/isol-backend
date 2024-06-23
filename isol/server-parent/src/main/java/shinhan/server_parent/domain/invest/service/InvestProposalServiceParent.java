@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +79,8 @@ public class InvestProposalServiceParent {
         Optional<InvestProposal> resultInvestProposal = acceptInvestProposalRepositoryParent.findById(
             proposalId);
 
-        if (resultInvestProposal.orElseThrow(
-            () -> new CustomException(ErrorCode.FOUND_NOT_INVEST_PROPOSAL)).getParentSn() != psn) {
+        if (!Objects.equals(resultInvestProposal.orElseThrow(
+            () -> new CustomException(ErrorCode.FOUND_NOT_INVEST_PROPOSAL)).getParentSn(), psn)) {
             throw new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL);
         }
         if (proposal.isAccept()) {
