@@ -100,8 +100,6 @@ public class UserController {
 
     @GetMapping("/users/child-manage/{child-sn}")
     public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
         if (isMyFamily(childSn)) {
             return success(userService.getChildManage(childSn));
         }

@@ -141,6 +141,13 @@ public class UserController {
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
+    @GetMapping("/users/child-manage/")
+    public ApiUtils.ApiResult getChildManage(HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        return success(userService.getChildManage(userInfo.getSn()));
+    }
+
     @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
