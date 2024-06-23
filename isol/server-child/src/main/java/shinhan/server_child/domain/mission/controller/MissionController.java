@@ -50,7 +50,7 @@ public class MissionController {
     public ApiUtils.ApiResult getOngoingMissions(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (isMyFamily(parentsSn)) {
+        if (jwtService.isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
 
             List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, 3, 6);
@@ -61,17 +61,11 @@ public class MissionController {
         return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
-    private boolean isMyFamily(long familySn) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
-        return userInfo.getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
-    }
-
     @GetMapping("/{parents-sn}/pending")
     public ApiUtils.ApiResult getPendingMissions(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (isMyFamily(parentsSn)) {
+        if (jwtService.isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
 
             List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, 1, 2);
@@ -112,7 +106,7 @@ public class MissionController {
 
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (isMyFamily(parentsSn)) {
+        if (jwtService.isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
 
             if (status == null || status == 4 || status == 5) {
@@ -133,7 +127,7 @@ public class MissionController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (userInfo.getSn() == missionSaveRequest.getChildSn()) {
-            if (isMyFamily(missionSaveRequest.getParentsSn())) {
+            if (jwtService.isMyFamily(missionSaveRequest.getParentsSn())) {
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
 
                 return success(mission);
@@ -149,7 +143,7 @@ public class MissionController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (userInfo.getSn() == missionAnswerSaveRequest.getChildSn()) {
-            if (isMyFamily(missionAnswerSaveRequest.getParentsSn())) {
+            if (jwtService.isMyFamily(missionAnswerSaveRequest.getParentsSn())) {
                 MissionFindOneResponse mission = missionService.updateMission(missionAnswerSaveRequest);
 
                 return success(mission);
