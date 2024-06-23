@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
-import shinhan.server_child.domain.mission.dto.MissionFindRequest;
 import shinhan.server_child.domain.mission.entity.Mission;
 import shinhan.server_child.domain.mission.repository.MissionRepository;
 
@@ -27,7 +26,7 @@ public class MissionService {
         return mission.convertToMissionFindOneResponse();
     }
 
-    public List<MissionFindOneResponse> getMissions(MissionFindRequest missionFindRequest) {
-        return missionRepository.findOngoingMissions()
+    public List<MissionFindOneResponse> getOngoingMissions(long childSn, long parentsSn, int s1, int s2) {
+        return missionRepository.findOngoingMissions(childSn, parentsSn, s1, s2);
     }
 }

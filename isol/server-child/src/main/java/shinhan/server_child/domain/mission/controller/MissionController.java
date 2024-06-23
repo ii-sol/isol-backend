@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
-import shinhan.server_child.domain.mission.dto.MissionFindRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
@@ -50,9 +49,10 @@ public class MissionController {
 
         if (isMyFamily(parentsSn)) {
             List<Integer> statuses = List.of(3, 6);
-            MissionFindRequest missionFindRequest = new MissionFindRequest(userInfo.getSn(), parentsSn, statuses);
+            int s1 = 3, s2 = 6;
+            long childSn = userInfo.getSn();
 
-            List<MissionFindOneResponse> missions = missionService.getMissions(missionFindRequest);
+            List<MissionFindOneResponse> missions = missionService.getOngoingMissions(childSn, parentsSn, s1, s2);
         }
 
         return null;
