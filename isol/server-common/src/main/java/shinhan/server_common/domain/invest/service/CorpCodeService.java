@@ -1,15 +1,15 @@
-package shinhan.server_child.domain.invest.service;
+package shinhan.server_common.domain.invest.service;
 
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.invest.dto.CorpCodeResponse;
+import shinhan.server_common.domain.invest.dto.CorpCodeResponse;
 import shinhan.server_common.domain.invest.entity.CorpCode;
 import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-import shinhan.server_child.domain.invest.repository.StockListRepository;
+import shinhan.server_common.domain.invest.repository.StockListRepository;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 
 @Service

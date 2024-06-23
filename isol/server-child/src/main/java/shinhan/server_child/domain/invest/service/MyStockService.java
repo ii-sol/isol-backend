@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_child.domain.invest.dto.MyStockListResponse;
-import shinhan.server_child.domain.invest.entity.MyStockList;
-import shinhan.server_child.domain.invest.repository.StockListRepository;
+import shinhan.server_common.domain.invest.dto.MyStockListResponse;
+import shinhan.server_common.domain.invest.entity.MyStockList;
+import shinhan.server_common.domain.invest.repository.StockListRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.service.StockService;
 
@@ -21,6 +21,7 @@ public class MyStockService {
         this.stockService = stockService;
     }
 
+    //공통
     public MyStockListResponse findMyStocks(Long userSn){
         List<MyStockList> result = stockListRepository.findAllByUserSn(userSn);
         System.out.println(result.size());
@@ -33,14 +34,14 @@ public class MyStockService {
             stockFindCurrentResponseList);
         return myStockListResponse;
     }
-
+    //공통
     @Transactional
     public boolean delete(Long userSn,String ticker){
         stockListRepository.deleteByUserSnAndTicker(userSn,ticker);
         return true;
     }
 
-
+    //부모
     public void saveStockList(Long child_sn,String ticker){
         MyStockList stockList = new MyStockList(child_sn,ticker);
         stockListRepository.save(stockList);

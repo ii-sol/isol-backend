@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.service;
+package shinhan.server_common.domain.invest.service;
 
 import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_MONEY;
 
@@ -9,19 +9,18 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_child.domain.invest.dto.InvestStockRequest;
-import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
-import shinhan.server_child.domain.invest.dto.PortfolioResponse;
-import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
-import shinhan.server_child.domain.invest.entity.Portfolio;
-import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.account.entity.Account;
+import shinhan.server_common.domain.invest.dto.InvestStockRequest;
+import shinhan.server_common.domain.invest.dto.InvestTradeDetailResponse;
+import shinhan.server_common.domain.invest.dto.PortfolioResponse;
+import shinhan.server_common.domain.invest.dto.StockHistoryResponse;
+import shinhan.server_common.domain.invest.entity.Portfolio;
+import shinhan.server_common.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-import shinhan.server_child.domain.invest.repository.PortfolioRepository;
-import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
+import shinhan.server_common.domain.invest.repository.PortfolioRepository;
+import shinhan.server_common.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.repository.StockRepository;
-import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.utils.account.AccountUtils;
 
@@ -47,7 +46,7 @@ public class InvestService {
         this.accountUtils = accountUtils;
     }
 
-    public List<StockHistoryResponse> getStockHisttory(String account,short status,int year,int month){
+    public List<StockHistoryResponse> getStockHistory(String account,short status,int year,int month){
         List<StockHistory> result;
         LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);

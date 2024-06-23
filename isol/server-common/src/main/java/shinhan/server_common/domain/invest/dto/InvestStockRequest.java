@@ -1,8 +1,8 @@
-package shinhan.server_child.domain.invest.dto;
+package shinhan.server_common.domain.invest.dto;
 
 import lombok.Getter;
-import shinhan.server_child.domain.invest.entity.Portfolio;
-import shinhan.server_child.domain.invest.entity.StockHistory;
+import shinhan.server_common.domain.invest.entity.Portfolio;
+import shinhan.server_common.domain.invest.entity.StockHistory;
 
 @Getter
 public class InvestStockRequest {

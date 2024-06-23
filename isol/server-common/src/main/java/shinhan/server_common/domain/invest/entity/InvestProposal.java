@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.entity;
+package shinhan.server_common.domain.invest.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "invest_proposal")
@@ -41,7 +42,7 @@ public class InvestProposal {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     private Timestamp createDate;
-
+    @Setter
     @Column(name = "status", nullable = false)
     private Short status = 1;
 

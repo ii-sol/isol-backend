@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.MyStockListResponse;
+import shinhan.server_common.domain.invest.dto.MyStockListResponse;
 import shinhan.server_child.domain.invest.service.MyStockService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiResult;
