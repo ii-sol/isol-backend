@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
 import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
 import shinhan.server_child.domain.invest.entity.Portfolio;
 import shinhan.server_child.domain.invest.entity.StockHistory;
+import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_child.domain.invest.repository.PortfolioRepository;
 import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
@@ -19,23 +21,28 @@ import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
+import shinhan.server_common.global.utils.account.AccountUtils;
 
 @Service
+@Transactional
 public class InvestService {
     StockRepository stockRepository;
     StockService stockService;
     PortfolioRepository portfolioRepository;
     StockHistoryRepository stockHistoryRepository;
 
+    AccountUtils accountUtils;
+
     CorpCodeRepository corpCodeRepository;
     InvestService(StockRepository stockRepository,PortfolioRepository portfolioRepository, StockHistoryRepository stockHistoryRepository
-    ,StockService stockService, CorpCodeRepository corpCodeRepository
+    ,StockService stockService, CorpCodeRepository corpCodeRepository , AccountUtils accountUtils
     ){
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
         this.stockHistoryRepository = stockHistoryRepository;
         this.stockService = stockService;
         this.corpCodeRepository = corpCodeRepository;
+        this.accountUtils = accountUtils;
     }
 
     public List<StockHistoryResponse> getStockHisttory(String account,short status){
@@ -70,16 +77,17 @@ public class InvestService {
         for(Portfolio data : portfolioList){
             StockFindCurrentResponse stockCurrent2 = stockService.getStockCurrent2(
                 data.getTicker());
-            System.out.println(stockCurrent2.getCurrentPrice());
             double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
             int averagePrice = data.getAveragePrice();
             String companyName = stockCurrent2.getCompanyName();
+            System.out.println(companyName);
             double profit = (double) currentPrice / averagePrice*100 -100;
             int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
 
             investTradeDetailResponseList.add(
                 InvestTradeDetailResponse.builder()
                     .CompanyName(companyName)
+                    .ticker(data.getTicker())
                     .evaluationAmount((int) currentPrice)
                     .profit(profit)
                     .quantity(data.getQuantity())
@@ -87,7 +95,7 @@ public class InvestService {
                     .build()
             );
             totalEvaluationAmount+=currentPrice*data.getQuantity();
-            totalPurchaseAmount=+averagePrice*data.getQuantity();
+            totalPurchaseAmount+=averagePrice*data.getQuantity();
         }
         for(InvestTradeDetailResponse data : investTradeDetailResponseList){
             data.setHoldingRatio((double) (data.getEvaluationAmount() * data.getQuantity()) /totalEvaluationAmount);
@@ -111,16 +119,14 @@ public class InvestService {
 
 
     boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
-        //출금
+        Account userAccount = accountUtils.getAccountByAccountNum(account_num);
+        Account systemInvestAccount = accountUtils.getAccountByAccountNum("300");
 
-        //판매 로직
-//        StockDuraionPriceOutput stockDuraionPriceOutput = stockService.
-            //stockRepository.getApiCurrentPrice(investStockRequest.getTicker(),"0");
+        //계좌 상한선에 맞춰서 + 메세지 코드 변경
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
             investStockRequest.getTicker());
         int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-
-        //구매 이력
+        accountUtils.transferMoneyByAccount(userAccount,systemInvestAccount,currentPrice* investStockRequest.getQuantity(),1);
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
         Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
             investStockRequest.getTicker());
@@ -138,33 +144,40 @@ public class InvestService {
             portfolioRepository.save(prePortfolio.get());
             return true;
         }
-//        portfolioRepository.save();
-        //포트폴리오
-
     }
     boolean sellStock(String account_num, InvestStockRequest investStockRequest){
-//        StockDuraionPriceOutput stockDuraionPriceOutput = stockRepository.getApiCurrentPrice(
-//            investStockRequest.getTicker(),"0");
+        Account userAccount = accountUtils.getAccountByAccountNum(account_num);
+        Account systempInvestAccount = accountUtils.getAccountByAccountNum("300");
+
+
+        //계좌 상한선에 맞춰서 + 메세지 코드 변경
+
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
             investStockRequest.getTicker());
         int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-        
-
         stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
-        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
-            investStockRequest.getTicker());
+        Optional<Portfolio> prePortfolio = Optional.ofNullable(
+            portfolioRepository.findByAccountNumAndTicker(account_num,
+                investStockRequest.getTicker()).orElseThrow(() -> {
+                return new CustomException(FAILED_SHORTAGE_MONEY);
+            }));
         if(prePortfolio.isEmpty()){
-//            portfolioRepository.save(investStockReqDTO.toEntityPortfolio(account_num,currentPrice));
-            throw new CustomException( FAILED_SHORTAGE_MONEY);
+            throw new CustomException(FAILED_SHORTAGE_MONEY);
         } else if (prePortfolio.get().getQuantity()< investStockRequest.getQuantity()) {
-            throw new CustomException( FAILED_SHORTAGE_MONEY);
+            throw new CustomException(FAILED_SHORTAGE_MONEY);
         }
         else{
             short tempQuantity = prePortfolio.get().getQuantity();
             tempQuantity-= investStockRequest.getQuantity();
-            prePortfolio.get().setQuantity(tempQuantity);
-            portfolioRepository.save(prePortfolio.get());
-            //입금 로직
+            Long id = prePortfolio.get().getId();
+            if(tempQuantity==0)
+                portfolioRepository.deleteById(id);
+            else
+            {
+                prePortfolio.get().setQuantity(tempQuantity);
+                portfolioRepository.save(prePortfolio.get());
+            }
+            accountUtils.transferMoneyByAccount(systempInvestAccount,userAccount,currentPrice*investStockRequest.getQuantity(),1);
 
             return true;
         }

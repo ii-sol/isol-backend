@@ -14,6 +14,7 @@ public class InvestProposalHistoryResponse {
     short quantity;
     short tradingCode;
     String message;
+    String ticker;
     Date CreateDate;
     @Setter
     String parentAlias;

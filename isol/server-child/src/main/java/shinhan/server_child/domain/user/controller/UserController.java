@@ -75,12 +75,14 @@ public class UserController {
         if (userService.isFamily(createdId)) {
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
 
+            UserInfoResponse userInfoResponse = new UserInfoResponse(userInfo.getSn(),userInfo.getProfileId(), myFamilyInfo);
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createAccessToken(userInfoResponse),
                     jwtService.createRefreshToken(userInfo.getSn()));
+
             jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
+            return success(userInfoResponse);
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return error("가족 관계 생성에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -92,16 +94,18 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (isMyFamily(parentsSn)) {
-            int deletedId = userService.disconnectFamily(userInfo.getSn(), parentsSn);
+            userService.disconnectFamily(userInfo.getSn(), parentsSn);
 
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
 
+            UserInfoResponse userInfoResponse = new UserInfoResponse(userInfo.getSn(),userInfo.getProfileId(), myFamilyInfo);
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createAccessToken(userInfoResponse),
                     jwtService.createRefreshToken(userInfo.getSn()));
+
             jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
+            return success(userInfoResponse);
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -141,6 +145,13 @@ public class UserController {
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
+    @GetMapping("/users/child-manage")
+    public ApiUtils.ApiResult getChildManage(HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        return success(userService.getChildManage(userInfo.getSn()));
+    }
+
     @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
@@ -178,10 +189,14 @@ public class UserController {
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfoResponse),
+                    jwtService.createRefreshToken(user.getSerialNumber()));
+
             jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));
+            return success(userInfoResponse);
         } catch (AuthException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return error("로그인에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -208,8 +223,14 @@ public class UserController {
             long sn = jwtService.getUserInfo(refreshToken).getSn();
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(sn);
 
-            String newAccessToken = jwtService.createAccessToken(sn, myFamilyInfo);
-            jwtService.sendAccessToken(response, newAccessToken);
+            ParentsFindOneResponse user = userService.getParents(sn);
+            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfoResponse),
+                    jwtService.createRefreshToken(user.getSerialNumber()));
+
+            jwtService.sendJwtToken(jwtTokenResponse);
+
             return success("Authorization이 새로 발급되었습니다.");
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

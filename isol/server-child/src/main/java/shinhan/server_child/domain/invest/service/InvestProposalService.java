@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_child.domain.invest.entity.InvestProposal;
@@ -14,6 +15,7 @@ import shinhan.server_child.domain.invest.repository.InvestProposalRepository;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 
 @Service
+@Transactional
 public class InvestProposalService {
     InvestProposalRepository investProposalRepository;
     CorpCodeRepository corpCodeRepository;
@@ -23,10 +25,10 @@ public class InvestProposalService {
         this.corpCodeRepository = corpCodeRepository;
     }
 
-    public void proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
+    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
         //알림 서비스
-        System.out.println(investProposalSaveRequest.getTicker());
         investProposalRepository.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
+        return childSn;
     }
 
     public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn,int year,int month,short status){
@@ -48,6 +50,7 @@ public class InvestProposalService {
                     .proposeId(data.getId())
                     .tradingCode(data.getTradingCode())
                     .status(data.getStatus())
+                    .ticker(data.getTicker())
                     .parentAlias(String.valueOf(data.getParentSn()))
                     .companyName(corpCodeRepository.findByStockCode(
                         Integer.parseInt(data.getTicker())).get().getCorpName())
@@ -55,7 +58,6 @@ public class InvestProposalService {
                     .quantity(data.getQuantity())
                     .build()
             );
-            System.out.println("asdsadasdasd");
         }
         return investProposalHistoryResponseList;
     }

@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class FamilyInfoResponse{
 
     private long sn;
+    private int profileId;
     private String name;
 }

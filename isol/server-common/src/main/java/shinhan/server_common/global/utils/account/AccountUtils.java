@@ -27,7 +27,6 @@ public class AccountUtils {
         if(senderAccount.getBalance() < amount){
             throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE);
         }
-
         //sender와 reciever 계좌 잔액 update
         updateBalance(senderAccount, senderAccount.getBalance()-amount);
         updateBalance(recieverAccount, recieverAccount.getBalance()+amount);
