@@ -2,11 +2,14 @@ package shinhan.server_child.domain.mission.controller;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
+import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
@@ -123,5 +126,21 @@ public class MissionController {
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("")
+    public ApiUtils.ApiResult createMission(@Valid @RequestBody MissionSaveRequest missionSaveRequest, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        if(userInfo.getSn() == missionSaveRequest.getChildSn()){
+            if (isMyFamily(missionSaveRequest.getParentsSn())) {
+                MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
+
+                return success(mission);
+            }
+        }
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return error("미션을 생성할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 }

@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.entity.Mission;
 import shinhan.server_child.domain.mission.repository.MissionRepository;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -53,5 +58,20 @@ public class MissionService {
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
+    }
+
+    public MissionFindOneResponse createMission(MissionSaveRequest missionSaveRequest) {
+
+        Mission mission = Mission.builder()
+                .childSn(missionSaveRequest.getChildSn())
+                .parentsSn(missionSaveRequest.getParentsSn())
+                .content(missionSaveRequest.getContent())
+                .price(missionSaveRequest.getPrice())
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
+                .dueDate(missionSaveRequest.getDueDate())
+                .status(1)
+                .build();
+
+        return missionRepository.save(mission).convertToMissionFindOneResponse();
     }
 }

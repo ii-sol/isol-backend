@@ -2,17 +2,21 @@ package shinhan.server_child.domain.mission.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Check(constraints = "status IN (1, 2, 3, 4, 5, 6)")
 @Table(name = "mission")
 public class Mission {
@@ -25,7 +29,7 @@ public class Mission {
     private long childSn;
     @Column(name = "parents_sn", nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private long parentsSn;
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 60)
     private String content;
     @Column(nullable = false, columnDefinition = "MEDIUMINT UNSIGNED")
     private int price;
