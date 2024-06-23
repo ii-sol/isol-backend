@@ -21,13 +21,12 @@ public class MonthlyAllowance {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "parents_sn", referencedColumnName = "serial_num")
-    private Parents parents;
 
-    @OneToOne
-    @JoinColumn(name = "child_sn", referencedColumnName = "serial_num")
-    private Child child;
+    @Column(name = "parents_sn")
+    private Long parentsSerialNumber;
+
+    @Column(name = "child_sn")
+    private Long childSerialNumber;
 
     private Integer price;
 
@@ -40,9 +39,9 @@ public class MonthlyAllowance {
     private Integer status;
 
     @Builder
-    public MonthlyAllowance(Parents parents, Child child, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
-        this.parents = parents;
-        this.child = child;
+    public MonthlyAllowance(Long parentsSerialNumber, Long childSerialNumber, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+        this.parentsSerialNumber = parentsSerialNumber;
+        this.childSerialNumber = childSerialNumber;
         this.price = price;
         this.createDate = createDate;
         this.dueDate = dueDate;

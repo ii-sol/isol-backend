@@ -12,16 +12,18 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class MonthlyAllowanceFindOneResponse {
+    private int id;
     private int amount;
     private String name;
     private int period;
     private LocalDateTime createDate;
     private LocalDateTime dueDate;
 
-    public static MonthlyAllowanceFindOneResponse of(MonthlyAllowance allowance, Integer period){
+    public static MonthlyAllowanceFindOneResponse of(MonthlyAllowance allowance, Integer period, String parentsName){
         return MonthlyAllowanceFindOneResponse.builder()
+                .id(allowance.getId())
                 .amount(allowance.getPrice())
-                .name(allowance.getParents().getName())
+                .name(parentsName)
                 .period(period)
                 .createDate(allowance.getCreateDate())
                 .dueDate(allowance.getDueDate())
