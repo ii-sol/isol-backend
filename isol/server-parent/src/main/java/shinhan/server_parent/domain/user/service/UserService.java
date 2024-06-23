@@ -1,7 +1,6 @@
 package shinhan.server_parent.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,10 +28,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private ParentsRepository parentsRepository;
-    private ChildRepository childRepository;
-    private FamilyRepository familyRepository;
-    private ChildManageRepository childManageRepository;
+    private final ParentsRepository parentsRepository;
+    private final ChildRepository childRepository;
+    private final FamilyRepository familyRepository;
+    private final ChildManageRepository childManageRepository;
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
@@ -87,10 +86,6 @@ public class UserService {
         familyRepository.delete(family.getId());
 
         return family.getId();
-    }
-
-    public boolean isFamily(int id) {
-        return familyRepository.findById(id).isPresent();
     }
 
     public ChildManageFindOneResponse getChildManage(long childSn) {

@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
+import shinhan.server_common.domain.user.entity.ChildManage;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.user.repository.ChildManageRepository;
 import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
@@ -26,9 +28,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-    private ChildRepository childRepository;
-    private ParentsRepository parentsRepository;
-    private FamilyRepository familyRepository;
+    private final ChildRepository childRepository;
+    private final ParentsRepository parentsRepository;
+    private final FamilyRepository familyRepository;
+    private final ChildManageRepository childManageRepository;
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
@@ -100,6 +103,17 @@ public class UserService {
     public boolean isFamily(int id) {
         return familyRepository.findById(id).isPresent();
     }
+
+    public ChildManageFindOneResponse getChildManage(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+
+        ChildManage childManage = childManageRepository.findByChild(child)
+                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+
+        return childManage.convertToChildManageFIndOneResponse();
+    }
+
 
     public List<ContactsFindOneInterface> getContacts() {
         return parentsRepository.findAllContacts();
