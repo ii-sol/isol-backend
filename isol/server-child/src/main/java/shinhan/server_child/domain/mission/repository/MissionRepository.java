@@ -1,4 +1,7 @@
 package shinhan.server_child.domain.mission.repository;
 
-public class MissionRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import shinhan.server_child.domain.mission.entity.Mission;
+
+public interface MissionRepository extends JpaRepository<Mission, Integer> {
 }
