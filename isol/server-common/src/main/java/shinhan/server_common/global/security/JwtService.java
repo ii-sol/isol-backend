@@ -31,18 +31,29 @@ public class JwtService {
     private static final String TOKEN_TYPE = "JWT";
     private ObjectMapper objectMapper;
 
-    private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
+    private String createToken(long sn, Integer profileId, List<FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
-        return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(
-            Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder().header()
+                .add("typ", TOKEN_TYPE)
+                .and()
+                .claim("profileId", profileId)
+                .claim("sn", sn)
+                .claim("familyInfo", familyInfo)
+                .encodePayload(true)
+                .issuedAt(now)
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(
+                        Secret.getJwtKey(),
+                        SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    public String createAccessToken(long serialNumber, List<FamilyInfoResponse> familyInfo) {
-        return createToken(serialNumber, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
+    public String createAccessToken(UserInfoResponse userInfoResponse) {
+        return createToken(userInfoResponse.getSn(), userInfoResponse.getProfileId(), userInfoResponse.getFamilyInfo(), ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(long serialNumber) {
-        return createToken(serialNumber, new ArrayList<>(), REFRESH_TOKEN_EXPIRATION_TIME);
+    public String createRefreshToken(long sn) {
+        return createToken(sn, null, null, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() throws ExpiredJwtException, NullPointerException {

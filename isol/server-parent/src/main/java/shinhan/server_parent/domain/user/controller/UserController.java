@@ -70,16 +70,18 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (isMyFamily(childSn)) {
-            int deletedId = userService.disconnectFamily(userInfo.getSn(), childSn);
+            userService.disconnectFamily(userInfo.getSn(), childSn);
 
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
 
+            UserInfoResponse userInfoResponse = new UserInfoResponse(userInfo.getSn(),userInfo.getProfileId(), myFamilyInfo);
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfo.getSn(), myFamilyInfo),
+                    jwtService.createAccessToken(userInfoResponse),
                     jwtService.createRefreshToken(userInfo.getSn()));
+
             jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success(new UserInfoResponse(userInfo.getSn(), myFamilyInfo));
+            return success(userInfoResponse);
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -100,8 +102,6 @@ public class UserController {
 
     @GetMapping("/users/child-manage/{child-sn}")
     public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
         if (isMyFamily(childSn)) {
             return success(userService.getChildManage(childSn));
         }
@@ -159,12 +159,14 @@ public class UserController {
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
+            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
             JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo),
+                    jwtService.createAccessToken(userInfoResponse),
                     jwtService.createRefreshToken(user.getSerialNumber()));
+
             jwtService.sendJwtToken(jwtTokenResponse);
 
-            return success(new UserInfoResponse(user.getSerialNumber(), myFamilyInfo));
+            return success(userInfoResponse);
         } catch (AuthException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return error("로그인에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -191,8 +193,14 @@ public class UserController {
             long sn = jwtService.getUserInfo(refreshToken).getSn();
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(sn);
 
-            String newAccessToken = jwtService.createAccessToken(sn, myFamilyInfo);
-            jwtService.sendAccessToken(response, newAccessToken);
+            ParentsFindOneResponse user = userService.getParents(sn);
+            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
+                    jwtService.createAccessToken(userInfoResponse),
+                    jwtService.createRefreshToken(user.getSerialNumber()));
+
+            jwtService.sendJwtToken(jwtTokenResponse);
+
             return success("Authorization이 새로 발급되었습니다.");
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
