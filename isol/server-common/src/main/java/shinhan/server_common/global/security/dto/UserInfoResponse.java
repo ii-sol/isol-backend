@@ -10,5 +10,6 @@ import java.util.List;
 public class UserInfoResponse {
 
     private long sn;
+    private int profileId;
     private List<FamilyInfoResponse> familyInfo;
 }
