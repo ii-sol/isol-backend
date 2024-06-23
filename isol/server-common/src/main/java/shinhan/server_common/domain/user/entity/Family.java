@@ -1,7 +1,10 @@
 package shinhan.server_common.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 
 @Entity
@@ -9,7 +12,7 @@ import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
+@Table(name = "family", uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
 public class Family {
 
     @Id
