@@ -8,8 +8,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import shinhan.server_child.domain.invest.repository.InvestProposalRepositoryChild;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
+import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_common.domain.invest.entity.InvestProposal;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
+import shinhan.server_common.global.exception.CustomException;
+import shinhan.server_common.global.exception.ErrorCode;
 
 @Service
 public class InvestProposalServiceChild {
@@ -52,4 +55,14 @@ public class InvestProposalServiceChild {
         return investProposalHistoryResponseList;
     }
 
+    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
+        //알림 서비스
+        investProposalRepositoryChild.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
+        return childSn;
+    }
+
+    public InvestProposal getProposalInvestDetail(int proposalId,Long childSn){
+        return investProposalRepositoryChild.findByIdAndChildSn(
+            proposalId, childSn).orElseThrow(()->new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
+    }
 }

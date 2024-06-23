@@ -33,7 +33,6 @@ import shinhan.server_parent.domain.user.service.UserService;
 @RestController
 @RequestMapping("/proposal")
 public class ProposalController {
-
     InvestProposalService investProposalService;
     UserService userService;
     StockService stockService;
@@ -77,21 +76,13 @@ public class ProposalController {
     //투자제안 상세보기
     @GetMapping("/invest/{proposalId}/{year}")
     public ApiResult getInvestProposalDetail(@PathVariable("proposalId") int proposalId,
-        @PathVariable("year") String yaer)
+        @PathVariable("year") String year)
         throws AuthException {
-        Map<Long, String> family = new HashMap<>();
-        for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
-            family.put(familyInfoResponse.getSn(), familyInfoResponse.getName());
-        }
-        String string = family.get(csn);
-        if (string == null) {
-            throw new CustomException(ErrorCode.FAILED_NO_CHILD);
-        }
-
-        InvestProposal proposalInvestDetail = investProposalService.getProposalInvestDetail(
-            proposalId, csn);
+        Long psn = jwtService.getUserInfo().getSn();
+        InvestProposal proposalInvestDetail = investProposalServiceParent.getProposalInvestDetail(
+            proposalId, psn);
         StockFindDetailResponse stockDetail = stockService.getStockDetail2(
-            proposalInvestDetail.getTicker(), yaer);
+            proposalInvestDetail.getTicker(), year);
         InvestProposalResponse investProposalResponse = null;
         if (proposalInvestDetail.getStatus() == 5) {
             investProposalResponse = investProposalService.getInvestProposalResponse(proposalId);

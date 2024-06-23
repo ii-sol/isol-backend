@@ -70,13 +70,13 @@ public class ProposalController {
         }
         return ApiUtils.success(result);
     }
-
+    //투자 제안 디테일
     @GetMapping("/invest/{proposalId}/{year}")
     public ApiResult getInvestProposalDetail(@PathVariable("proposalId") int proposalId,
         @PathVariable("year") String yaer)
         throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
-        InvestProposal proposalInvestDetail = investProposalService.getProposalInvestDetail(
+        InvestProposal proposalInvestDetail = investProposalServiceChild.getProposalInvestDetail(
             proposalId, userSn);
 
         StockFindDetailResponse stockDetail = stockService.getStockDetail2(
@@ -106,7 +106,7 @@ public class ProposalController {
         if (!checkParent) {
             throw new CustomException(ErrorCode.FAILED_NO_PARENT);
         }
-        Long result = investProposalService.proposalInvest(loginUserSerialNumber, parentSn,
+        Long result = investProposalServiceChild.proposalInvest(loginUserSerialNumber, parentSn,
             investProposalSaveRequest);
         return ApiUtils.success("성공했습니다.");
     }

@@ -35,15 +35,4 @@ public class InvestProposalService {
     public InvestProposalResponse getInvestProposalResponse(Integer proposalId){
         return investProposalResponseRepository.findByProposalId(proposalId).get();
     }
-
-    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
-        //알림 서비스
-        investProposalRepository.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
-        return childSn;
-    }
-
-    public InvestProposal getProposalInvestDetail(int proposalId,Long childSn){
-        return investProposalRepository.findByIdAndChildSn(
-            proposalId, childSn).orElseThrow(()->new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
-    }
 }

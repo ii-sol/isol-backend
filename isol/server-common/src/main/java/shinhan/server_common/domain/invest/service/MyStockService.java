@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.service;
+package shinhan.server_common.domain.invest.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,6 @@ public class MyStockService {
     //공통
     public MyStockListResponse findMyStocks(Long userSn){
         List<MyStockList> result = stockListRepository.findAllByUserSn(userSn);
-        System.out.println(result.size());
         List<StockFindCurrentResponse> stockFindCurrentResponseList = new ArrayList<>();
         for(int i=0;i<result.size();i++){
             StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(result.get(i).getTicker());
@@ -35,15 +34,8 @@ public class MyStockService {
         return myStockListResponse;
     }
     //공통
-    @Transactional
     public boolean delete(Long userSn,String ticker){
         stockListRepository.deleteByUserSnAndTicker(userSn,ticker);
         return true;
-    }
-
-    //부모
-    public void saveStockList(Long child_sn,String ticker){
-        MyStockList stockList = new MyStockList(child_sn,ticker);
-        stockListRepository.save(stockList);
     }
 }

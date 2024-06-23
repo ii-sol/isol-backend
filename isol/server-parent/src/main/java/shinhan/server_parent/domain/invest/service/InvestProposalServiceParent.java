@@ -15,19 +15,19 @@ import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_parent.domain.invest.dto.ResponseInvestProposal;
 import shinhan.server_parent.domain.invest.entity.InvestProposalResponseParent;
-import shinhan.server_parent.domain.invest.repository.AcceptInvestProposalRepositoryParent;
-import shinhan.server_parent.domain.invest.repository.AcceptInvestProposalResponseRepositoryParent;
+import shinhan.server_parent.domain.invest.repository.InvestProposalRepositoryParent;
+import shinhan.server_parent.domain.invest.repository.InvestProposalResponseRepositoryParent;
 
 @Service
 @Transactional
 public class InvestProposalServiceParent {
-    AcceptInvestProposalResponseRepositoryParent investProposalResponseRepository;
-    AcceptInvestProposalRepositoryParent acceptInvestProposalRepositoryParent;
+    InvestProposalResponseRepositoryParent investProposalResponseRepository;
+    InvestProposalRepositoryParent acceptInvestProposalRepositoryParent;
     CorpCodeRepository corpCodeRepository;
 
     InvestProposalServiceParent(
-        AcceptInvestProposalResponseRepositoryParent investProposalResponseRepository,
-        AcceptInvestProposalRepositoryParent acceptInvestProposalRepositoryParent,
+        InvestProposalResponseRepositoryParent investProposalResponseRepository,
+        InvestProposalRepositoryParent acceptInvestProposalRepositoryParent,
         CorpCodeRepository corpCodeRepository
     ) {
         this.acceptInvestProposalRepositoryParent = acceptInvestProposalRepositoryParent;
@@ -69,7 +69,10 @@ public class InvestProposalServiceParent {
         }
         return investProposalHistoryResponseList;
     }
-
+    public InvestProposal getProposalInvestDetail(int proposalId,Long parentSn){
+        return acceptInvestProposalRepositoryParent.findByIdAndParentSn(
+            proposalId, parentSn).orElseThrow(()->new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
+    }
     public boolean setInvestProposalServiceParent(Long psn, int proposalId,
         ResponseInvestProposal proposal) {
         Optional<InvestProposal> resultInvestProposal = acceptInvestProposalRepositoryParent.findById(
