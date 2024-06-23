@@ -36,18 +36,12 @@ public class UserController {
 
         if (userInfo.getSn() == sn) {
             return success(userService.getChild(sn));
-        } else if (isMyFamily(sn)) {
+        } else if (jwtService.isMyFamily(sn)) {
             return success(userService.getParents(sn));
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
-    }
-
-    private boolean isMyFamily(long familySn) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
-        return userInfo.getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 
     @PutMapping("/users")
@@ -75,10 +69,16 @@ public class UserController {
         if (userService.isFamily(createdId)) {
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
 
-            UserInfoResponse userInfoResponse = new UserInfoResponse(userInfo.getSn(),userInfo.getProfileId(), myFamilyInfo);
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfoResponse),
-                    jwtService.createRefreshToken(userInfo.getSn()));
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .sn(userInfo.getSn())
+                    .name(userInfo.getName())
+                    .profileId(userInfo.getProfileId())
+                    .familyInfo(myFamilyInfo)
+                    .build();
+            JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
+                    .accessToken(jwtService.createAccessToken(userInfoResponse))
+                    .refreshToken(jwtService.createRefreshToken(userInfo.getSn()))
+                    .build();
 
             jwtService.sendJwtToken(jwtTokenResponse);
 
@@ -93,15 +93,21 @@ public class UserController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (isMyFamily(parentsSn)) {
+        if (jwtService.isMyFamily(parentsSn)) {
             userService.disconnectFamily(userInfo.getSn(), parentsSn);
 
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
 
-            UserInfoResponse userInfoResponse = new UserInfoResponse(userInfo.getSn(),userInfo.getProfileId(), myFamilyInfo);
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfoResponse),
-                    jwtService.createRefreshToken(userInfo.getSn()));
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .sn(userInfo.getSn())
+                    .name(userInfo.getName())
+                    .profileId(userInfo.getProfileId())
+                    .familyInfo(myFamilyInfo)
+                    .build();
+            JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
+                    .accessToken(jwtService.createAccessToken(userInfoResponse))
+                    .refreshToken(jwtService.createRefreshToken(userInfo.getSn()))
+                    .build();
 
             jwtService.sendJwtToken(jwtTokenResponse);
 
@@ -189,10 +195,16 @@ public class UserController {
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfoResponse),
-                    jwtService.createRefreshToken(user.getSerialNumber()));
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .sn(user.getSerialNumber())
+                    .name(user.getName())
+                    .profileId(user.getProfileId())
+                    .familyInfo(myFamilyInfo)
+                    .build();
+            JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
+                    .accessToken(jwtService.createAccessToken(userInfoResponse))
+                    .refreshToken(jwtService.createRefreshToken(user.getSerialNumber()))
+                    .build();
 
             jwtService.sendJwtToken(jwtTokenResponse);
 
@@ -223,13 +235,15 @@ public class UserController {
             long sn = jwtService.getUserInfo(refreshToken).getSn();
             List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(sn);
 
-            ParentsFindOneResponse user = userService.getParents(sn);
-            UserInfoResponse userInfoResponse = new UserInfoResponse(user.getSerialNumber(),user.getProfileId(), myFamilyInfo);
-            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(
-                    jwtService.createAccessToken(userInfoResponse),
-                    jwtService.createRefreshToken(user.getSerialNumber()));
+            ChildFindOneResponse user = userService.getChild(sn);
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .sn(user.getSerialNumber())
+                    .name(user.getName())
+                    .profileId(user.getProfileId())
+                    .familyInfo(myFamilyInfo)
+                    .build();
 
-            jwtService.sendJwtToken(jwtTokenResponse);
+            jwtService.sendAccessToken(jwtService.createAccessToken(userInfoResponse));
 
             return success("Authorization이 새로 발급되었습니다.");
         } catch (Exception e) {
