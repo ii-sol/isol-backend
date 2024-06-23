@@ -11,3 +11,4 @@ public interface PortfolioRepository extends JpaRepository<Portfolio,Long> {
     Optional<Portfolio> findByAccountNumAndTicker(String accountNum, String ticker);
     List<Portfolio> findByAccountNum(String accountNum);
 }
+

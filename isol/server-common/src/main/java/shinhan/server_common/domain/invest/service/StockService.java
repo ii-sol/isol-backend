@@ -110,7 +110,6 @@ public class StockService {
             .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(0).getClosePrice()))
             .changeSign(changeSign)
             .companyName(String.valueOf(corpCodeRepository.findByStockCode(Integer.parseInt(ticker))))
-            //companyName 나중에 db 만들고 바꾸기~!!!!
             .companyName(ticker)
             .ticker(ticker)
             .build();
