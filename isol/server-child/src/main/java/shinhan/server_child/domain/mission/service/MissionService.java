@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_child.domain.mission.dto.MissionFindRequest;
 import shinhan.server_child.domain.mission.entity.Mission;
 import shinhan.server_child.domain.mission.repository.MissionRepository;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -25,4 +27,7 @@ public class MissionService {
         return mission.convertToMissionFindOneResponse();
     }
 
+    public List<MissionFindOneResponse> getMissions(MissionFindRequest missionFindRequest) {
+        return missionRepository.findOngoingMissions()
+    }
 }
