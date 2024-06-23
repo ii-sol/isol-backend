@@ -1,12 +1,12 @@
-package shinhan.server_parent.loan.repository;
+package shinhan.server_parent.domain.loan.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_parent.loan.dto.LoanDto;
-import shinhan.server_parent.loan.entity.Loan;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.entity.Loan;
 
 @Repository
 public class LoanCustomRepositoryImpl implements LoanCustomRepository {
@@ -15,7 +15,7 @@ public class LoanCustomRepositoryImpl implements LoanCustomRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<LoanDto> findByChildID(int childId) {
+    public List<LoanDto> findByChildID(Long childId) {
         String query = "SELECT l FROM Loan l WHERE l.childId = :childId";
         List<Loan> loans = entityManager.createQuery(query, Loan.class)
             .setParameter("childId", childId)
@@ -63,7 +63,7 @@ public class LoanCustomRepositoryImpl implements LoanCustomRepository {
 
     @Override
     public LoanDto findLoanById(int loanId) {
-        String query = "SELECT new sinhan.server2.loan.dto.LoanDto(" +
+        String query = "SELECT new shinhan.server_parent.domain.loan.dto.LoanDto(" +
             "l.id, l.dueDate, l.createDate, l.period, l.childId, l.parentId, l.interestRate, " +
             "l.amount, l.balance, l.status, l.title, l.message) " +
             "FROM Loan l WHERE l.id = :id";

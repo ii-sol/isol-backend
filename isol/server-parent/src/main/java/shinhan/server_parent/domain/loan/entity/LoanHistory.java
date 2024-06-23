@@ -1,4 +1,4 @@
-package shinhan.server_parent.loan.entity;
+package shinhan.server_parent.domain.loan.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

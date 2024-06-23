@@ -4,7 +4,7 @@ import java.util.List;
 import shinhan.server_child.domain.loan.dto.LoanDto;
 
 public interface LoanCustomRepository {
-    List<LoanDto> findByChildID(int childId);
+    List<LoanDto> findByChildID(Long childId);
 
     void acceptLoan(int loanId);
 

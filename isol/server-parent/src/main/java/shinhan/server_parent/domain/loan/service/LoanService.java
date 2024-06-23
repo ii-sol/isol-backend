@@ -1,12 +1,12 @@
-package shinhan.server_parent.loan.service;
+package shinhan.server_parent.domain.loan.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_parent.loan.dto.LoanDto;
-import shinhan.server_parent.loan.entity.Loan;
-import shinhan.server_parent.loan.repository.LoanCustomRepository;
-import shinhan.server_parent.loan.repository.LoanRepository;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.entity.Loan;
+import shinhan.server_parent.domain.loan.repository.LoanCustomRepository;
+import shinhan.server_parent.domain.loan.repository.LoanRepository;
 
 @Service
 public class LoanService {
@@ -19,7 +19,7 @@ public class LoanService {
         this.loanRepository = loanRepository;
     }
 
-    public List<LoanDto> getLoanByChildId(int childId) {
+    public List<LoanDto> getLoanByChildId(Long childId) {
         return loanCustomRepository.findByChildID(childId);
     }
 

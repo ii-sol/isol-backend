@@ -1,4 +1,4 @@
-package shinhan.server_parent.loan.entity;
+package shinhan.server_parent.domain.loan.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_parent.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
 
 @Getter
 @Entity
@@ -27,9 +27,9 @@ public class Loan {
 
     int period;
 
-    int childId;
+    Long childId;
 
-    int parentId;
+    Long parentId;
 
     float interestRate;
 

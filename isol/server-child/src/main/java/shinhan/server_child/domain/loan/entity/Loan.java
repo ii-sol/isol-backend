@@ -17,37 +17,37 @@ public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
     @Column(nullable = false)
-    Date dueDate;
+    private Date dueDate;
 
     @Column(nullable = false)
-    Date createDate;
+    private Date createDate;
 
-    int period;
+    private int period;
 
-    int childId;
+    private Long childId;
 
-    int parentId;
+    private Long parentId;
 
-    float interestRate;
+    private float interestRate;
 
-    int amount;
+    private int amount;
 
-    int balance;
+    private int balance;
 
-    int status;
+    private int status;
 
-    String title;
+    private String title;
 
-    String message;
+    private String message;
 
     public Loan(LoanDto loanDto) {
         this.createDate = new Date();
         this.dueDate = new Date(System.currentTimeMillis() + (long)loanDto.getPeriod() * 30 * 24 * 60 * 60 * 1000);
         this.period = loanDto.getPeriod();
-        this.childId = loanDto.getChildId();
+        this.childId =  loanDto.getChildId();
         this.parentId = loanDto.getParentId();
         this.interestRate = loanDto.getInterestRate();
         this.amount = loanDto.getAmount();

@@ -1,4 +1,4 @@
-package shinhan.server_parent.loan.dto;
+package shinhan.server_parent.domain.loan.dto;
 
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,9 +20,9 @@ public class LoanDto {
 
     int period;
 
-    int childId;
+    Long childId;
 
-    int parentId;
+    Long parentId;
 
     String parentName;
 
@@ -49,7 +49,7 @@ public class LoanDto {
         this.amount = amount;
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, int childId, int parentId, float interestRate, int amount,
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount,
         int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;
@@ -66,7 +66,7 @@ public class LoanDto {
 
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, int childId, int parentId, float interestRate, int amount, int balance, int status, String title, String message) {
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount, int balance, int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;

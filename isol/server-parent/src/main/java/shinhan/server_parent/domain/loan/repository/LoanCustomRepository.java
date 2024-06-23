@@ -1,10 +1,10 @@
-package shinhan.server_parent.loan.repository;
+package shinhan.server_parent.domain.loan.repository;
 
 import java.util.List;
-import shinhan.server_parent.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
 
 public interface LoanCustomRepository {
-    List<LoanDto> findByChildID(int childId);
+    List<LoanDto> findByChildID(Long childId);
 
     void acceptLoan(int loanId);
 

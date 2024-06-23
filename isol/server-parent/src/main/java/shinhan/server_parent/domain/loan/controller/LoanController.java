@@ -1,5 +1,6 @@
-package shinhan.server_parent.loan.controller;
+package shinhan.server_parent.domain.loan.controller;
 
+import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,8 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_parent.loan.dto.LoanDto;
-import shinhan.server_parent.loan.service.LoanService;
+import shinhan.server_common.global.security.JwtService;
+import shinhan.server_common.global.security.dto.UserInfoResponse;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.service.LoanService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 
@@ -16,15 +19,20 @@ import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 public class LoanController {
 
     private final LoanService loanService;
+    private final JwtService jwtService;
 
-    public LoanController(LoanService loanService) {
+    public LoanController(LoanService loanService, JwtService jwtService) {
         this.loanService = loanService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/loan")
-    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() {
-        int childId = 1;
-        List<LoanDto> loans = loanService.getLoanByChildId(childId);
+    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() throws AuthException {
+        UserInfoResponse userInfoResponse = jwtService.getUserInfo();
+
+        Long ChildId = userInfoResponse.getSn();
+
+        List<LoanDto> loans = loanService.getLoanByChildId(ChildId);
 
         for(LoanDto loan : loans) {
             loan.setParentName("엄마");
@@ -38,8 +46,13 @@ public class LoanController {
     }
 
     @PostMapping("/child/loan/create")
-    public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) {
-        loan.setChildId(1);
+    public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan)
+        throws AuthException {
+        UserInfoResponse userInfoResponse = jwtService.getUserInfo();
+
+        Long ChildId = userInfoResponse.getSn();
+        loan.setChildId(ChildId);
+
         loan.setInterestRate(4.5F);
         loan.setStatus(1);
         loan.setParentName("엄마");
