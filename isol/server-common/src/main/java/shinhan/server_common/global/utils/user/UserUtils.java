@@ -62,6 +62,4 @@ public class UserUtils {
 
         return family.getParentsAlias();
     }
-
-    int id = 0;
 }
