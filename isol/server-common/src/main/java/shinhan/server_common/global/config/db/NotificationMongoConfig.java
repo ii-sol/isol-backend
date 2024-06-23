@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoRepositories(
-        basePackages = "shinhan.server_common.domain.notification.repository",
+        basePackages = "shinhan.server_common.notification.mongo",
         mongoTemplateRef = "notificationMongoTemplate")
 public class NotificationMongoConfig {
 
