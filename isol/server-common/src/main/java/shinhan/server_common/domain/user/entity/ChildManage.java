@@ -23,13 +23,13 @@ public class ChildManage {
     private Child child;
     @Setter
     @Column(name = "base_rate", nullable = false)
-    private float baseRate = 0L;
+    private float baseRate = 3L;
     @Setter
     @Column(name = "invest_limit", columnDefinition = "MEDIUMINT UNSIGNED")
-    private int investLimit = 8300000;
+    private int investLimit = 1000000;
     @Setter
     @Column(name = "loan_limit", columnDefinition = "MEDIUMINT UNSIGNED")
-    private int loanLimit = 8300000;
+    private int loanLimit = 1000000;
 
     public ChildManage(Child child) {
         this.child = child;
