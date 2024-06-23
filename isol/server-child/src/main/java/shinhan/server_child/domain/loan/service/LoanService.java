@@ -36,30 +36,32 @@ public class LoanService {
 
     @Transactional
     public void saveLoan(LoanDto loanDto) throws AuthException {
-        UserInfoResponse userInfoResponse = jwtService.getUserInfo();
-        Long childId = userInfoResponse.getSn();
 
+        UserInfoResponse userInfoResponse = jwtService.getUserInfo();
+
+        Long childId = userInfoResponse.getSn();
         int childScore =userService.getChild(childId).getScore();
 
         loanDto.setChildId(childId);
+        Long parentId = loanDto.getParentId();
+        loanDto.setParentName(userService.getParentsAlias(childId, parentId));
 
-        float InterestRate = userService.
+        double InterestRate = userService.getChildManage(childId).getBaseRate();
 
         if(childScore > 90){
-
+            InterestRate =- 2.0;
+        } else if(childScore > 70){
+            InterestRate =- 1.0;
+        } else if(childScore > 30){
+            InterestRate =+ 1.0;
+        } else if(childScore > 10){
+            InterestRate =- 1.0;
         }
+        loanDto.setInterestRate(InterestRate);
 
         loanDto.setStatus(1);
         Loan loan = new Loan(loanDto);
         loanRepository.save(loan);
-    }
-
-    public void acceptLoan(int loanId) {
-        loanCustomRepository.acceptLoan(loanId);
-    }
-
-    public void refuseLoan(int loanId) {
-        loanCustomRepository.refuseLoan(loanId);
     }
 
     public LoanDto findOne(int loanId) {

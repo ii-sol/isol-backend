@@ -18,14 +18,14 @@ public class LoanDto {
     private Long childId;
     private Long parentId;
     private String parentName;
-    private float interestRate;
+    private double interestRate;
     private int amount;
     private int balance;
     private int status;
     private String title;
     private String message;
 
-    public LoanDto(int id, Date dueDate, Date createDate, int balance, int status, String title, int amount, float interestRate) {
+    public LoanDto(int id, Date dueDate, Date createDate, int balance, int status, String title, int amount, double interestRate) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;
@@ -36,7 +36,7 @@ public class LoanDto {
         this.interestRate = interestRate;
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount, int status, String title, String message) {
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;
@@ -51,7 +51,7 @@ public class LoanDto {
         this.balance = amount; // 초기 balance는 amount와 동일하게 설정
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, String parentName, float interestRate, int amount, int balance, int status, String title, String message) {
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, String parentName, double interestRate, int amount, int balance, int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;
@@ -66,7 +66,7 @@ public class LoanDto {
         this.message = message;
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount, int balance,
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int balance,
         int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;

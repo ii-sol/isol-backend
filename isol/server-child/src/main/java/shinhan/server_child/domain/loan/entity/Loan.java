@@ -31,7 +31,7 @@ public class Loan {
 
     private Long parentId;
 
-    private float interestRate;
+    private double interestRate;
 
     private int amount;
 
@@ -45,7 +45,7 @@ public class Loan {
 
     public Loan(LoanDto loanDto) {
         this.createDate = new Date();
-        this.dueDate = new Date(System.currentTimeMillis() + (long)loanDto.getPeriod() * 30 * 24 * 60 * 60 * 1000);
+        this.dueDate = new Date(System.currentTimeMillis() + (long) loanDto.getPeriod() * 30 * 24 * 60 * 60 * 1000);
         this.period = loanDto.getPeriod();
         this.childId =  loanDto.getChildId();
         this.parentId = loanDto.getParentId();
