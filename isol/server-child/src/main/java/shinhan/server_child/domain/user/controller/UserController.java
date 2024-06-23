@@ -137,7 +137,7 @@ public class UserController {
 
         int score = user.getScore();
 
-        score =+ (5 * loanService.findCompleteLoanCount(childId));
+        score += (5 * loanService.findCompleteLoanCount(childId));
 
         if (user != null) {
             return success(score);
