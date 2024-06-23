@@ -71,7 +71,12 @@ public class MissionService {
                 .status(1)
                 .build();
 
-        return missionRepository.save(mission).convertToMissionFindOneResponse();
+        Mission createdMission = missionRepository.save(mission);
+
+        Mission savedMission = missionRepository.findById(createdMission.getId())
+                .orElseThrow(() -> new RuntimeException("미션이 생성되지 않았습니다."));
+
+        return savedMission.convertToMissionFindOneResponse();
     }
 
     public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) {

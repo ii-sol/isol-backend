@@ -2,6 +2,7 @@ package shinhan.server_parent.domain.mission.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_parent.domain.mission.dto.MissionAnswerSaveRequest;
@@ -71,7 +72,12 @@ public class MissionService {
                 .status(2)
                 .build();
 
-        return missionRepository.save(mission).convertToMissionFindOneResponse();
+        Mission createdMission = missionRepository.save(mission);
+
+        Mission savedMission = missionRepository.findById(createdMission.getId())
+                .orElseThrow(() -> new RuntimeException("미션이 생성되지 않았습니다."));
+
+        return savedMission.convertToMissionFindOneResponse();
     }
 
     public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) {
