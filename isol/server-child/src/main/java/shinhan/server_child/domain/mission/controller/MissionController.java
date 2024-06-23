@@ -111,13 +111,9 @@ public class MissionController {
 
         if (isMyFamily(parentsSn)) {
             long childSn = userInfo.getSn();
-            List<MissionFindOneResponse> missions = null;
 
-            if (status == null) {
-                missions = missionService.getMissions(childSn, parentsSn, 4, 5);
-                return success(missions);
-            } else if (status == 4 || status == 5) {
-                missions = missionService.getMissions(childSn, parentsSn, status);
+            if (status == null || status == 4 || status == 5) {
+                List<MissionFindOneResponse> missions = missionService.getMissionsHistory(childSn, parentsSn, year, month, status);
                 return success(missions);
             } else {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());

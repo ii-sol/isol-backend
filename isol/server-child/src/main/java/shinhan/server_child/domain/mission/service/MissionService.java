@@ -40,4 +40,18 @@ public class MissionService {
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<MissionFindOneResponse> getMissionsHistory(long childSn, long parentsSn, int year, int month, Integer status) {
+        List<Mission> missions = null;
+
+        if (status == null) {
+            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month); //
+        } else {
+            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month, status);
+        }
+
+        return missions.stream()
+                .map(Mission::convertToMissionFindOneResponse)
+                .collect(Collectors.toList());
+    }
 }
