@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_child.domain.invest.dto.InvestStockRequest;
 import shinhan.server_child.domain.invest.dto.PortfolioResponse;
@@ -37,14 +38,13 @@ public class InvestController {
 
     //투자 거래 내역 조회하기(아이)
     @GetMapping("/history/{status}")
-    public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status)
+    public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status, @RequestParam("year") int year,
+        @RequestParam("month") int month)
         throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
             loginUserSerialNumber, 2);
-        return success(investService.getStockHisttory(accountByUserSerialNumberAndStatus.getAccountNum(),status));
-//        Account account = accountUtils.getAccountByUserSerialNumberAndStatus(loginUserSerialNumber,2);
-//        return success(investService.getStockHisttory(account.getAccountNum(),status));
+        return success(investService.getStockHisttory(accountByUserSerialNumberAndStatus.getAccountNum(),status,year,month));
     }
 
     //포트폴리오 조회하기(아이)

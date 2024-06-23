@@ -14,17 +14,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shinhan.server_child.domain.invest.dto.InvestProposalDetailResponse;
 import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
+import shinhan.server_child.domain.invest.entity.InvestProposal;
+import shinhan.server_child.domain.invest.entity.InvestProposalResponse;
 import shinhan.server_child.domain.invest.service.InvestProposalService;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
+import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.domain.user.dto.ParentsFindOneResponse;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
-import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 
 @RestController
 @Slf4j
@@ -33,13 +38,14 @@ public class ProposalController {
 
     InvestProposalService investProposalService;
     UserService userService;
-
+    StockService stockService;
     JwtService jwtService;
     @Autowired
-    ProposalController(InvestProposalService investProposalService,UserService userService, JwtService jwtService){
+    ProposalController(InvestProposalService investProposalService,UserService userService, JwtService jwtService,StockService stockService){
         this.investProposalService = investProposalService;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.stockService = stockService;
     }
 //    //투자 제안 내역 달변 조회하기(부모)
 //    @GetMapping("/invest/history/{co}")
@@ -51,7 +57,7 @@ public class ProposalController {
 
     //투자 제안 내역 달변 조회하기(아이)
     @GetMapping("/invest/history/{status}")
-    public ApiUtils.ApiResult getInvestProposal(@RequestParam("year") int year,
+    public ApiResult getInvestProposal(@RequestParam("year") int year,
         @RequestParam("month") int month,@PathVariable("status") short status
         ) throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
@@ -67,16 +73,25 @@ public class ProposalController {
         return ApiUtils.success(result);
     }
 
-    //전체 제안 내역 달별 조회하기(아이)
-    @GetMapping("/history")
-    public ApiResult getProposal(@RequestParam("year") int year, @RequestParam("month") int month) {
-        return ApiResult.responseSuccess(year);
-    }
+    @GetMapping("/invest/{proposalId}/{year}")
+    public ApiResult getInvestProposalDetail(@PathVariable("proposalId") int proposalId,@PathVariable("year") String yaer)
+        throws AuthException {
+        long userSn = jwtService.getUserInfo().getSn();
+        InvestProposal proposalInvestDetail = investProposalService.getProposalInvestDetail(
+            proposalId, userSn);
 
+        StockFindDetailResponse stockDetail = stockService.getStockDetail2(
+            proposalInvestDetail.getTicker(), yaer);
+        InvestProposalResponse investProposalResponse = null;
+        if(proposalInvestDetail.getStatus()==5){
+            investProposalResponse = investProposalService.getInvestProposalResponse(proposalId);
+        }
+        return ApiUtils.success(InvestProposalDetailResponse.builder().companyInfo(stockDetail).requestProposal(proposalInvestDetail).responseProposal(investProposalResponse).build());
+    }
 
     //투자 제안하기
     @PostMapping("/invest/{psn}")
-    public ApiUtils.ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
+    public ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
         InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         boolean checkParent = false;

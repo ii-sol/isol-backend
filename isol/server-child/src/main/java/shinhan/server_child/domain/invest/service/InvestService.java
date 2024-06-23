@@ -2,6 +2,8 @@ package shinhan.server_child.domain.invest.service;
 
 import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_MONEY;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +47,16 @@ public class InvestService {
         this.accountUtils = accountUtils;
     }
 
-    public List<StockHistoryResponse> getStockHisttory(String account,short status){
+    public List<StockHistoryResponse> getStockHisttory(String account,short status,int year,int month){
         List<StockHistory> result;
+        LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
+        Timestamp startTimeStamp = Timestamp.valueOf(startDateTime);
+        Timestamp endTimeStamp = Timestamp.valueOf(endDateTime);
         if(status == 0){
-            result = stockHistoryRepository.findByAccountNum(account);
+            result = stockHistoryRepository.findByAccountNumAndCreateDateBetween(account,startTimeStamp,endTimeStamp);
         }else
-            result = stockHistoryRepository.findByAccountNumAndTradingCode(account,status);
+            result = stockHistoryRepository.findByAccountNumAndTradingCodeAndCreateDateBetween(account,status,startTimeStamp,endTimeStamp);
         List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
         for(StockHistory data : result)
         {
@@ -178,7 +184,6 @@ public class InvestService {
                 portfolioRepository.save(prePortfolio.get());
             }
             accountUtils.transferMoneyByAccount(systempInvestAccount,userAccount,currentPrice*investStockRequest.getQuantity(),1);
-
             return true;
         }
     }

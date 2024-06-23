@@ -53,7 +53,6 @@ public class AllowanceService {
     public void cancleTemporalAllowance(Integer temporalAllowanceId) {
         TemporalAllowance findTemporalAllowance = temporalAllowanceRepository.findById(temporalAllowanceId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_TEMPORAL_ALLOWANCE));
-
         findTemporalAllowance.setStatus(6);
         temporalAllowanceRepository.save(findTemporalAllowance);
     }
