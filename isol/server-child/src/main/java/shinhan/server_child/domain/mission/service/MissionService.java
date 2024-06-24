@@ -32,27 +32,27 @@ public class MissionService {
         return mission.convertToMissionFindOneResponse();
     }
 
-    public List<MissionFindOneResponse> getMissions(long childSn, long parentsSn, int s1, int s2) {
-        List<Mission> missions = missionRepository.findMissions(childSn, parentsSn, s1, s2);
+    public List<MissionFindOneResponse> getMissions(long childSn, int s1, int s2) {
+        List<Mission> missions = missionRepository.findMissions(childSn, s1, s2);
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<MissionFindOneResponse> getMissions(long childSn, long parentsSn, int s) {
-        List<Mission> missions = missionRepository.findMissions(childSn, parentsSn, s);
+    public List<MissionFindOneResponse> getMissions(long childSn, int s) {
+        List<Mission> missions = missionRepository.findMissions(childSn, s);
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<MissionFindOneResponse> getMissionsHistory(long childSn, long parentsSn, int year, int month, Integer status) {
+    public List<MissionFindOneResponse> getMissionsHistory(long childSn, int year, int month, Integer status) {
         List<Mission> missions = null;
 
         if (status == null) {
-            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month);
+            missions = missionRepository.findMissionsHistory(childSn, year, month);
         } else {
-            missions = missionRepository.findMissionsHistory(childSn, parentsSn, year, month, status);
+            missions = missionRepository.findMissionsHistory(childSn, year, month, status);
         }
 
         return missions.stream()

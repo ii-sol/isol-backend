@@ -46,59 +46,43 @@ public class MissionController {
         return mission.getChildSn() == sn || mission.getParentsSn() == sn;
     }
 
-    @GetMapping("/{parents-sn}/ongoing")
-    public ApiUtils.ApiResult getOngoingMissions(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
+    @GetMapping("/ongoing")
+    public ApiUtils.ApiResult getOngoingMissions() throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+        long childSn = userInfo.getSn();
+
+        List<MissionFindOneResponse> missions = missionService.getMissions(childSn, 3, 6);
+        return success(missions);
+    }
+
+    @GetMapping("/pending")
+    public ApiUtils.ApiResult getPendingMissions() throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (jwtService.isMyFamily(parentsSn)) {
-            long childSn = userInfo.getSn();
+        long childSn = userInfo.getSn();
 
-            List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, 3, 6);
+        List<MissionFindOneResponse> missions = missionService.getMissions(childSn, 1, 2);
+        return success(missions);
+    }
+
+    @GetMapping("/{status}")
+    public ApiUtils.ApiResult getMissions(@PathVariable("status") int status, HttpServletResponse response) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo();
+
+        long childSn = userInfo.getSn();
+
+        if (status >= 1 && status <= 6) {
+            List<MissionFindOneResponse> missions = missionService.getMissions(childSn, status);
             return success(missions);
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("미션의 status는 1 ~ 6입니다.", HttpStatus.BAD_REQUEST);
         }
 
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{parents-sn}/pending")
-    public ApiUtils.ApiResult getPendingMissions(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
-        if (jwtService.isMyFamily(parentsSn)) {
-            long childSn = userInfo.getSn();
-
-            List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, 1, 2);
-            return success(missions);
-        }
-
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/{parents-sn}/{status}")
-    public ApiUtils.ApiResult getMissions(@PathVariable("parents-sn") long parentsSn, @PathVariable("status") int status, HttpServletResponse response) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
-
-        if (jwtService.isMyFamily(parentsSn)) {
-            long childSn = userInfo.getSn();
-
-            if (status >= 1 && status <= 6) {
-                List<MissionFindOneResponse> missions = missionService.getMissions(childSn, parentsSn, status);
-                return success(missions);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return error("미션의 status는 1 ~ 6입니다.", HttpStatus.BAD_REQUEST);
-            }
-        }
-
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/{parents-sn}/history")
+    @GetMapping("/history")
     public ApiUtils.ApiResult getMissionsHistory(
-            @PathVariable("parents-sn") long parentsSn,
             @RequestParam(value = "year") int year,
             @RequestParam(value = "month") int month,
             @RequestParam(value = "status", required = false) Integer status,
@@ -106,20 +90,15 @@ public class MissionController {
 
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if (jwtService.isMyFamily(parentsSn)) {
-            long childSn = userInfo.getSn();
+        long childSn = userInfo.getSn();
 
-            if (status == null || status == 4 || status == 5) {
-                List<MissionFindOneResponse> missions = missionService.getMissionsHistory(childSn, parentsSn, year, month, status);
-                return success(missions);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return error("미션 내역의 status는 4 또는 5입니다.", HttpStatus.BAD_REQUEST);
-            }
+        if (status == null || status == 4 || status == 5) {
+            List<MissionFindOneResponse> missions = missionService.getMissionsHistory(childSn, year, month, status);
+            return success(missions);
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("미션 내역의 status는 4 또는 5입니다.", HttpStatus.BAD_REQUEST);
         }
-
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("")

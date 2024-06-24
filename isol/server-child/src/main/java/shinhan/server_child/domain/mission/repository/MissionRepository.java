@@ -13,39 +13,35 @@ public interface MissionRepository extends JpaRepository<Mission, Integer> {
             "FROM Mission m " +
             "WHERE 1 = 1 " +
             "AND m.childSn = :childSn " +
-            "AND m.parentsSn = :parentsSn " +
             "AND (m.status = :s1 OR m.status = :s2) " +
             "ORDER BY m.id")
-    List<Mission> findMissions(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("s1") int s1, @Param("s2") int s2);
+    List<Mission> findMissions(@Param("childSn") long childSn, @Param("s1") int s1, @Param("s2") int s2);
 
     @Query("SELECT m " +
             "FROM Mission m " +
             "WHERE 1 = 1 " +
             "AND m.childSn = :childSn " +
-            "AND m.parentsSn = :parentsSn " +
             "AND m.status = :s " +
             "ORDER BY m.id")
-    List<Mission> findMissions(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("s") int s);
+    List<Mission> findMissions(@Param("childSn") long childSn, @Param("s") int s);
 
     @Query("SELECT m " +
             "FROM Mission m " +
             "WHERE 1 = 1 " +
             "AND m.childSn = :childSn " +
-            "AND m.parentsSn = :parentsSn " +
             "AND m.status IN (4, 5) " +
             "AND FUNCTION('YEAR', m.completeDate) = :year " +
             "AND FUNCTION('MONTH', m.completeDate) = :month " +
             "ORDER BY m.completeDate DESC")
-    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("year") int year, @Param("month") int month);
+    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("year") int year, @Param("month") int month);
 
     @Query("SELECT m " +
             "FROM Mission m " +
             "WHERE 1 = 1 " +
             "AND m.childSn = :childSn " +
-            "AND m.parentsSn = :parentsSn " +
             "AND m.status = :status " +
             "AND FUNCTION('YEAR', m.completeDate) = :year " +
             "AND FUNCTION('MONTH', m.completeDate) = :month " +
             "ORDER BY m.completeDate DESC")
-    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("year") int year, @Param("month") int month, @Param("status") int status);
+    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("year") int year, @Param("month") int month, @Param("status") int status);
 }
