@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.invest.repository.InvestProposalRepositoryChild;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;

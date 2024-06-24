@@ -38,8 +38,6 @@ public class InvestController {
                 if(!jwtService.isMyFamily(csn)){
                         throw new CustomException(ErrorCode.FAILED_NO_CHILD);
                 }
-                //자식인지 확인
-                Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
                 Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
                     csn, 2);
                 return success(investService.getStockHistory(accountByUserSerialNumberAndStatus.getAccountNum(),status,year,month));
@@ -48,7 +46,9 @@ public class InvestController {
         //포트폴리오 조회하기(부모)
         @GetMapping("/portfolio")
         public ApiUtils.ApiResult getInvestPortfolio(@RequestParam("csn")Long csn) throws AuthException {
-                //자식인지 확인
+                if(!jwtService.isMyFamily(csn)){
+                        throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+                }
                 Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
                 Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
                     csn, 2);

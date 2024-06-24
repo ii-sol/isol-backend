@@ -2,9 +2,8 @@ package shinhan.server_common.domain.invest.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
-import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
-import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
 
 @Getter
 @Builder

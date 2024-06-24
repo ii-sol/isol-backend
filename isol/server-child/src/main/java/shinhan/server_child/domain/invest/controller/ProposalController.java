@@ -18,8 +18,8 @@ import shinhan.server_child.domain.invest.service.InvestProposalServiceChild;
 import shinhan.server_common.domain.invest.dto.InvestProposalDetailResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
-import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
 import shinhan.server_common.domain.invest.service.InvestProposalService;
 import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
@@ -93,18 +93,10 @@ public class ProposalController {
     @PostMapping("/invest/{psn}")
     public ApiResult proposeInvest(@PathVariable("psn") Long parentSn, @RequestBody
     InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
-        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        boolean checkParent = false;
-        for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
-            if (familyInfoResponse.getSn() == parentSn) {
-                checkParent = true;
-                break;
-            }
-        }
-        if (!checkParent) {
+        if(jwtService.isMyFamily(parentSn)){
             throw new CustomException(ErrorCode.FAILED_NO_PARENT);
         }
-        Long result = investProposalServiceChild.proposalInvest(loginUserSerialNumber, parentSn,
+        Long result = investProposalServiceChild.proposalInvest(jwtService.getUserInfo().getSn(), parentSn,
             investProposalSaveRequest);
         return ApiUtils.success("성공했습니다.");
     }

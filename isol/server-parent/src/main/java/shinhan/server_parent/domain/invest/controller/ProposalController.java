@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.invest.dto.InvestProposalDetailResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
-import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
 import shinhan.server_common.domain.invest.service.InvestProposalService;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
@@ -103,8 +103,8 @@ public class ProposalController {
         return ApiUtils.success("성공");
     }
     @GetMapping("/invest/no-approve")
-    public ApiUtils.ApiResult getNoApprove(@PathVariable("csn") Long csn) throws AuthException {
-        if(jwtService.isMyFamily(csn)){
+    public ApiUtils.ApiResult getNoApprove(@RequestParam("csn") Long csn) throws AuthException {
+        if(!jwtService.isMyFamily(csn)){
             throw new CustomException(ErrorCode.FAILED_NO_CHILD);
         }
         Long parentSn = jwtService.getUserInfo().getSn();
