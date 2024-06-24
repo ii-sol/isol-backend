@@ -26,7 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             token = jwtService.getAccessToken();
         } catch (NullPointerException e) {
-            token = null;
+            sendErrorResponse(response, "No Token", HttpStatus.UNAUTHORIZED);
+            return;
         }
 
         Authentication authentication = null;
@@ -37,12 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
                 authentication = jwtService.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
+                return;
             }
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
@@ -52,5 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.setStatus(httpStatus.value());
         response.getWriter().write(objectMapper.writeValueAsString(apiResult));
+        response.flushBuffer();
     }
 }
