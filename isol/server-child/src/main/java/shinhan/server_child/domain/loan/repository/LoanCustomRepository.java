@@ -11,4 +11,6 @@ public interface LoanCustomRepository {
     void refuseLoan(int loanId);
 
     LoanDto findLoanById(int loanId);
+
+    int findCompleteLoanCount(long childId);
 }

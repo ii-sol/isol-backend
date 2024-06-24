@@ -39,12 +39,13 @@ public class LoanService {
 
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
-        Long childId = userInfoResponse.getSn();
-        int childScore =userService.getChild(childId).getScore();
+        long childId = userInfoResponse.getSn();
 
         loanDto.setChildId(childId);
         Long parentId = loanDto.getParentId();
         loanDto.setParentName(userService.getParentsAlias(childId, parentId));
+
+        int childScore = userService.getScore(childId) + 5 * findCompleteLoanCount(childId);
 
         double InterestRate = userService.getChildManage(childId).getBaseRate();
 
@@ -67,4 +68,10 @@ public class LoanService {
     public LoanDto findOne(int loanId) {
         return loanCustomRepository.findLoanById(loanId);
     }
+
+    public int findCompleteLoanCount(Long childId){
+        return loanCustomRepository.findCompleteLoanCount(childId);
+    }
+
+
 }
