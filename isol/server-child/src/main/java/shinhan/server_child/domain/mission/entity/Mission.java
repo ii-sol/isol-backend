@@ -31,7 +31,7 @@ public class Mission {
     @Column(nullable = false, columnDefinition = "MEDIUMINT UNSIGNED")
     private int price;
     @Column(name = "create_date", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp createDate;
+    private Timestamp createDate = Timestamp.valueOf(LocalDateTime.now());
     @Column(name = "due_date", columnDefinition = "TIMESTAMP")
     private Timestamp dueDate;
     @Column(name = "complete_date", columnDefinition = "TIMESTAMP")
