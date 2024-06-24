@@ -73,6 +73,14 @@ public class MissionService {
 
         Mission createdMission = missionRepository.save(mission);
 
+        log.info("mission id={}", createdMission.getId());
+        log.info("mission content={}", createdMission.getContent());
+        log.info("mission sn={}", createdMission.getChildSn());
+        log.info("mission sn={}", createdMission.getParentsSn());
+        log.info("mission price={}", createdMission.getPrice());
+        log.info("mission create={}", createdMission.getCreateDate());
+        log.info("mission due={}", createdMission.getDueDate());
+
         Mission savedMission = missionRepository.findById(createdMission.getId())
                 .orElseThrow(() -> new NoSuchElementException("미션이 생성되지 않았습니다."));
 
