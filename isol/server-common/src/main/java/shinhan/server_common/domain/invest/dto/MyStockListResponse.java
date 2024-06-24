@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.invest.dto;
+package shinhan.server_common.domain.invest.dto;
 
 
 import java.util.List;
