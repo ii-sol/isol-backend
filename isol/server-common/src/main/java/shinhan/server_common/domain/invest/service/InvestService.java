@@ -67,7 +67,7 @@ public class InvestService {
                 .ticker(data.getTicker())
                 .companyName(companyName)
                 .quantity(data.getQuantity())
-                .createDate(data.getCreateDate())
+//                .createDate(data.getCreateDate())
                 .build();
             stockHistoryResponseList.add(stockHistoryResponse);
         }

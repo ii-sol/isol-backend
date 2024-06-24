@@ -96,7 +96,6 @@ public class ProposalController {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         boolean checkParent = false;
         for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
-            System.out.println(familyInfoResponse.getName());
             if (familyInfoResponse.getSn() == parentSn) {
                 checkParent = true;
                 break;
