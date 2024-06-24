@@ -62,6 +62,6 @@ public class MyStockController {
             throw new CustomException(ErrorCode.FAILED_NO_CHILD);
         }
         myStockService.delete(csn, ticker);
-        return success("삭제 성공");
+        return success("삭제 성공");    
     }
 }
