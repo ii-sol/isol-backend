@@ -74,7 +74,7 @@ public class MissionService {
         Mission createdMission = missionRepository.save(mission);
 
         Mission savedMission = missionRepository.findById(createdMission.getId())
-                .orElseThrow(() -> new RuntimeException("미션이 생성되지 않았습니다."));
+                .orElseThrow(() -> new NoSuchElementException("미션이 생성되지 않았습니다."));
 
         return savedMission.convertToMissionFindOneResponse();
     }
