@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.dto;
+package shinhan.server_child.domain.invest.dto;
 
 import java.sql.Date;
 import lombok.Builder;
@@ -17,5 +17,5 @@ public class InvestProposalHistoryResponse {
     String ticker;
     Date CreateDate;
     @Setter
-    String recieverName;
+    String parentAlias;
 }

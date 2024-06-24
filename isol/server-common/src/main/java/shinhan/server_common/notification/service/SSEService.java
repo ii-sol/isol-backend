@@ -2,11 +2,12 @@ package shinhan.server_common.notification.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
+import shinhan.server_common.global.utils.user.UserUtils;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
 import shinhan.server_common.notification.entity.Notification;
 import shinhan.server_common.notification.mongo.NotificationRepository;
@@ -21,10 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 @Transactional
-public class SSEUtils {
+public class SSEService {
 
     private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
     private final NotificationRepository notificationRepository;
@@ -57,9 +58,9 @@ public class SSEUtils {
     }
 
     //알람 보내기 => message는 각자 자기 도메인에서 MessageHandler.getMessage(여러 인수들); 해서 나온거 가져오기
-    public void sendNotification(Long receiverSerialNumber, String senderName, Integer functionCode, String message){
-        SseEmitter emitter = sseEmitters.get(receiverSerialNumber);
-        Notification savedNotification = saveNotification(receiverSerialNumber, senderName, functionCode, message);
+    public void sendNotification(Long serialNumber, String senderName, Integer functionCode, String message){
+        SseEmitter emitter = sseEmitters.get(serialNumber);
+        Notification savedNotification = saveNotification(serialNumber, senderName, functionCode, message);
         //emitter가 null인 경우
         try{
             emitter.send(SseEmitter.event().name("notification").data(savedNotification));
@@ -68,7 +69,7 @@ public class SSEUtils {
             //몽고 디비에서 저장된거 삭제하기
             notificationRepository.deleteByNotificationSerialNumber(savedNotification.getNotificationSerialNumber());
             //emitter를 삭제해야하나? => 재시도 로직을 넣어야 하나? => 재시도 횟수
-            sseEmitters.remove(receiverSerialNumber);
+            sseEmitters.remove(serialNumber);
 
             throw new CustomException(ErrorCode.FAILED_NOTIFICATION);
         }

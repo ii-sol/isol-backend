@@ -8,7 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
-import shinhan.server_common.notification.service.SSEUtils;
+import shinhan.server_common.notification.service.SSEService;
 
 import java.util.List;
 
@@ -19,28 +19,28 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @RequiredArgsConstructor
 @RequestMapping("/notifications")
 public class NotificationController {
-    private final SSEUtils sseUtils;
+    private final SSEService sseService;
     private final JwtService jwtService;
 
     //SSE 연결하기 userSerialNumber -> User 들어오면 바뀔 예정
     @GetMapping("/subscribe")
     public SseEmitter subscribeSSE() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        return sseUtils.subscribe(loginUserSerialNumber);
+        return sseService.subscribe(loginUserSerialNumber);
     }
 
     //해당 사용자의 모든 알림 가져오기 userSerialNumber -> User 들어오면 바뀔 예정
     @GetMapping()
     public ApiUtils.ApiResult findAllNotifications() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        List<NotificationFindAllResponse> response = sseUtils.findAllNotifications(loginUserSerialNumber);
+        List<NotificationFindAllResponse> response = sseService.findAllNotifications(loginUserSerialNumber);
         return success(response);
     }
 
     //개별 알림 삭제하기 notificationSerialNumber
     @DeleteMapping("/{nsn}")
     public ApiUtils.ApiResult deleteNotification( @PathVariable("nsn") String nsn){
-        sseUtils.deleteNotification(nsn);
+        sseService.deleteNotification(nsn);
         return success(null);
     }
 
@@ -48,7 +48,7 @@ public class NotificationController {
     @DeleteMapping()
     public ApiUtils.ApiResult deleteNotification() throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        sseUtils.deleteAllNotifications(loginUserSerialNumber);
+        sseService.deleteAllNotifications(loginUserSerialNumber);
         return success(null);
     }
 }

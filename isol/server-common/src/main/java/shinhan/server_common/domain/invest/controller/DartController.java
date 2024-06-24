@@ -19,6 +19,10 @@ public class DartController {
     DartController(StockService stockService){
         this.stockService = stockService;
     }
+    @GetMapping("")
+    public ApiUtils.ApiResult getStocks(){
+        return success("asd");
+    }
     @GetMapping("/naver/{ticker}/{year}")
     public ApiUtils.ApiResult getDuration(@PathVariable("ticker") String ticker,@PathVariable("year") String year){
         return success(stockService.getStockDuration(ticker, year));

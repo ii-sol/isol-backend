@@ -4,7 +4,10 @@ import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_common.domain.account.dto.*;
+import shinhan.server_common.domain.account.dto.AccountFindOneResponse;
+import shinhan.server_common.domain.account.dto.AccountHistoryFindAllResponse;
+import shinhan.server_common.domain.account.dto.AccountTransmitOneRequest;
+import shinhan.server_common.domain.account.dto.AccountTransmitOneResponse;
 import shinhan.server_common.domain.account.service.AccountService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
@@ -33,9 +36,8 @@ public class AccountController {
 
     //이체하기 - 공통
     @PostMapping("transmit")
-    public ApiUtils.ApiResult transmitMoney(@RequestBody AccountTransmitOneRequest transferRequest) throws AuthException {
-        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        AccountTransmitOneResponse response = accountService.transferMoney(loginUserSerialNumber, transferRequest);
+    public ApiUtils.ApiResult transmitMoney(@RequestBody AccountTransmitOneRequest transferRequest){
+        AccountTransmitOneResponse response = accountService.transferMoney(transferRequest);
         return success(response);
     }
 
@@ -46,13 +48,5 @@ public class AccountController {
         List<AccountHistoryFindAllResponse> response = accountService.findAccountHistory(loginUserSerialNumber, year, month, status);
         return success(response);
 
-    }
-
-    //부모가 아이 계좌 조회
-    @GetMapping("find/{csn}")
-    public ApiUtils.ApiResult findChildAccount(@PathVariable("csn") Long csn) throws AuthException {
-        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        ChildAccountFindOneResponse response = accountService.findChildAccount(csn, 2);
-        return success(response);
     }
 }

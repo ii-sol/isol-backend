@@ -1,27 +1,25 @@
-package shinhan.server_common.domain.invest.service;
+package shinhan.server_child.domain.invest.service;
 
 import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_MONEY;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shinhan.server_child.domain.invest.dto.InvestStockRequest;
+import shinhan.server_child.domain.invest.dto.InvestTradeDetailResponse;
+import shinhan.server_child.domain.invest.dto.PortfolioResponse;
+import shinhan.server_child.domain.invest.dto.StockHistoryResponse;
+import shinhan.server_child.domain.invest.entity.Portfolio;
+import shinhan.server_child.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.account.entity.Account;
-import shinhan.server_common.domain.invest.dto.InvestStockRequest;
-import shinhan.server_common.domain.invest.dto.InvestTradeDetailResponse;
-import shinhan.server_common.domain.invest.dto.PortfolioResponse;
-import shinhan.server_common.domain.invest.dto.StockHistoryResponse;
-import shinhan.server_common.domain.invest.entity.CorpCode;
-import shinhan.server_common.domain.invest.entity.Portfolio;
-import shinhan.server_common.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
+import shinhan.server_child.domain.invest.repository.PortfolioRepository;
+import shinhan.server_child.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
-import shinhan.server_common.domain.invest.repository.PortfolioRepository;
-import shinhan.server_common.domain.invest.repository.StockHistoryRepository;
 import shinhan.server_common.domain.invest.repository.StockRepository;
+import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.utils.account.AccountUtils;
 
@@ -47,16 +45,12 @@ public class InvestService {
         this.accountUtils = accountUtils;
     }
 
-    public List<StockHistoryResponse> getStockHistory(String account,short status,int year,int month){
+    public List<StockHistoryResponse> getStockHisttory(String account,short status){
         List<StockHistory> result;
-        LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
-        Timestamp startTimeStamp = Timestamp.valueOf(startDateTime);
-        Timestamp endTimeStamp = Timestamp.valueOf(endDateTime);
         if(status == 0){
-            result = stockHistoryRepository.findByAccountNumAndCreateDateBetween(account,startTimeStamp,endTimeStamp);
+            result = stockHistoryRepository.findByAccountNum(account);
         }else
-            result = stockHistoryRepository.findByAccountNumAndTradingCodeAndCreateDateBetween(account,status,startTimeStamp,endTimeStamp);
+            result = stockHistoryRepository.findByAccountNumAndTradingCode(account,status);
         List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
         for(StockHistory data : result)
         {
@@ -67,7 +61,7 @@ public class InvestService {
                 .ticker(data.getTicker())
                 .companyName(companyName)
                 .quantity(data.getQuantity())
-//                .createDate(data.getCreateDate())
+                .createDate(data.getCreateDate())
                 .build();
             stockHistoryResponseList.add(stockHistoryResponse);
         }
@@ -86,14 +80,13 @@ public class InvestService {
             double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
             int averagePrice = data.getAveragePrice();
             String companyName = stockCurrent2.getCompanyName();
-
+            System.out.println(companyName);
             double profit = (double) currentPrice / averagePrice*100 -100;
             int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
-            Optional<CorpCode> byStockCode = corpCodeRepository.findByStockCode(
-                Integer.parseInt(data.getTicker()));
+
             investTradeDetailResponseList.add(
                 InvestTradeDetailResponse.builder()
-                    .CompanyName(byStockCode.get().getCorpName())
+                    .CompanyName(companyName)
                     .ticker(data.getTicker())
                     .evaluationAmount((int) currentPrice)
                     .profit(profit)
@@ -185,6 +178,7 @@ public class InvestService {
                 portfolioRepository.save(prePortfolio.get());
             }
             accountUtils.transferMoneyByAccount(systempInvestAccount,userAccount,currentPrice*investStockRequest.getQuantity(),1);
+
             return true;
         }
     }

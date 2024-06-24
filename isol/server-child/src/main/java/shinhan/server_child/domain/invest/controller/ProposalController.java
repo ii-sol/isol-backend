@@ -14,22 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.service.InvestProposalServiceChild;
-import shinhan.server_common.domain.invest.dto.InvestProposalDetailResponse;
-import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
-import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
-import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
-import shinhan.server_common.domain.invest.service.InvestProposalService;
+import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
+import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
+import shinhan.server_child.domain.invest.service.InvestProposalService;
 import shinhan.server_child.domain.user.service.UserService;
-import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
-import shinhan.server_common.domain.invest.service.StockService;
+import shinhan.server_common.domain.user.dto.ParentsFindOneResponse;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
+import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 
 @RestController
 @Slf4j
@@ -37,75 +32,66 @@ import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 public class ProposalController {
 
     InvestProposalService investProposalService;
-    InvestProposalServiceChild investProposalServiceChild;
     UserService userService;
-    StockService stockService;
-    JwtService jwtService;
 
+    JwtService jwtService;
     @Autowired
-    ProposalController(InvestProposalService investProposalService, UserService userService,
-        JwtService jwtService, StockService stockService, InvestProposalServiceChild investProposalServiceChild) {
+    ProposalController(InvestProposalService investProposalService,UserService userService, JwtService jwtService){
         this.investProposalService = investProposalService;
         this.userService = userService;
         this.jwtService = jwtService;
-        this.stockService = stockService;
-        this.investProposalServiceChild = investProposalServiceChild;
     }
+//    //투자 제안 내역 달변 조회하기(부모)
+//    @GetMapping("/invest/history/{co}")
+//    public ApiResult getChildInvestProposal(@RequestParam("year") int year,
+//        @RequestParam("month") int month, @PathVariable("co") int childOrder) {
+//        ApiResult<Integer> stringApiResult = ApiResult.responseSuccess(childOrder);
+//        return stringApiResult;
+//    }
+
     //투자 제안 내역 달변 조회하기(아이)
     @GetMapping("/invest/history/{status}")
-    public ApiResult getInvestProposal(@RequestParam("year") int year,
-        @RequestParam("month") int month, @PathVariable("status") short status
-    ) throws AuthException {
+    public ApiUtils.ApiResult getInvestProposal(@RequestParam("year") int year,
+        @RequestParam("month") int month,@PathVariable("status") short status
+        ) throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
-        Map<Long, String> family = new HashMap<>();
-        for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
-            family.put(familyInfoResponse.getSn(), familyInfoResponse.getName());
+        Map<Long,String> family = new HashMap<>();
+        for(FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo())
+        {
+            family.put(familyInfoResponse.getSn(),familyInfoResponse.getName());
         }
-        List<InvestProposalHistoryResponse> result = investProposalServiceChild.getProposalInvestHistory(
-            userSn, year, month, status);
-        for (InvestProposalHistoryResponse investProposalHistoryResponse : result) {
-            investProposalHistoryResponse.setRecieverName(
-                family.get(Long.parseLong(investProposalHistoryResponse.getRecieverName())));
+        List<InvestProposalHistoryResponse> result = investProposalService.getProposalInvestHistory(userSn,year,month,status);
+        for(InvestProposalHistoryResponse investProposalHistoryResponse : result){
+            investProposalHistoryResponse.setParentAlias(family.get(Long.parseLong(investProposalHistoryResponse.getParentAlias())));
         }
         return ApiUtils.success(result);
     }
-    //투자 제안 디테일
-    @GetMapping("/invest/{proposalId}/{year}")
-    public ApiResult getInvestProposalDetail(@PathVariable("proposalId") int proposalId,
-        @PathVariable("year") String yaer)
-        throws AuthException {
-        long userSn = jwtService.getUserInfo().getSn();
-        InvestProposal proposalInvestDetail = investProposalServiceChild.getProposalInvestDetail(
-            proposalId, userSn);
 
-        StockFindDetailResponse stockDetail = stockService.getStockDetail2(
-            proposalInvestDetail.getTicker(), yaer);
-        InvestProposalResponse investProposalResponse = null;
-        if (proposalInvestDetail.getStatus() == 5) {
-            investProposalResponse = investProposalService.getInvestProposalResponse(proposalId);
-        }
-        return ApiUtils.success(InvestProposalDetailResponse.builder().companyInfo(stockDetail)
-            .requestProposal(proposalInvestDetail).responseProposal(investProposalResponse)
-            .build());
+    //전체 제안 내역 달별 조회하기(아이)
+    @GetMapping("/history")
+    public ApiResult getProposal(@RequestParam("year") int year, @RequestParam("month") int month) {
+        return ApiResult.responseSuccess(year);
     }
+
 
     //투자 제안하기
     @PostMapping("/invest/{psn}")
-    public ApiResult proposeInvest(@PathVariable("psn") Long parentSn, @RequestBody
-    InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
+    public ApiUtils.ApiResult proposeInvest(@PathVariable("psn") Long parentSn,@RequestBody
+        InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         boolean checkParent = false;
         for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
+            System.out.println(familyInfoResponse.getName());
             if (familyInfoResponse.getSn() == parentSn) {
                 checkParent = true;
                 break;
             }
         }
-        if (!checkParent) {
+        if(!checkParent)
+        {
             throw new CustomException(ErrorCode.FAILED_NO_PARENT);
         }
-        Long result = investProposalServiceChild.proposalInvest(loginUserSerialNumber, parentSn,
-            investProposalSaveRequest);
+        Long result = investProposalService.proposalInvest(loginUserSerialNumber,parentSn,investProposalSaveRequest);
         return ApiUtils.success("성공했습니다.");
     }
 }

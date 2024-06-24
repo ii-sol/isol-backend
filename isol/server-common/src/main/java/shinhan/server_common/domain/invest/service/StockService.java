@@ -1,8 +1,8 @@
 package shinhan.server_common.domain.invest.service;
 
 import static shinhan.server_common.global.exception.ErrorCode.FAILED_NOT_FOUNT_TICKER;
+import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_MONEY;
 
-import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.global.exception.CustomException;
 
 @Service
-@Transactional
 public class StockService {
     StockRepository stockRepository;
     CorpCodeRepository corpCodeRepository;
@@ -88,6 +87,7 @@ public class StockService {
         StockNaverDuraion[] stockDuraionPriceOutput = stockRepository.getApiCurrentDuraion(ticker);
         List<StockNaverDuraion> stockNaverDuraionList = Arrays.stream(stockDuraionPriceOutput).toList();
         int size = stockDuraionPriceOutput.length;
+        System.out.println(size);
         double changePrice;
         try {
             changePrice =
@@ -95,9 +95,6 @@ public class StockService {
                     size - 2).getClosePrice();
         } catch (IndexOutOfBoundsException exception){
             throw new CustomException( FAILED_NOT_FOUNT_TICKER);
-        }
-        for(int i=0;i<size;i++){
-            System.out.println(stockNaverDuraionList.get(i).getClosePrice());
         }
         String changeSign;
         if(changePrice<0){
@@ -108,11 +105,12 @@ public class StockService {
             changeSign = "2";
         }
         return StockFindCurrentResponse.builder()
-            .currentPrice(String.valueOf(stockNaverDuraionList.get(size-1).getClosePrice()*100))
+            .currentPrice(String.valueOf(stockNaverDuraionList.get(1).getClosePrice()*100))
             .changePrice(String.valueOf(changePrice))
-            .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(size-2).getClosePrice()*100))
+            .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(0).getClosePrice()))
             .changeSign(changeSign)
             .companyName(String.valueOf(corpCodeRepository.findByStockCode(Integer.parseInt(ticker))))
+            .companyName(ticker)
             .ticker(ticker)
             .build();
     }

@@ -18,6 +18,6 @@ public interface ParentsRepository extends JpaRepository<Parents, Integer> {
     @Procedure(procedureName = "generate_serial_num")
     Long generateSerialNum();
 
-    @Query("SELECT p.serialNum AS sn, p.name AS name, p.phoneNum AS phoneNum, p.profileId AS profileId FROM Parents p")
+    @Query("SELECT p.name AS name, p.phoneNum AS phoneNum FROM Parents p")
     List<ContactsFindOneInterface> findAllContacts();
 }

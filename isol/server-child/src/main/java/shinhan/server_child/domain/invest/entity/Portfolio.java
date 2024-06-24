@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_child.domain.invest.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +33,7 @@ public class Portfolio {
     @Column(name = "average_price")
     private Integer averagePrice;
 
-    @Column(name = "account_num",nullable = false)
+    @Column(name = "account_id",nullable = false)
     private String accountNum;
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "account_id", nullable = false)

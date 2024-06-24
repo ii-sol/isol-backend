@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_child.domain.invest.entity;
 
 
 import jakarta.persistence.Column;
@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
 import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,8 +39,8 @@ public class StockHistory {
     @Column(name = "trading_code", nullable = false)
     private Short tradingCode; // Use Short for tinyint
 
-    @Column(name = "create_date", nullable = false, updatable = false)
-    private Timestamp createDate=new Timestamp(System.currentTimeMillis());
+    @Column(name = "create_date",nullable = false)
+    private Date createDate = new Date();
 
     public StockHistory(String accountNum, String ticker, Integer stockPrice,
         Short quantity,
