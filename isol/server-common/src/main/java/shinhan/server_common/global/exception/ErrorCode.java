@@ -33,6 +33,7 @@ public enum ErrorCode {
     FAILED_NO_PARENT(HttpStatus.CONFLICT,"부모님에게 요청해주세요."),
     FAILED_NO_CHILD(HttpStatus.CONFLICT,"자신의 아아기 아닙니다."),
     FOUND_NOT_INVEST_PROPOSAL(HttpStatus.CONFLICT,"투자제한을 찾을 수 없습니다."),
+    FAILED_NOT_MY_CHILD(HttpStatus.CONFLICT,"자신의 아이가 아닙니다."),
     //주식 예외
     FAILED_SHORTAGE_MONEY(HttpStatus.CONFLICT,"보유수량이 부족합니다.");
 

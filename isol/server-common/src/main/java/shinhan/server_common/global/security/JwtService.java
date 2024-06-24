@@ -147,7 +147,7 @@ public class JwtService {
         }
     }
 
-    public boolean isMyFamily(long familySn) throws Exception {
+    public boolean isMyFamily(long familySn) throws AuthException {
         return getUserInfo().getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 }

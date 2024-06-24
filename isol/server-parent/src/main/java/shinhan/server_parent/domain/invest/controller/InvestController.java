@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.invest.dto.PortfolioResponse;
 import shinhan.server_common.domain.invest.service.InvestService;
+import shinhan.server_common.global.exception.CustomException;
+import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.account.AccountUtils;
@@ -33,6 +35,9 @@ public class InvestController {
         public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status, @RequestParam("year") int year,
             @RequestParam("month") int month,@RequestParam("csn")Long csn)
             throws AuthException {
+                if(!jwtService.isMyFamily(csn)){
+                        throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+                }
                 //자식인지 확인
                 Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
                 Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
