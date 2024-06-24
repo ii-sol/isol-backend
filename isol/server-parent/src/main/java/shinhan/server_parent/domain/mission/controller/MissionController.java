@@ -76,8 +76,8 @@ public class MissionController {
         return error("미션을 조회할 수 없습니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{child-sn}/{status}")
-    public ApiUtils.ApiResult getMissions(@PathVariable("child-sn") long childSn, @PathVariable("status") int status, HttpServletResponse response) throws Exception {
+    @GetMapping("/{child-sn}/filter")
+    public ApiUtils.ApiResult getMissions(@PathVariable("child-sn") long childSn, @RequestParam(value = "status") int status, HttpServletResponse response) throws AuthException {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         if (jwtService.isMyFamily(childSn)) {
@@ -126,7 +126,7 @@ public class MissionController {
     public ApiUtils.ApiResult createMission(@Valid @RequestBody MissionSaveRequest missionSaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if(userInfo.getSn() == missionSaveRequest.getParentsSn()){
+        if (userInfo.getSn() == missionSaveRequest.getParentsSn()) {
             if (jwtService.isMyFamily(missionSaveRequest.getChildSn())) {
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
 
@@ -142,7 +142,7 @@ public class MissionController {
     public ApiUtils.ApiResult updateMission(@Valid @RequestBody MissionAnswerSaveRequest missionAnswerSaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        if(userInfo.getSn() == missionAnswerSaveRequest.getParentsSn()){
+        if (userInfo.getSn() == missionAnswerSaveRequest.getParentsSn()) {
             if (jwtService.isMyFamily(missionAnswerSaveRequest.getChildSn())) {
                 MissionFindOneResponse mission = missionService.updateMission(missionAnswerSaveRequest);
 

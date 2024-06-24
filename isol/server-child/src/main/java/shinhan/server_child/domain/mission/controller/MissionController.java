@@ -74,8 +74,8 @@ public class MissionController {
         return success(missions);
     }
 
-    @GetMapping("/{status}")
-    public ApiUtils.ApiResult getMissions(@PathVariable("status") int status, HttpServletResponse response) throws Exception {
+    @GetMapping("/filter")
+    public ApiUtils.ApiResult getMissions(@RequestParam(value = "status") int status, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         long childSn = userInfo.getSn();
