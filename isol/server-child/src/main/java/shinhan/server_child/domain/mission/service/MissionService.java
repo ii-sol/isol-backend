@@ -1,10 +1,10 @@
 package shinhan.server_child.domain.mission.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Transactional(transactionManager = "missionTransactionManager")
+@Transactional
 public class MissionService {
 
     private final MissionRepository missionRepository;
@@ -72,12 +72,7 @@ public class MissionService {
                 .status(1)
                 .build();
 
-        Mission createdMission = missionRepository.save(mission);
-
-        Mission savedMission = missionRepository.findById(createdMission.getId())
-                .orElseThrow(() -> new NoSuchElementException("미션이 생성되지 않았습니다."));
-
-        return savedMission.convertToMissionFindOneResponse();
+        return missionRepository.save(mission).convertToMissionFindOneResponse();
     }
 
     public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) throws BadRequestException {
