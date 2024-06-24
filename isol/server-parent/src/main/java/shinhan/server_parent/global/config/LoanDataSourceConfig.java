@@ -9,11 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 @EnableConfigurationProperties(DataSourceProperties.class)
@@ -57,7 +59,7 @@ public class LoanDataSourceConfig {
 
     @Bean
     public PlatformTransactionManager loanTransactionManager(
-            @Qualifier("loanDataSource") DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+            @Qualifier("loanEntityManagerFactory") LocalContainerEntityManagerFactoryBean loanEntityManagerFactory) {
+        return new JpaTransactionManager(Objects.requireNonNull(loanEntityManagerFactory.getObject()));
     }
 }
