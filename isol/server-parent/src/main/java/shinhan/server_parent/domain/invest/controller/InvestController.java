@@ -32,8 +32,12 @@ public class InvestController {
     public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status, @RequestParam("year") int year,
                                                @RequestParam("month") int month, @RequestParam("csn") Long csn)
             throws AuthException {
-        if (!jwtService.isMyFamily(csn)) {
-            throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+                if(!jwtService.isMyFamily(csn)){
+                        throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+                }
+                Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
+                    csn, 2);
+                return success(investService.getStockHistory(accountByUserSerialNumberAndStatus.getAccountNum(),status,year,month));
         }
         //자식인지 확인
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
@@ -41,15 +45,16 @@ public class InvestController {
                 csn, 2);
         return success(investService.getStockHistory(accountByUserSerialNumberAndStatus.getAccountNum(), status, year, month));
     }
-
-    //포트폴리오 조회하기(부모)
-    @GetMapping("/portfolio")
-    public ApiUtils.ApiResult getInvestPortfolio(@RequestParam("csn") Long csn) throws AuthException {
-        //자식인지 확인
-        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
-        Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
-                csn, 2);
-        PortfolioResponse result = investService.getPortfolio(accountByUserSerialNumberAndStatus.getAccountNum());
-        return success(result);
-    }
+        //포트폴리오 조회하기(부모)
+        @GetMapping("/portfolio")
+        public ApiUtils.ApiResult getInvestPortfolio(@RequestParam("csn")Long csn) throws AuthException {
+                if(!jwtService.isMyFamily(csn)){
+                        throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+                }
+                Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
+                Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
+                    csn, 2);
+                PortfolioResponse result = investService.getPortfolio(accountByUserSerialNumberAndStatus.getAccountNum());
+                return success(result);
+        }
 }
