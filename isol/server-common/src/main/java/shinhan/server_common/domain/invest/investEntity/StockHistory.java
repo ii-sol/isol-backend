@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_common.domain.invest.investEntity;
 
 
 import jakarta.persistence.Column;
@@ -52,11 +52,4 @@ public class StockHistory {
         this.quantity = quantity;
         this.tradingCode = tradingCode;
     }
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "account_num", referencedColumnName = "account_num", nullable = false)
-//    private Account account;
-
-    // Getters and setters omitted for brevity
-
-    // Additional methods for stock history management can be added here
 }

@@ -24,6 +24,6 @@ public class InvestProposalResponseParent {
     @Column(name = "message", length = 255)
     private String message;
 
-    @Column(name = "stock_code", unique = true)
-    private Timestamp create_date;
+    @Column(name = "create_date", unique = true)
+    private Timestamp createDate;
 }

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 @AllArgsConstructor
 @Builder
 @Getter

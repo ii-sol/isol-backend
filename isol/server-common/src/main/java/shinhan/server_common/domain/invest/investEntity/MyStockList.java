@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_common.domain.invest.investEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,20 +26,9 @@ public class MyStockList {
 
     @Column(name = "ticker", length = 12)
     private String ticker;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_sn", nullable = false, insertable = false, updatable = false)
-//    private TempUser user;  // Assuming a User entity exists with an "id" field
-
-    // Getters and setters (omitted for brevity)
-
-    public MyStockList() {
-    }
 
     public MyStockList(Long userSn, String ticker) {
         this.userSn = userSn;
         this.ticker = ticker;
     }
-
-    // ... other methods (optional)
 }
