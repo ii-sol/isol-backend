@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthlyAllowanceFindAllResponse {
+    private int id;
     private int amount;
     private int period;
     private LocalDateTime createDate;
@@ -21,6 +22,7 @@ public class MonthlyAllowanceFindAllResponse {
 
     public static MonthlyAllowanceFindAllResponse of(MonthlyAllowance allowance, Integer period){
         return MonthlyAllowanceFindAllResponse.builder()
+                .id(allowance.getId())
                 .amount(allowance.getPrice())
                 .period(period)
                 .createDate(allowance.getCreateDate())

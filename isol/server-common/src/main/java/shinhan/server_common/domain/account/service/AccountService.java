@@ -10,6 +10,7 @@ import shinhan.server_common.domain.account.dto.AccountTransmitOneRequest;
 import shinhan.server_common.domain.account.dto.AccountTransmitOneResponse;
 import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.account.repository.AccountHistoryRepository;
+import shinhan.server_common.domain.account.repository.AccountRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.account.AccountUtils;
@@ -26,6 +27,7 @@ import java.util.List;
 @Transactional
 public class AccountService {
 
+    private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountUtils accountUtils;
     private final UserUtils userUtils;
@@ -35,12 +37,14 @@ public class AccountService {
 
         String accountNum = makeAccountNumber(phoneNumber, status);
         System.out.println(accountNum);
-        Account.builder()
+        Account newAccount = Account.builder()
                 .accountNum(accountNum)
                 .userSerialNumber(serialNumber)
                 .balance(0)
                 .status(status)
                 .build();
+
+        accountRepository.save(newAccount);
     }
 
     //계좌 개별 조회
