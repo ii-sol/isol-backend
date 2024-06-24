@@ -11,9 +11,11 @@ import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
+import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_common.notification.utils.MessageHandler;
 
 import java.util.List;
 
@@ -27,7 +29,8 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class MissionController {
 
     private final MissionService missionService;
-    private JwtService jwtService;
+    private final UserService userService;
+    private final JwtService jwtService;
 
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
@@ -108,6 +111,8 @@ public class MissionController {
         if (userInfo.getSn() == missionSaveRequest.getChildSn()) {
             if (jwtService.isMyFamily(missionSaveRequest.getParentsSn())) {
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
+
+                String newMessage = MessageHandler.getMessage(310, userService.getChild(userInfo.getSn()).getName());
 
                 return success(mission);
             }
