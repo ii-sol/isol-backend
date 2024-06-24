@@ -37,6 +37,8 @@ public class MyStockController {
     public ApiUtils.ApiResult deleteMyStock(@RequestParam("ticker") String ticker)
         throws AuthException {
         long userSn = jwtService.getUserInfo().getSn();
+        System.out.println(userSn);
+        System.out.println(ticker);
         myStockService.delete(userSn,ticker);
         return success("삭제 성공");
     }

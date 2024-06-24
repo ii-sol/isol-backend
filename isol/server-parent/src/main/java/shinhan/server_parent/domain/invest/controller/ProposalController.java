@@ -102,5 +102,7 @@ public class ProposalController {
         boolean b = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
             responseInvestProposal);
         return ApiUtils.success("성공");
+
     }
+
 }

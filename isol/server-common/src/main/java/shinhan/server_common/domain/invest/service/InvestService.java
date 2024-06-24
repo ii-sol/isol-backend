@@ -67,7 +67,7 @@ public class InvestService {
                 .ticker(data.getTicker())
                 .companyName(companyName)
                 .quantity(data.getQuantity())
-//                .createDate(data.getCreateDate())
+                .createDate(data.getCreateDate())
                 .build();
             stockHistoryResponseList.add(stockHistoryResponse);
         }
@@ -86,7 +86,7 @@ public class InvestService {
             double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
             int averagePrice = data.getAveragePrice();
             String companyName = stockCurrent2.getCompanyName();
-            System.out.println(companyName);
+
             double profit = (double) currentPrice / averagePrice*100 -100;
             int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
             Optional<CorpCode> byStockCode = corpCodeRepository.findByStockCode(

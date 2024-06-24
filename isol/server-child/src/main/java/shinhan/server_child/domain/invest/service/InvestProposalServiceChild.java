@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.invest.repository.InvestProposalRepositoryChild;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
@@ -15,6 +16,7 @@ import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 
 @Service
+@Transactional
 public class InvestProposalServiceChild {
     InvestProposalRepositoryChild investProposalRepositoryChild;
 

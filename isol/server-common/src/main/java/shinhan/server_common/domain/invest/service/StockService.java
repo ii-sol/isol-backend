@@ -1,8 +1,8 @@
 package shinhan.server_common.domain.invest.service;
 
 import static shinhan.server_common.global.exception.ErrorCode.FAILED_NOT_FOUNT_TICKER;
-import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_MONEY;
 
+import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.global.exception.CustomException;
 
 @Service
+@Transactional
 public class StockService {
     StockRepository stockRepository;
     CorpCodeRepository corpCodeRepository;
