@@ -103,4 +103,5 @@ public class ProposalController {
             responseInvestProposal);
         return ApiUtils.success("성공");
     }
+
 }

@@ -8,7 +8,6 @@ import shinhan.server_common.domain.invest.entity.MyStockList;
 
 @Repository
 public interface StockListRepository extends JpaRepository<MyStockList,Long> {
-
     List<MyStockList> findAllByUserSn(Long integers);
     void deleteByUserSnAndTicker(Long userSn, String ticker);
     Optional<MyStockList> findAllByUserSnAndTicker(Long userSn, String ticker);

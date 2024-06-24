@@ -10,38 +10,44 @@ import shinhan.server_common.domain.invest.entity.MyStockList;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.domain.invest.repository.StockListRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
-import shinhan.server_common.domain.invest.service.StockService;
 
 @Service
+@Transactional
 public class MyStockService {
+
     StockListRepository stockListRepository;
     StockService stockService;
     CorpCodeRepository corpCodeRepository;
+
     @Autowired
-    MyStockService(StockListRepository stockListRepository,StockService stockService,CorpCodeRepository corpCodeRepository){
+    MyStockService(StockListRepository stockListRepository, StockService stockService,
+        CorpCodeRepository corpCodeRepository) {
+
         this.stockListRepository = stockListRepository;
         this.stockService = stockService;
         this.corpCodeRepository = corpCodeRepository;
     }
 
     //공통
-    public MyStockListResponse findMyStocks(Long userSn){
+    public MyStockListResponse findMyStocks(Long userSn) {
         List<MyStockList> result = stockListRepository.findAllByUserSn(userSn);
         List<StockFindCurrentResponse> stockFindCurrentResponseList = new ArrayList<>();
-        for(int i=0;i<result.size();i++){
-            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(result.get(i).getTicker());
+        for (int i = 0; i < result.size(); i++) {
+            StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
+                result.get(i).getTicker());
             stockFindCurrentResponse.setCompanyName(
-                String.valueOf(corpCodeRepository.findByStockCode(
-                    Integer.parseInt(result.get(i).getTicker()))));
-            stockFindCurrentResponseList.add(stockFindCurrentResponse);
-        }
-        MyStockListResponse myStockListResponse = new MyStockListResponse(
-            stockFindCurrentResponseList);
-        return myStockListResponse;
-    }
-    //공통
-    public boolean delete(Long userSn,String ticker){
-        stockListRepository.deleteByUserSnAndTicker(userSn,ticker);
-        return true;
-    }
-}
+                corpCodeRepository.findByStockCode(
+                    Integer.parseInt(result.get(i).getTicker())).get().getCorpName()
+            );
+                    stockFindCurrentResponseList.add(stockFindCurrentResponse);
+                }
+                MyStockListResponse myStockListResponse = new MyStockListResponse(
+                    stockFindCurrentResponseList);
+                return myStockListResponse;
+            }
+
+            //공통
+            public void delete (Long userSn, String ticker){
+                stockListRepository.deleteByUserSnAndTicker(userSn, ticker);
+                }
+            }
