@@ -4,12 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import shinhan.server_common.domain.account.dto.AccountFindOneResponse;
-import shinhan.server_common.domain.account.dto.AccountHistoryFindAllResponse;
-import shinhan.server_common.domain.account.dto.AccountTransmitOneRequest;
-import shinhan.server_common.domain.account.dto.AccountTransmitOneResponse;
+import shinhan.server_common.domain.account.dto.*;
 import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.account.repository.AccountHistoryRepository;
+import shinhan.server_common.domain.account.repository.AccountRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.account.AccountUtils;
@@ -26,6 +24,7 @@ import java.util.List;
 @Transactional
 public class AccountService {
 
+    private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
     private final AccountUtils accountUtils;
     private final UserUtils userUtils;
@@ -35,12 +34,14 @@ public class AccountService {
 
         String accountNum = makeAccountNumber(phoneNumber, status);
         System.out.println(accountNum);
-        Account.builder()
+        Account newAccount = Account.builder()
                 .accountNum(accountNum)
                 .userSerialNumber(serialNumber)
                 .balance(0)
                 .status(status)
                 .build();
+
+        accountRepository.save(newAccount);
     }
 
     //계좌 개별 조회
@@ -73,15 +74,19 @@ public class AccountService {
     }
 
     // 이체하기
-    public AccountTransmitOneResponse transferMoney(AccountTransmitOneRequest request) {
-        Account senderAccount = accountUtils.getAccountByAccountNum(request.getSendAccountNum());
-        Account recieverAccount = accountUtils.getAccountByAccountNum(request.getReceiveAccountNum());
+    public AccountTransmitOneResponse transferMoney(Long loginUserSerialNumber, AccountTransmitOneRequest request) {
+
+        Account senderAccount = accountUtils.getAccountByUserSerialNumberAndStatus(loginUserSerialNumber, request.getSendStatus());
+        Account recieverAccount = accountUtils.getAccountByAccountNum(request.getReceiverAccountNum());
         String recieverName = userUtils.getNameBySerialNumber(recieverAccount.getUserSerialNumber());
 
         accountUtils.transferMoneyByAccount(senderAccount, recieverAccount, request.getAmount(), 1);
 
         return AccountTransmitOneResponse.of(senderAccount, request, recieverName);
     }
+
+    //부모가 아이 계좌 조회
+
 
     //계좌 번호 형식 맞춰서 만들기
     private static String makeAccountNumber(String phoneNumber, Integer status) {
@@ -94,5 +99,10 @@ public class AccountService {
         String accountSuffix = phoneParts[1] + "-" + phoneParts[2] + "-" + String.format("%02d", status);
 
         return "270-" + accountSuffix;
+    }
+
+    public ChildAccountFindOneResponse findChildAccount(Long childSerialNumber, int status) {
+        Account findAccount = accountUtils.getAccountByUserSerialNumberAndStatus(childSerialNumber, status);
+        return ChildAccountFindOneResponse.from(findAccount);
     }
 }

@@ -1,19 +1,16 @@
 package shinhan.server_child.domain.loan.controller;
 
-import jakarta.security.auth.message.AuthException;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shinhan.server_child.domain.loan.dto.LoanDto;
 import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.ApiUtils.ApiResult;
+
+import java.util.List;
 
 @RestController
 public class LoanController {
@@ -36,7 +33,7 @@ public class LoanController {
         List<LoanDto> loans = loanService.getLoanByChildId(childId);
 
 
-        for(LoanDto loan : loans) {
+        for (LoanDto loan : loans) {
             String parentName = userService.getParentsAlias(childId, loan.getParentId());
             loan.setParentName(parentName);
         }
@@ -44,8 +41,7 @@ public class LoanController {
     }
 
     @PostMapping("/child/loan/create")
-    public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan)
-        throws AuthException {
+    public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) throws AuthException {
 
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
@@ -77,7 +73,7 @@ public class LoanController {
 
         long childId = jwtService.getUserInfo().getSn();
 
-        int childScore =userService.getChild(childId).getScore();
+        int childScore = userService.getChild(childId).getScore();
 
         return ApiUtils.success(childScore);
     }

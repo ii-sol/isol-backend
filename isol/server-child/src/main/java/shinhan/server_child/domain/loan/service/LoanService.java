@@ -1,7 +1,5 @@
 package shinhan.server_child.domain.loan.service;
 
-import jakarta.security.auth.message.AuthException;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.loan.dto.LoanDto;
@@ -9,8 +7,11 @@ import shinhan.server_child.domain.loan.entity.Loan;
 import shinhan.server_child.domain.loan.repository.LoanCustomRepository;
 import shinhan.server_child.domain.loan.repository.LoanRepository;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
+
+import java.util.List;
 
 
 @Service
@@ -23,7 +24,7 @@ public class LoanService {
 
 
     public LoanService(LoanRepository loanRepository, UserService userService,
-        JwtService jwtService) {
+                       JwtService jwtService) {
         this.loanCustomRepository = loanRepository;
         this.loanRepository = loanRepository;
         this.userService = userService;
@@ -39,23 +40,24 @@ public class LoanService {
 
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
-        Long childId = userInfoResponse.getSn();
-        int childScore =userService.getChild(childId).getScore();
+        long childId = userInfoResponse.getSn();
 
         loanDto.setChildId(childId);
         Long parentId = loanDto.getParentId();
         loanDto.setParentName(userService.getParentsAlias(childId, parentId));
 
+        int childScore = userService.getScore(childId) + 5 * findCompleteLoanCount(childId);
+
         double InterestRate = userService.getChildManage(childId).getBaseRate();
 
-        if(childScore > 90){
-            InterestRate =- 2.0;
-        } else if(childScore > 70){
-            InterestRate =- 1.0;
-        } else if(childScore > 30){
-            InterestRate =+ 1.0;
-        } else if(childScore > 10){
-            InterestRate =- 1.0;
+        if (childScore > 90) {
+            InterestRate = -2.0;
+        } else if (childScore > 70) {
+            InterestRate = -1.0;
+        } else if (childScore > 30) {
+            InterestRate = +1.0;
+        } else if (childScore > 10) {
+            InterestRate = -1.0;
         }
         loanDto.setInterestRate(InterestRate);
 
@@ -67,4 +69,10 @@ public class LoanService {
     public LoanDto findOne(int loanId) {
         return loanCustomRepository.findLoanById(loanId);
     }
+
+    public int findCompleteLoanCount(Long childId) {
+        return loanCustomRepository.findCompleteLoanCount(childId);
+    }
+
+
 }

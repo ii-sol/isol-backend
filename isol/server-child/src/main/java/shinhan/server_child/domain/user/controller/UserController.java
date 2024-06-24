@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.domain.account.service.AccountService;
 import shinhan.server_common.domain.user.dto.*;
@@ -29,6 +30,8 @@ public class UserController {
     private UserService userService;
     private AccountService accountService;
     private JwtService jwtService;
+    private LoanService loanService;
+
 
     @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
@@ -134,10 +137,16 @@ public class UserController {
     public ApiUtils.ApiResult getScore(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
+        long childId = jwtService.getUserInfo().getSn();
+
         ChildFindOneResponse user = userService.getChild(userInfo.getSn());
 
+        int score = user.getScore();
+
+        score += (5 * loanService.findCompleteLoanCount(childId));
+
         if (user != null) {
-            return success(user.getScore());
+            return success(score);
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
@@ -152,7 +161,8 @@ public class UserController {
     }
 
     @GetMapping("/users/child-manage")
-    public ApiUtils.ApiResult getChildManage(HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult getChildManage() throws Exception {
+
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.getChildManage(userInfo.getSn()));
@@ -168,8 +178,8 @@ public class UserController {
         ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
-            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 1);
-            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 2);
+            accountService.createAccount(user.getSn(), user.getPhoneNum(), 1);
+            accountService.createAccount(user.getSn(), user.getPhoneNum(), 2);
             return success("가입되었습니다.");
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -191,19 +201,19 @@ public class UserController {
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
-            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSerialNumber());
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSn());
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
             UserInfoResponse userInfoResponse = UserInfoResponse.builder()
-                    .sn(user.getSerialNumber())
+                    .sn(user.getSn())
                     .name(user.getName())
                     .profileId(user.getProfileId())
                     .familyInfo(myFamilyInfo)
                     .build();
             JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
                     .accessToken(jwtService.createAccessToken(userInfoResponse))
-                    .refreshToken(jwtService.createRefreshToken(user.getSerialNumber()))
+                    .refreshToken(jwtService.createRefreshToken(user.getSn()))
                     .build();
 
             jwtService.sendJwtToken(jwtTokenResponse);
@@ -237,7 +247,7 @@ public class UserController {
 
             ChildFindOneResponse user = userService.getChild(sn);
             UserInfoResponse userInfoResponse = UserInfoResponse.builder()
-                    .sn(user.getSerialNumber())
+                    .sn(user.getSn())
                     .name(user.getName())
                     .profileId(user.getProfileId())
                     .familyInfo(myFamilyInfo)
