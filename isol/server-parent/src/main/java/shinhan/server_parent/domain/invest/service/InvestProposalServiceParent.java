@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
-import shinhan.server_common.domain.invest.entity.InvestProposal;
+import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
@@ -50,7 +50,7 @@ public class InvestProposalServiceParent {
                 parentSn,
                 childSn, startTimeStamp, endTimeStamp);
         } else {
-            investProposalList = acceptInvestProposalRepositoryParent.findByParentSnAndChildSnAndTradingCodeAndCreateDateBetween(
+            investProposalList = acceptInvestProposalRepositoryParent.findByParentSnAndChildSnAndStatusAndCreateDateBetween(
                 parentSn, childSn, status, startTimeStamp, endTimeStamp);
         }
         for (InvestProposal data : investProposalList) {
@@ -91,9 +91,11 @@ public class InvestProposalServiceParent {
             resultInvestProposal.get().setStatus((short) 3);
         } else {
             resultInvestProposal.get().setStatus((short) 5);
+            System.out.println(resultInvestProposal.get().getMessage());
             investProposalResponseRepository.save(InvestProposalResponseParent.builder()
                 .message(proposal.getMessage())
                 .proposalId(proposalId)
+                .createDate(new Timestamp(System.currentTimeMillis()))
                 .build());
         }
         return true;

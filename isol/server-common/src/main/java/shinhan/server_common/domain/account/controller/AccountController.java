@@ -1,11 +1,11 @@
 package shinhan.server_common.domain.account.controller;
 
-import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_common.domain.account.dto.*;
 import shinhan.server_common.domain.account.service.AccountService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
