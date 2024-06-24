@@ -46,7 +46,7 @@ public class InvestController {
         //포트폴리오 조회하기(부모)
         @GetMapping("/portfolio")
         public ApiUtils.ApiResult getInvestPortfolio(@RequestParam("csn")Long csn) throws AuthException {
-                if(jwtService.isMyFamily(csn)){
+                if(!jwtService.isMyFamily(csn)){
                         throw new CustomException(ErrorCode.FAILED_NO_CHILD);
                 }
                 Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
