@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,8 +18,7 @@ import java.util.Objects;
 @EnableJpaRepositories(
         basePackages = {
                 "shinhan.server_common.domain.account.repository",
-                "shinhan.server_common.domain.invest.repository",
-                "shinhan.server_common.domain.entity"},
+                "shinhan.server_common.domain.invest.repository"},
         entityManagerFactoryRef = "commonEntityManagerFactory",
         transactionManagerRef = "commonTransactionManager")
 public class CommonDataSourceConfig {
@@ -51,8 +48,7 @@ public class CommonDataSourceConfig {
         em.setDataSource(dataSource);
         em.setPackagesToScan(
                 "shinhan.server_common.domain.account.entity",
-                "shinhan.server_common.domain.invest.entity",
-                "shinhan.server_common.domain.entity");
+                "shinhan.server_common.domain.invest.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -62,7 +58,7 @@ public class CommonDataSourceConfig {
 
     @Bean
     public PlatformTransactionManager commonTransactionManager(
-            @Qualifier("missionEntityManagerFactory") LocalContainerEntityManagerFactoryBean missionEntityManagerFactory) {
-        return new JpaTransactionManager(Objects.requireNonNull(missionEntityManagerFactory.getObject()));
+            @Qualifier("commonEntityManagerFactory") LocalContainerEntityManagerFactoryBean commonEntityManagerFactory) {
+        return new JpaTransactionManager(Objects.requireNonNull(commonEntityManagerFactory.getObject()));
     }
 }
