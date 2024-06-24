@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import shinhan.server_common.domain.invest.investEntity.StockHistory;
 
 public interface StockHistoryRepository extends JpaRepository<StockHistory,Long> {
-    List<StockHistory> findByAccountNumAndTradingCodeAndCreateDateBetween(String accountNum,short status,
+    List<StockHistory> findByAccountNumAndTradingCodeAndCreateDateBetween(String accountNum,short tradingCode,
         Timestamp startDate,Timestamp endDate);
     List<StockHistory> findByAccountNumAndCreateDateBetween(String accountNum,
     Timestamp startDate,Timestamp endDate);

@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.domain.invest.dto.InvestProposalDetailResponse;
 import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
+import shinhan.server_common.domain.invest.dto.InvestStockRequest;
 import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
 import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
 import shinhan.server_common.domain.invest.service.InvestProposalService;
+import shinhan.server_common.domain.invest.service.InvestService;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
@@ -26,6 +29,7 @@ import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.ApiUtils.ApiResult;
+import shinhan.server_common.global.utils.account.AccountUtils;
 import shinhan.server_parent.domain.invest.dto.ResponseInvestProposal;
 import shinhan.server_parent.domain.invest.service.InvestProposalServiceParent;
 import shinhan.server_parent.domain.user.service.UserService;
@@ -38,17 +42,21 @@ public class ProposalController {
     StockService stockService;
     JwtService jwtService;
     InvestProposalServiceParent investProposalServiceParent;
-
+    InvestService investService;
+    AccountUtils accountUtils;
     @Autowired
     ProposalController(InvestProposalService investProposalService, UserService userService,
         JwtService jwtService, StockService stockService,
-        InvestProposalServiceParent investProposalServiceParent
+        InvestProposalServiceParent investProposalServiceParent,
+        InvestService investService,AccountUtils accountUtils
     ) {
         this.investProposalService = investProposalService;
         this.userService = userService;
         this.jwtService = jwtService;
         this.stockService = stockService;
         this.investProposalServiceParent = investProposalServiceParent;
+        this.investService = investService;
+        this.accountUtils = accountUtils;
     }
 
     //투자 제안 내역 달변 조회하기
@@ -94,13 +102,18 @@ public class ProposalController {
 
     //투자 수락 및 거절하기
     @PostMapping("/invest/{proposalId}")
-    public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,
+    public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,@RequestParam("csn") Long csn,
         @RequestBody ResponseInvestProposal responseInvestProposal)
         throws AuthException {
         Long psn = jwtService.getUserInfo().getSn();
-        boolean b = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
+        Account account = accountUtils.getAccountByUserSerialNumberAndStatus(csn,2);
+        InvestProposal result = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
             responseInvestProposal);
-        return ApiUtils.success("성공");
+        boolean b = investService.investStock(account.getAccountNum(),
+            InvestStockRequest.builder().quantity(
+                    result.getQuantity()).ticker(result.getTicker()).trading(result.getTradingCode())
+                .build());
+        return ApiUtils.success(b);
     }
     @GetMapping("/invest/no-approve")
     public ApiUtils.ApiResult getNoApprove(@RequestParam("csn") Long csn) throws AuthException {

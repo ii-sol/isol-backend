@@ -78,7 +78,7 @@ public class InvestProposalServiceParent {
             .orElseThrow(() -> new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
     }
 
-    public boolean setInvestProposalServiceParent(Long psn, int proposalId,
+    public InvestProposal setInvestProposalServiceParent(Long psn, int proposalId,
         ResponseInvestProposal proposal) {
         Optional<InvestProposal> resultInvestProposal = acceptInvestProposalRepositoryParent.findById(
             proposalId);
@@ -89,23 +89,23 @@ public class InvestProposalServiceParent {
         }
         if (proposal.isAccept()) {
             resultInvestProposal.get().setStatus((short) 3);
+
         } else {
             resultInvestProposal.get().setStatus((short) 5);
-            System.out.println(resultInvestProposal.get().getMessage());
             investProposalResponseRepository.save(InvestProposalResponseParent.builder()
                 .message(proposal.getMessage())
                 .proposalId(proposalId)
                 .createDate(new Timestamp(System.currentTimeMillis()))
                 .build());
         }
-        return true;
+        return resultInvestProposal.get();
     }
 
     public List<InvestProposalHistoryResponse> getInvestProposalNoApproved(Long parentSn, Long childSn) {
         LocalDateTime localDateTime = LocalDateTime.now().minusDays(3);
         Timestamp startDate = Timestamp.valueOf(localDateTime);
         List<InvestProposalHistoryResponse> investProposalHistoryResponseList = new ArrayList<>();
-        List<InvestProposal> investProposalList = acceptInvestProposalRepositoryParent.findByParentSnAndChildSnAndTradingCodeAndCreateDateAfter(parentSn,childSn,
+        List<InvestProposal> investProposalList = acceptInvestProposalRepositoryParent.findByParentSnAndChildSnAndStatusAndCreateDateAfter(parentSn,childSn,
             (short) 1,startDate);
         for (InvestProposal data : investProposalList) {
             investProposalHistoryResponseList.add(
