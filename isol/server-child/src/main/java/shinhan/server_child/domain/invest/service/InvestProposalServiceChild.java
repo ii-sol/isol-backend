@@ -5,30 +5,26 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_child.domain.invest.dto.InvestProposalHistoryResponse;
-import shinhan.server_child.domain.invest.dto.InvestProposalSaveRequest;
-import shinhan.server_child.domain.invest.entity.InvestProposal;
-import shinhan.server_child.domain.invest.repository.InvestProposalRepository;
+import shinhan.server_child.domain.invest.repository.InvestProposalRepositoryChild;
+import shinhan.server_common.domain.invest.dto.InvestProposalHistoryResponse;
+import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
+import shinhan.server_common.domain.invest.entity.InvestProposal;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
+import shinhan.server_common.global.exception.CustomException;
+import shinhan.server_common.global.exception.ErrorCode;
 
 @Service
 @Transactional
-public class InvestProposalService {
-    InvestProposalRepository investProposalRepository;
-    CorpCodeRepository corpCodeRepository;
-    @Autowired
-    InvestProposalService(InvestProposalRepository investProposalRepository,CorpCodeRepository corpCodeRepository){
-        this.investProposalRepository = investProposalRepository;
-        this.corpCodeRepository = corpCodeRepository;
-    }
+public class InvestProposalServiceChild {
+    InvestProposalRepositoryChild investProposalRepositoryChild;
 
-    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
-        //알림 서비스
-        investProposalRepository.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
-        return childSn;
+    CorpCodeRepository corpCodeRepository;
+    InvestProposalServiceChild(InvestProposalRepositoryChild investProposalRepositoryChild,
+    CorpCodeRepository corpCodeRepository){
+        this.investProposalRepositoryChild = investProposalRepositoryChild;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
     public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn,int year,int month,short status){
@@ -39,10 +35,10 @@ public class InvestProposalService {
         List<InvestProposalHistoryResponse> investProposalHistoryResponseList = new ArrayList<>();
         List<InvestProposal> investProposalList;
         if(status == 0)
-            investProposalList = investProposalRepository.findByChildSnAndCreateDateBetween(userSn,startTimeStamp,endTimeStamp);
+            investProposalList = investProposalRepositoryChild.findByChildSnAndCreateDateBetween(userSn,startTimeStamp,endTimeStamp);
         else
-            investProposalList = investProposalRepository.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
-
+            investProposalList = investProposalRepositoryChild.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
+        System.out.println(investProposalList.size());
         for(InvestProposal data : investProposalList){
             investProposalHistoryResponseList.add(
                 InvestProposalHistoryResponse.builder()
@@ -51,7 +47,7 @@ public class InvestProposalService {
                     .tradingCode(data.getTradingCode())
                     .status(data.getStatus())
                     .ticker(data.getTicker())
-                    .parentAlias(String.valueOf(data.getParentSn()))
+                    .recieverName(String.valueOf(data.getParentSn()))
                     .companyName(corpCodeRepository.findByStockCode(
                         Integer.parseInt(data.getTicker())).get().getCorpName())
                     .message(data.getMessage())
@@ -60,5 +56,16 @@ public class InvestProposalService {
             );
         }
         return investProposalHistoryResponseList;
+    }
+
+    public Long proposalInvest(Long childSn,Long parentSn, InvestProposalSaveRequest investProposalSaveRequest){
+        //알림 서비스
+        investProposalRepositoryChild.save(investProposalSaveRequest.toInvestProposal(childSn, parentSn));
+        return childSn;
+    }
+
+    public InvestProposal getProposalInvestDetail(int proposalId,Long childSn){
+        return investProposalRepositoryChild.findByIdAndChildSn(
+            proposalId, childSn).orElseThrow(()->new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
     }
 }

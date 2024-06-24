@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.MyStockListResponse;
-import shinhan.server_child.domain.invest.service.MyStockService;
+import shinhan.server_common.domain.invest.dto.MyStockListResponse;
+import shinhan.server_common.domain.invest.service.MyStockService;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiResult;
 import shinhan.server_common.global.utils.ApiUtils;
@@ -31,17 +31,6 @@ public class MyStockController {
         Long loginSn = jwtService.getUserInfo().getSn();
         MyStockListResponse result = myStockService.findMyStocks(loginSn);
         return success(result);
-    }
-    //거래 가능 종목 리스트 추가(부모)
-    @PostMapping("/{csn}")
-    public ApiUtils.ApiResult setMyStocks(@PathVariable("csn") Long csn, @RequestParam("ticker") String ticker){
-        myStockService.saveStockList(csn,ticker);
-        return success("sad");
-    }
-    //거래 가능 종목 리스트 삭제
-    @DeleteMapping("/{co}")
-    public ApiResult deleteMyChildStock(@PathVariable("co") int childOrder, @RequestParam("ticker") String ticker) {
-        return ApiResult.responseSuccess(childOrder);
     }
 
     @DeleteMapping("")
