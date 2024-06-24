@@ -1,9 +1,9 @@
 package shinhan.server_parent.domain.allowance.controller;
 
-import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
@@ -25,7 +25,7 @@ public class AllowanceController {
     private final JwtService jwtService;
     //부모 - 전체 용돈 내역 조회하기
     @GetMapping("history")
-    public ApiUtils.ApiResult findTotalAllowances(@RequestParam("year") Integer year, @RequestParam("month") Integer month, @RequestParam("csn") Long csn) throws AuthException {
+    public ApiUtils.ApiResult findTotalAllowances(@RequestParam("year") Integer year, @RequestParam("month") Integer month, @RequestParam("csn") Long csn) throws AuthException, AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         List<TotalAllowanceFindAllResponse> response = allowanceService.findTotalAllowances(loginUserSerialNumber, year, month, csn);
         return success(response);

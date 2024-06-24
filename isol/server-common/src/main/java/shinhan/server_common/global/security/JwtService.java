@@ -3,7 +3,6 @@ package shinhan.server_common.global.security;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
@@ -82,7 +82,7 @@ public class JwtService {
         return getUserInfoFromClaims(claims);
     }
 
-    public UserInfoResponse getUserInfo() throws AuthException, ExpiredJwtException {
+    public UserInfoResponse getUserInfo() throws ExpiredJwtException, AuthException {
         String token = getAccessToken();
         if (token == null || token.isEmpty()) {
             throw new AuthException("EMPTY_JWT");

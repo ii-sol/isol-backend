@@ -1,12 +1,12 @@
 package shinhan.server_parent.domain.mission.controller;
 
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;

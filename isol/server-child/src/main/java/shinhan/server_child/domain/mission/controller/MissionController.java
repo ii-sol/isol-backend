@@ -1,6 +1,5 @@
 package shinhan.server_child.domain.mission.controller;
 
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -12,9 +11,14 @@ import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.user.dto.ChildFindOneResponse;
+import shinhan.server_common.domain.user.dto.ParentsFindOneResponse;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_common.global.utils.user.UserUtils;
+import shinhan.server_common.notification.service.SSEUtils;
 import shinhan.server_common.notification.utils.MessageHandler;
 
 import java.util.List;
@@ -31,6 +35,8 @@ public class MissionController {
     private final MissionService missionService;
     private final UserService userService;
     private final JwtService jwtService;
+    private final SSEUtils sseUtils;
+    private final UserUtils userUtils;
 
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
@@ -110,9 +116,13 @@ public class MissionController {
 
         if (userInfo.getSn() == missionSaveRequest.getChildSn()) {
             if (jwtService.isMyFamily(missionSaveRequest.getParentsSn())) {
+                ChildFindOneResponse child = userService.getChild(userInfo.getSn());
+                ParentsFindOneResponse parents = userService.getParents(missionSaveRequest.getParentsSn());
+
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
 
-                String newMessage = MessageHandler.getMessage(310, userService.getChild(userInfo.getSn()).getName());
+                String newMessage = MessageHandler.getMessage(310, child.getName());
+                sseUtils.sendNotification(parents.getSn(), userUtils.getParentsAlias(child.getSn(), parents.getSn()), 4, newMessage);
 
                 return success(mission);
             }
