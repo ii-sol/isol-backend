@@ -17,6 +17,7 @@ import shinhan.server_common.global.exception.ErrorCode;
 @Service
 public class InvestProposalServiceChild {
     InvestProposalRepositoryChild investProposalRepositoryChild;
+
     CorpCodeRepository corpCodeRepository;
     InvestProposalServiceChild(InvestProposalRepositoryChild investProposalRepositoryChild,
     CorpCodeRepository corpCodeRepository){

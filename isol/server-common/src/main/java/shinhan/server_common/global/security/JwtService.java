@@ -17,11 +17,9 @@ import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import shinhan.server_common.global.security.dto.JwtTokenResponse;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import shinhan.server_common.global.security.secret.Secret;
 
 @Service
 @AllArgsConstructor
@@ -32,18 +30,30 @@ public class JwtService {
     private static final String TOKEN_TYPE = "JWT";
     private ObjectMapper objectMapper;
 
-    private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
+    private String createToken(UserInfoResponse userInfo, long expirationTime) {
         Date now = new Date();
-        return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(
-            Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder().header()
+                .add("typ", TOKEN_TYPE)
+                .and()
+                .claim("sn", userInfo.getSn())
+                .claim("name", userInfo.getName())
+                .claim("profileId", userInfo.getProfileId())
+                .claim("familyInfo", userInfo.getFamilyInfo())
+                .encodePayload(true)
+                .issuedAt(now)
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(
+                        Secret.getJwtKey(),
+                        SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    public String createAccessToken(long serialNumber, List<FamilyInfoResponse> familyInfo) {
-        return createToken(serialNumber, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
+    public String createAccessToken(UserInfoResponse userInfoResponse) {
+        return createToken(userInfoResponse, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(long serialNumber) {
-        return createToken(serialNumber, new ArrayList<>(), REFRESH_TOKEN_EXPIRATION_TIME);
+    public String createRefreshToken(long sn) {
+        return createToken(UserInfoResponse.builder().sn(sn).build(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() throws ExpiredJwtException, NullPointerException {
@@ -95,12 +105,14 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
+        String name = claims.getPayload().get("name", String.class);
+        Integer profileId = claims.getPayload().get("profileId", Integer.class);
 
         TypeReference<List<FamilyInfoResponse>> typeFamilyInfo = new TypeReference<List<FamilyInfoResponse>>() {
         };
         List<FamilyInfoResponse> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
 
-        return new UserInfoResponse(sn, familyInfo);
+        return UserInfoResponse.builder().sn(sn).name(name).profileId(profileId).familyInfo(familyInfo).build();
     }
 
     public Authentication getAuthentication(String token) throws AuthException, ExpiredJwtException {
@@ -116,14 +128,9 @@ public class JwtService {
         response.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
-    public void sendJwtToken() {
+    public void sendAccessToken(String accessToken) {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-        response.setHeader("Authorization", getAccessToken());
-        response.setHeader("Refresh-Token", getRefreshToken());
-    }
-
-    public void sendAccessToken(HttpServletResponse httpServletResponse, String accessToken) {
-        httpServletResponse.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Authorization", "Bearer " + accessToken);
     }
 
     public boolean isTokenExpired(String token) {
@@ -138,5 +145,9 @@ public class JwtService {
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             return true;
         }
+    }
+
+    public boolean isMyFamily(long familySn) throws Exception {
+        return getUserInfo().getFamilyInfo().stream().anyMatch(info -> info.getSn() == familySn);
     }
 }

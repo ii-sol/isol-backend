@@ -87,7 +87,6 @@ public class StockService {
         StockNaverDuraion[] stockDuraionPriceOutput = stockRepository.getApiCurrentDuraion(ticker);
         List<StockNaverDuraion> stockNaverDuraionList = Arrays.stream(stockDuraionPriceOutput).toList();
         int size = stockDuraionPriceOutput.length;
-        System.out.println(size);
         double changePrice;
         try {
             changePrice =

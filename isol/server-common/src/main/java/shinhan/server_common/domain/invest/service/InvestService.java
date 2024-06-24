@@ -14,6 +14,7 @@ import shinhan.server_common.domain.invest.dto.InvestStockRequest;
 import shinhan.server_common.domain.invest.dto.InvestTradeDetailResponse;
 import shinhan.server_common.domain.invest.dto.PortfolioResponse;
 import shinhan.server_common.domain.invest.dto.StockHistoryResponse;
+import shinhan.server_common.domain.invest.entity.CorpCode;
 import shinhan.server_common.domain.invest.entity.Portfolio;
 import shinhan.server_common.domain.invest.entity.StockHistory;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
@@ -88,10 +89,11 @@ public class InvestService {
             System.out.println(companyName);
             double profit = (double) currentPrice / averagePrice*100 -100;
             int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
-
+            Optional<CorpCode> byStockCode = corpCodeRepository.findByStockCode(
+                Integer.parseInt(data.getTicker()));
             investTradeDetailResponseList.add(
                 InvestTradeDetailResponse.builder()
-                    .CompanyName(companyName)
+                    .CompanyName(byStockCode.get().getCorpName())
                     .ticker(data.getTicker())
                     .evaluationAmount((int) currentPrice)
                     .profit(profit)

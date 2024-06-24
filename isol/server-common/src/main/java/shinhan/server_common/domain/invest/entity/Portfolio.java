@@ -33,7 +33,7 @@ public class Portfolio {
     @Column(name = "average_price")
     private Integer averagePrice;
 
-    @Column(name = "account_id",nullable = false)
+    @Column(name = "account_num",nullable = false)
     private String accountNum;
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "account_id", nullable = false)

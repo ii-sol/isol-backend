@@ -59,8 +59,8 @@ public class AllowanceService {
 
         // 수락했으면, 계좌 이체하기 + temporalAllowance의 status 변경
         if(accept){
-            Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getParents().getSerialNum(), 3);
-            Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getChild().getSerialNum(),1);
+            Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getParentsSerialNumber(), 3);
+            Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getChildSerialNumber(),1);
             accountUtils.transferMoneyByAccount(parentsAccount, childAccount, temporalAllowance.getPrice(), 3);
             temporalAllowance.setStatus(4);// 완료 상태로 바꾸기
         }else{

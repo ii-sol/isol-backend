@@ -51,7 +51,6 @@ public class ProposalController {
         this.stockService = stockService;
         this.investProposalServiceChild = investProposalServiceChild;
     }
-
     //투자 제안 내역 달변 조회하기(아이)
     @GetMapping("/invest/history/{status}")
     public ApiResult getInvestProposal(@RequestParam("year") int year,

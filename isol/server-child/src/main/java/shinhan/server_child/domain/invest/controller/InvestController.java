@@ -62,7 +62,7 @@ public class InvestController {
     }
 
     //종목 판매/구매하기
-    @PostMapping()
+    @PostMapping("")
     public ApiUtils.ApiResult invest(@RequestBody InvestStockRequest investStockRequest)
         throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
