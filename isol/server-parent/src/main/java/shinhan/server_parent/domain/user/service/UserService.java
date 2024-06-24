@@ -1,10 +1,10 @@
 package shinhan.server_parent.domain.user.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.ChildManage;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Transactional
+@Transactional(transactionManager = "userTransactionManager")
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
