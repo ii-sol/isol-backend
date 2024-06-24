@@ -11,5 +11,4 @@ public interface CorpCodeRepository extends JpaRepository<CorpCode, Long> {
     List<CorpCode> findByCorpNameContaining(String corpName, Pageable pageable);
     Page<CorpCode> findAll(Pageable pageable);
     Optional<CorpCode> findByStockCode(int ticker);
-
 }

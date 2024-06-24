@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shinhan.server_child.domain.invest.dto.InvestStockRequest;
-import shinhan.server_child.domain.invest.dto.PortfolioResponse;
-import shinhan.server_child.domain.invest.service.InvestProposalService;
-import shinhan.server_child.domain.invest.service.InvestService;
+import shinhan.server_child.domain.invest.service.InvestProposalServiceChild;
+import shinhan.server_common.domain.invest.dto.InvestStockRequest;
+import shinhan.server_common.domain.invest.dto.PortfolioResponse;
+import shinhan.server_common.domain.invest.service.InvestProposalService;
+import shinhan.server_common.domain.invest.service.InvestService;
 import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
@@ -27,24 +29,26 @@ public class InvestController {
     InvestProposalService investProposalService;
     JwtService jwtService;
     AccountUtils accountUtils;
+    InvestProposalServiceChild investProposalServiceChild;
     @Autowired
-    InvestController(InvestService investService,InvestProposalService investProposalService,JwtService jwtService,AccountUtils accountUtils) {
+    InvestController(InvestService investService,InvestProposalService investProposalService,JwtService jwtService,AccountUtils accountUtils,
+    InvestProposalServiceChild investProposalServiceChild) {
         this.accountUtils = accountUtils;
         this.investService = investService;
         this.investProposalService = investProposalService;
         this.jwtService = jwtService;
+        this.investProposalServiceChild = investProposalServiceChild;
     }
 
     //투자 거래 내역 조회하기(아이)
     @GetMapping("/history/{status}")
-    public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status)
+    public ApiUtils.ApiResult getInvestHistory(@PathVariable("status") short status, @RequestParam("year") int year,
+        @RequestParam("month") int month)
         throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         Account accountByUserSerialNumberAndStatus = accountUtils.getAccountByUserSerialNumberAndStatus(
             loginUserSerialNumber, 2);
-        return success(investService.getStockHisttory(accountByUserSerialNumberAndStatus.getAccountNum(),status));
-//        Account account = accountUtils.getAccountByUserSerialNumberAndStatus(loginUserSerialNumber,2);
-//        return success(investService.getStockHisttory(account.getAccountNum(),status));
+        return success(investService.getStockHistory(accountByUserSerialNumberAndStatus.getAccountNum(),status,year,month));
     }
 
     //포트폴리오 조회하기(아이)
@@ -58,7 +62,7 @@ public class InvestController {
     }
 
     //종목 판매/구매하기
-    @PostMapping()
+    @PostMapping("")
     public ApiUtils.ApiResult invest(@RequestBody InvestStockRequest investStockRequest)
         throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
