@@ -84,7 +84,10 @@ public class MissionService {
                 .orElseThrow(() -> new NoSuchElementException("미션이 존재하지 않습니다."));
 
         if (missionAnswerSaveRequest.isAnswer()) {
-            if (mission.getStatus() == 3) {
+            if (mission.getStatus() == 2) {
+                mission.setStatus(3);
+                missionRepository.save(mission).convertToMissionFindOneResponse();
+            } else if (mission.getStatus() == 3) {
                 mission.setStatus(6);
                 missionRepository.save(mission).convertToMissionFindOneResponse();
             }
