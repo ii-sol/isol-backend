@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import shinhan.server_common.domain.user.entity.Child;
 
 import java.sql.Date;
 
@@ -16,7 +15,7 @@ import java.sql.Date;
 @Component
 public class ChildFindOneResponse {
 
-    private long serialNumber;
+    private long sn;
     private String phoneNum;
     private String name;
     private Date birthDate;

@@ -1,7 +1,5 @@
 package shinhan.server_child.domain.invest.controller;
 
-import jakarta.security.auth.message.AuthException;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -12,28 +10,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.invest.dto.CorpCodeResponse;
 import shinhan.server_common.domain.invest.service.CorpCodeService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/corp")
 public class CorpCodeController {
     CorpCodeService corpCodeService;
     JwtService jwtService;
+
     @Autowired
-    CorpCodeController(CorpCodeService corpCodeService,JwtService jwtService){
+    CorpCodeController(CorpCodeService corpCodeService, JwtService jwtService) {
         this.jwtService = jwtService;
         this.corpCodeService = corpCodeService;
     }
 
     @GetMapping("/{corpName}")
     public ApiUtils.ApiResult getStockListByName(@PathVariable("corpName") String corpName,
-        @PageableDefault
-        (page = 0, size = 15, sort = "corpName", direction = Direction.ASC)
-        Pageable pageable)
-        throws AuthException {
+                                                 @PageableDefault
+                                                         (page = 0, size = 15, sort = "corpName", direction = Direction.ASC)
+                                                 Pageable pageable)
+            throws AuthException {
         Long userSn = jwtService.getUserInfo().getSn();
-        List<CorpCodeResponse> result = corpCodeService.getStockByName(userSn,corpName,pageable);
+        List<CorpCodeResponse> result = corpCodeService.getStockByName(userSn, corpName, pageable);
 //        System.out.println(2);
 //        for(CorpCodeResponse corpCode : result){
 //            System.out.println(corpCode.getCompanyName());
@@ -42,11 +44,11 @@ public class CorpCodeController {
     }
 
     @GetMapping("")
-    public ApiUtils.ApiResult getStockList( @PageableDefault
-        (page = 0, size = 15, sort = "corpName", direction = Direction.ASC)Pageable pageable)
-        throws AuthException {
+    public ApiUtils.ApiResult getStockList(@PageableDefault
+                                                   (page = 0, size = 15, sort = "corpName", direction = Direction.ASC) Pageable pageable)
+            throws AuthException {
         Long userSn = jwtService.getUserInfo().getSn();
-        List<CorpCodeResponse> result = corpCodeService.getStock(userSn,pageable);
+        List<CorpCodeResponse> result = corpCodeService.getStock(userSn, pageable);
         return ApiUtils.success(result);
     }
 

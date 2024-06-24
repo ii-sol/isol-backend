@@ -178,8 +178,8 @@ public class UserController {
         ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
         if (user != null) {
-            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 1);
-            accountService.createAccount(user.getSerialNumber(), user.getPhoneNum(), 2);
+            accountService.createAccount(user.getSn(), user.getPhoneNum(), 1);
+            accountService.createAccount(user.getSn(), user.getPhoneNum(), 2);
             return success("가입되었습니다.");
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -201,19 +201,19 @@ public class UserController {
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
-            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSerialNumber());
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(user.getSn());
 
             myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
             UserInfoResponse userInfoResponse = UserInfoResponse.builder()
-                    .sn(user.getSerialNumber())
+                    .sn(user.getSn())
                     .name(user.getName())
                     .profileId(user.getProfileId())
                     .familyInfo(myFamilyInfo)
                     .build();
             JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
                     .accessToken(jwtService.createAccessToken(userInfoResponse))
-                    .refreshToken(jwtService.createRefreshToken(user.getSerialNumber()))
+                    .refreshToken(jwtService.createRefreshToken(user.getSn()))
                     .build();
 
             jwtService.sendJwtToken(jwtTokenResponse);
@@ -247,7 +247,7 @@ public class UserController {
 
             ChildFindOneResponse user = userService.getChild(sn);
             UserInfoResponse userInfoResponse = UserInfoResponse.builder()
-                    .sn(user.getSerialNumber())
+                    .sn(user.getSn())
                     .name(user.getName())
                     .profileId(user.getProfileId())
                     .familyInfo(myFamilyInfo)

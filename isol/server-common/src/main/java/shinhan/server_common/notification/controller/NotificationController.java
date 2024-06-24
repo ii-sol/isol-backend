@@ -1,10 +1,10 @@
 package shinhan.server_common.notification.controller;
 
-import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
@@ -39,7 +39,7 @@ public class NotificationController {
 
     //개별 알림 삭제하기 notificationSerialNumber
     @DeleteMapping("/{nsn}")
-    public ApiUtils.ApiResult deleteNotification( @PathVariable("nsn") String nsn){
+    public ApiUtils.ApiResult deleteNotification(@PathVariable("nsn") String nsn) {
         sseUtils.deleteNotification(nsn);
         return success(null);
     }
