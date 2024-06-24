@@ -32,7 +32,7 @@ public class MissionController {
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
         MissionFindOneResponse mission = missionService.getMission(id);
-        if (isMissionOwner(mission)) {
+        if (!isMissionOwner(mission)) {
             throw new AuthException("미션을 조회할 수 권한이 없습니다.");
         }
 

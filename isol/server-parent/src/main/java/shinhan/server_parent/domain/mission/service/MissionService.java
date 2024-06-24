@@ -2,6 +2,7 @@ package shinhan.server_parent.domain.mission.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_parent.domain.mission.dto.MissionAnswerSaveRequest;
@@ -87,17 +88,17 @@ public class MissionService {
         return savedMission.convertToMissionFindOneResponse();
     }
 
-    public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) {
+    public MissionFindOneResponse updateMission(MissionAnswerSaveRequest missionAnswerSaveRequest) throws BadRequestException {
         Mission mission = missionRepository.findById(missionAnswerSaveRequest.getId())
                 .orElseThrow(() -> new NoSuchElementException("미션이 존재하지 않습니다."));
 
         if (missionAnswerSaveRequest.isAnswer()) {
             if (mission.getStatus() == 1) {
                 mission.setStatus(3);
-                missionRepository.save(mission).convertToMissionFindOneResponse();
+                return missionRepository.save(mission).convertToMissionFindOneResponse();
             } else if (mission.getStatus() == 6) {
                 mission.setStatus(4);
-                missionRepository.save(mission).convertToMissionFindOneResponse();
+                return missionRepository.save(mission).convertToMissionFindOneResponse();
             }
         } else if (mission.getStatus() == 1) {
             mission.setStatus(5);
@@ -107,6 +108,6 @@ public class MissionService {
             return missionRepository.save(mission).convertToMissionFindOneResponse();
         }
 
-        throw new RuntimeException("미션 응답에 대해 반영되지 않았습니다.");
+        throw new BadRequestException("잘못된 사용자 요청입니다.");
     }
 }

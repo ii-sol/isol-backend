@@ -32,7 +32,7 @@ public class MissionController {
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
         MissionFindOneResponse mission = missionService.getMission(id);
-        if (isMissionOwner(mission)) {
+        if (!isMissionOwner(mission)) {
             throw new AuthException("미션을 조회할 수 권한이 없습니다.");
         }
 
@@ -151,6 +151,6 @@ public class MissionController {
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return error("미션을 생성할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        return error("미션 응답에 대해 반영되지 않았습니다.", HttpStatus.BAD_REQUEST);
     }
 }

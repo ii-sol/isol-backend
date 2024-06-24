@@ -36,7 +36,7 @@ public interface MissionRepository extends JpaRepository<Mission, Integer> {
             "AND FUNCTION('YEAR', m.completeDate) = :year " +
             "AND FUNCTION('MONTH', m.completeDate) = :month " +
             "ORDER BY m.completeDate DESC")
-    List<Mission> findMissionsHistory(long childSn, long parentsSn, int year, int month);
+    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("year") int year, @Param("month") int month);
 
     @Query("SELECT m " +
             "FROM Mission m " +
@@ -47,5 +47,5 @@ public interface MissionRepository extends JpaRepository<Mission, Integer> {
             "AND FUNCTION('YEAR', m.completeDate) = :year " +
             "AND FUNCTION('MONTH', m.completeDate) = :month " +
             "ORDER BY m.completeDate DESC")
-    List<Mission> findMissionsHistory(long childSn, long parentsSn, int year, int month, int status);
+    List<Mission> findMissionsHistory(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("year") int year, @Param("month") int month, @Param("status") int status);
 }
