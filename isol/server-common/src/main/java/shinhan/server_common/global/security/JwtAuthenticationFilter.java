@@ -38,17 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 authentication = jwtService.getAuthentication(token);
             } catch (Exception e) {
-                handleJwtServiceException(e, response);
+                sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
             }
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
-    }
-
-    private void handleJwtServiceException(Exception exception, HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message, HttpStatus httpStatus) throws IOException {
