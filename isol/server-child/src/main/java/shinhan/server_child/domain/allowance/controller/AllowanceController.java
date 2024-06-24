@@ -1,6 +1,5 @@
 package shinhan.server_child.domain.allowance.controller;
 
-import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +8,7 @@ import shinhan.server_child.domain.allowance.dto.TemporalAllowanceSaveOneRequest
 import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.dto.UnAcceptTemporalAllowanceFindAllResponse;
 import shinhan.server_child.domain.allowance.service.AllowanceService;
-import shinhan.server_child.domain.user.service.UserService;
-import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
@@ -38,7 +36,7 @@ public class AllowanceController {
 
     //아이 - 용돈 조르기 취소
     @PostMapping("temporal/cancle/{tempId}")
-    public ApiUtils.ApiResult cancleTemporalAllowance( @PathVariable("tempId") Integer temporalAllowanceId){
+    public ApiUtils.ApiResult cancleTemporalAllowance(@PathVariable("tempId") Integer temporalAllowanceId) {
         allowanceService.cancleTemporalAllowance(temporalAllowanceId);
         return success(null);
     }

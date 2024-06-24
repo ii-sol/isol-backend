@@ -1,6 +1,5 @@
 package shinhan.server_child.domain.loan.service;
 
-import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +8,7 @@ import shinhan.server_child.domain.loan.entity.Loan;
 import shinhan.server_child.domain.loan.repository.LoanCustomRepository;
 import shinhan.server_child.domain.loan.repository.LoanRepository;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 

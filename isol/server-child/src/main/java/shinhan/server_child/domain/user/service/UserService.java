@@ -172,7 +172,7 @@ public class UserService {
         return family.getParentsAlias();
     }
 
-    public int getScore(long childSn) throws jakarta.security.auth.message.AuthException {
+    public int getScore(long childSn) {
 
         ChildFindOneResponse user = getChild(childSn);
 

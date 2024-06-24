@@ -1,6 +1,5 @@
 package shinhan.server_child.domain.loan.controller;
 
-import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_child.domain.loan.dto.LoanDto;
 import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
