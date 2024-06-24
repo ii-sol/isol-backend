@@ -22,6 +22,7 @@ public class MyStockService {
     @Autowired
     MyStockService(StockListRepository stockListRepository, StockService stockService,
         CorpCodeRepository corpCodeRepository) {
+
         this.stockListRepository = stockListRepository;
         this.stockService = stockService;
         this.corpCodeRepository = corpCodeRepository;
@@ -38,15 +39,15 @@ public class MyStockService {
                 corpCodeRepository.findByStockCode(
                     Integer.parseInt(result.get(i).getTicker())).get().getCorpName()
             );
-            stockFindCurrentResponseList.add(stockFindCurrentResponse);
-        }
-        MyStockListResponse myStockListResponse = new MyStockListResponse(
-            stockFindCurrentResponseList);
-        return myStockListResponse;
-    }
+                    stockFindCurrentResponseList.add(stockFindCurrentResponse);
+                }
+                MyStockListResponse myStockListResponse = new MyStockListResponse(
+                    stockFindCurrentResponseList);
+                return myStockListResponse;
+            }
 
-    //공통
-    public void delete(Long userSn, String ticker) {
-        stockListRepository.deleteByUserSnAndTicker(userSn, ticker);
-    }
-}
+            //공통
+            public void delete (Long userSn, String ticker){
+                stockListRepository.deleteByUserSnAndTicker(userSn, ticker);
+                }
+            }
