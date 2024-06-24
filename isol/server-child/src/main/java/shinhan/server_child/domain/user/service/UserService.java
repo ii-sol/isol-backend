@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.ChildManage;
@@ -15,11 +16,13 @@ import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.exception.AuthException;
+import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import shinhan.server_common.global.security.dto.UserInfoResponse;
 
 @Slf4j
 @Service
@@ -32,6 +35,7 @@ public class UserService {
     private final ParentsRepository parentsRepository;
     private final FamilyRepository familyRepository;
     private final ChildManageRepository childManageRepository;
+    private final JwtService jwtService;
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
@@ -168,5 +172,14 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         return family.getParentsAlias();
+    }
+
+    public int getScore(long childSn) throws jakarta.security.auth.message.AuthException {
+
+        ChildFindOneResponse user = getChild(childSn);
+
+        int score = user.getScore();
+
+        return score;
     }
 }

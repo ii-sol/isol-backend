@@ -71,4 +71,13 @@ public class LoanCustomRepositoryImpl implements LoanCustomRepository {
             .setParameter("id", loanId)
             .getSingleResult();
     }
+
+    @Override
+    public int findCompleteLoanCount(long childId) {
+        String query = "SELECT COUNT(l) FROM Loan l WHERE l.childId = :childId AND l.status = 5";
+        Long count = entityManager.createQuery(query, Long.class)
+            .setParameter("childId", childId)
+            .getSingleResult();
+        return count.intValue();
+    }
 }
