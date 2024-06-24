@@ -11,6 +11,7 @@ import shinhan.server_common.domain.invest.dto.InvestProposalSaveRequest;
 import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
 import shinhan.server_common.domain.invest.service.InvestProposalService;
+import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.exception.CustomException;

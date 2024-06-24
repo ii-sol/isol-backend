@@ -57,4 +57,4 @@ public class InvestController {
                 PortfolioResponse result = investService.getPortfolio(accountByUserSerialNumberAndStatus.getAccountNum());
                 return success(result);
         }
-}
+    }

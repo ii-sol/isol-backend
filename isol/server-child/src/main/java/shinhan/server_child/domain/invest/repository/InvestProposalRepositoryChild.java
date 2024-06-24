@@ -8,6 +8,6 @@ import shinhan.server_common.domain.invest.investEntity.InvestProposal;
 
 public interface InvestProposalRepositoryChild extends JpaRepository<InvestProposal,Integer> {
     List<InvestProposal> findByChildSnAndCreateDateBetween(Long childSn, Timestamp year,Timestamp month);
-    List<InvestProposal> findByChildSnAndTradingCodeAndCreateDateBetween(Long childSn,short tradingCode,  Timestamp year,Timestamp month);
+    List<InvestProposal> findByChildSnAndStatusAndCreateDateBetween(Long childSn,short status,  Timestamp year,Timestamp month);
     Optional<InvestProposal> findByIdAndChildSn(int proposal,Long childSn);
 }
