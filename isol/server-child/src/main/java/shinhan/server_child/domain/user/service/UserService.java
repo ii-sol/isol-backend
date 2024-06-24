@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.ChildManage;
@@ -22,7 +21,6 @@ import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import shinhan.server_common.global.security.dto.UserInfoResponse;
 
 @Slf4j
 @Service
@@ -52,7 +50,7 @@ public class UserService {
     }
 
     public ChildFindOneResponse updateUser(ChildUpdateRequest childUpdateRequest) {
-        Child child = childRepository.findBySerialNum(childUpdateRequest.getSerialNum())
+        Child child = childRepository.findBySerialNum(childUpdateRequest.getSn())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         child.setPhoneNum(childUpdateRequest.getPhoneNum());

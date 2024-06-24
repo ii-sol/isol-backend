@@ -9,10 +9,9 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-//@Component
 public class ParentsFindOneResponse {
 
-    private long serialNumber;
+    private long sn;
     private String phoneNum;
     private String name;
     private Date birthDate;

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class ChildManageFindOneResponse {
 
     private float baseRate;
