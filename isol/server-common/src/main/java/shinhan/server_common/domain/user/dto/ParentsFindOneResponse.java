@@ -1,11 +1,6 @@
 package shinhan.server_common.domain.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
-import shinhan.server_common.domain.user.entity.Parents;
+import lombok.*;
 
 import java.sql.Date;
 
@@ -13,7 +8,8 @@ import java.sql.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
+@ToString
+//@Component
 public class ParentsFindOneResponse {
 
     private long serialNumber;

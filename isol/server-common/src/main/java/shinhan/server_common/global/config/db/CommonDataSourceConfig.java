@@ -32,7 +32,6 @@ public class CommonDataSourceConfig {
     private String dbPassword;
 
     @Bean
-    @Primary
     public DataSource commonDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -44,7 +43,6 @@ public class CommonDataSourceConfig {
     }
 
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean commonEntityManagerFactory(
             @Qualifier("commonDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -61,7 +59,6 @@ public class CommonDataSourceConfig {
     }
 
     @Bean
-    @Primary
     public PlatformTransactionManager commonTransactionManager(
             @Qualifier("commonDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -31,6 +32,7 @@ public class UserDataSourceConfig {
     private String dbPassword;
 
     @Bean
+    @Primary
     public DataSource userDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -42,6 +44,7 @@ public class UserDataSourceConfig {
     }
 
     @Bean
+    @Primary
     public LocalContainerEntityManagerFactoryBean userEntityManagerFactory(
             @Qualifier("userDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -56,6 +59,7 @@ public class UserDataSourceConfig {
     }
 
     @Bean
+    @Primary
     public PlatformTransactionManager userTransactionManager(
             @Qualifier("userDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
