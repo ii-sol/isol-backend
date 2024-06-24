@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         try {
             token = jwtService.getAccessToken();
-        } catch (NullPointerException | ExpiredJwtException e) {
+        } catch (NullPointerException | ExpiredJwtException | StringIndexOutOfBoundsException e) {
             sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
             return;
         }
