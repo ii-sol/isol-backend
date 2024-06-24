@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.invest.dto.MyStockListResponse;
 import shinhan.server_common.domain.invest.entity.MyStockList;
+import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.domain.invest.repository.StockListRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.service.StockService;
@@ -15,10 +16,12 @@ import shinhan.server_common.domain.invest.service.StockService;
 public class MyStockService {
     StockListRepository stockListRepository;
     StockService stockService;
+    CorpCodeRepository corpCodeRepository;
     @Autowired
-    MyStockService(StockListRepository stockListRepository,StockService stockService){
+    MyStockService(StockListRepository stockListRepository,StockService stockService,CorpCodeRepository corpCodeRepository){
         this.stockListRepository = stockListRepository;
         this.stockService = stockService;
+        this.corpCodeRepository = corpCodeRepository;
     }
 
     //공통
@@ -27,6 +30,9 @@ public class MyStockService {
         List<StockFindCurrentResponse> stockFindCurrentResponseList = new ArrayList<>();
         for(int i=0;i<result.size();i++){
             StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(result.get(i).getTicker());
+            stockFindCurrentResponse.setCompanyName(
+                String.valueOf(corpCodeRepository.findByStockCode(
+                    Integer.parseInt(result.get(i).getTicker()))));
             stockFindCurrentResponseList.add(stockFindCurrentResponse);
         }
         MyStockListResponse myStockListResponse = new MyStockListResponse(

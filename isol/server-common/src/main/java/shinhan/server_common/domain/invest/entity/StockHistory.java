@@ -41,7 +41,7 @@ public class StockHistory {
     private Short tradingCode; // Use Short for tinyint
 
     @Column(name = "create_date", nullable = false, updatable = false)
-    private Timestamp createDate;
+    private Timestamp createDate=new Timestamp(System.currentTimeMillis());
 
     public StockHistory(String accountNum, String ticker, Integer stockPrice,
         Short quantity,
