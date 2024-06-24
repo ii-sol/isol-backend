@@ -39,6 +39,16 @@ public class Mission {
     private int status;
 
     public MissionFindOneResponse convertToMissionFindOneResponse() {
-        return new MissionFindOneResponse(id, childSn, parentsSn, content, price, createDate, dueDate, completeDate, status);
+        return MissionFindOneResponse.builder()
+                .id(id)
+                .childSn(childSn)
+                .parentsSn(parentsSn)
+                .content(content)
+                .price(price)
+                .completeDate(completeDate)
+                .dueDate(dueDate)
+                .completeDate(completeDate)
+                .status(status)
+                .build();
     }
 }

@@ -1,12 +1,14 @@
 package shinhan.server_child.domain.mission.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
 
 @Getter
 @AllArgsConstructor
+@Builder
 public class MissionFindOneResponse {
 
     private int id;
