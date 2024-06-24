@@ -22,6 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getRequestURI().startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = null;
         try {
             token = jwtService.getAccessToken();
@@ -30,14 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        Authentication authentication = null;
         if (token != null) {
             try {
                 if (jwtService.isTokenExpired(token)) {
                     sendErrorResponse(response, "Expired Access Token", HttpStatus.UNAUTHORIZED);
                     return;
                 }
-                authentication = jwtService.getAuthentication(token);
+                Authentication authentication = jwtService.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
