@@ -37,7 +37,7 @@ public class InvestProposalServiceChild {
         if(status == 0)
             investProposalList = investProposalRepositoryChild.findByChildSnAndCreateDateBetween(userSn,startTimeStamp,endTimeStamp);
         else
-            investProposalList = investProposalRepositoryChild.findByChildSnAndTradingCodeAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
+            investProposalList = investProposalRepositoryChild.findByChildSnAndStatusAndCreateDateBetween(userSn,status,startTimeStamp,endTimeStamp);
         System.out.println(investProposalList.size());
         for(InvestProposal data : investProposalList){
             investProposalHistoryResponseList.add(

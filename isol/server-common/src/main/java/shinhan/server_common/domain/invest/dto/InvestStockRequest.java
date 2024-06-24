@@ -1,10 +1,12 @@
 package shinhan.server_common.domain.invest.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import shinhan.server_common.domain.invest.investEntity.Portfolio;
 import shinhan.server_common.domain.invest.investEntity.StockHistory;
 
 @Getter
+@Builder
 public class InvestStockRequest {
     short trading;
     String ticker;
