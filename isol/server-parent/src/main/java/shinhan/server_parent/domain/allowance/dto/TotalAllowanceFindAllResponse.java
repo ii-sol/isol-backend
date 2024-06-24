@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TotalAllowanceFindAllResponse {
 
+    private int id;
     private int amount;
     private String content;
     private int status;
@@ -23,6 +24,7 @@ public class TotalAllowanceFindAllResponse {
 
     public static TotalAllowanceFindAllResponse from(MonthlyAllowance monthlyAllowance) {
         return TotalAllowanceFindAllResponse.builder()
+                .id(monthlyAllowance.getId())
                 .amount(monthlyAllowance.getPrice())
                 .content(null)
                 .status(monthlyAllowance.getStatus())
@@ -33,6 +35,7 @@ public class TotalAllowanceFindAllResponse {
 
     public static TotalAllowanceFindAllResponse from(TemporalAllowance temporalAllowance) {
         return TotalAllowanceFindAllResponse.builder()
+                .id(temporalAllowance.getId())
                 .amount(temporalAllowance.getPrice())
                 .content(temporalAllowance.getContent())
                 .status(temporalAllowance.getStatus())
