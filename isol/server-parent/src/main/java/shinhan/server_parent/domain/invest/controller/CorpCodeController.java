@@ -1,6 +1,5 @@
 package shinhan.server_parent.domain.invest.controller;
 
-import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.invest.dto.CorpCodeResponse;
 import shinhan.server_common.domain.invest.service.CorpCodeService;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;

@@ -1,6 +1,7 @@
 package shinhan.server_common.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,27 +23,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getRequestURI().startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = null;
         try {
             token = jwtService.getAccessToken();
-        } catch (NullPointerException e) {
-            token = null;
+        } catch (NullPointerException | ExpiredJwtException e) {
+            sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return;
         }
 
-        Authentication authentication = null;
-        if (token != null) {
+        if (token != null && !token.isEmpty()) {
             try {
                 if (jwtService.isTokenExpired(token)) {
                     sendErrorResponse(response, "Expired Access Token", HttpStatus.UNAUTHORIZED);
                     return;
                 }
-                authentication = jwtService.getAuthentication(token);
+                Authentication authentication = jwtService.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 sendErrorResponse(response, e.getMessage(), HttpStatus.UNAUTHORIZED);
+                return;
             }
+        } else {
+            sendErrorResponse(response, "No Token", HttpStatus.UNAUTHORIZED);
+            return;
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
@@ -52,5 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.setStatus(httpStatus.value());
         response.getWriter().write(objectMapper.writeValueAsString(apiResult));
+        response.flushBuffer();
     }
 }

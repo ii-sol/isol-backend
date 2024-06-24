@@ -1,19 +1,15 @@
 package shinhan.server_parent.domain.loan.controller;
 
-import jakarta.security.auth.message.AuthException;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
-import shinhan.server_parent.domain.loan.dto.LoanDto;
-import shinhan.server_parent.domain.loan.service.LoanService;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.ApiUtils.ApiResult;
+import shinhan.server_parent.domain.loan.dto.LoanDto;
+import shinhan.server_parent.domain.loan.service.LoanService;
+
+import java.util.List;
 
 @RestController
 public class LoanController {
@@ -34,20 +30,20 @@ public class LoanController {
 
         List<LoanDto> loans = loanService.getLoanByChildId(ChildId);
 
-        for(LoanDto loan : loans) {
+        for (LoanDto loan : loans) {
             loan.setParentName("엄마");
         }
         return ApiUtils.success(loans);
     }
 
     @GetMapping("/")
-    public String Hello(){
+    public String Hello() {
         return "hello";
     }
 
     @PostMapping("/child/loan/create")
     public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan)
-        throws AuthException {
+            throws AuthException {
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
         Long ChildId = userInfoResponse.getSn();
