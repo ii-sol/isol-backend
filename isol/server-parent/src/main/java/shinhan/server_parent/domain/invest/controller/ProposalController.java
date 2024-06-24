@@ -97,11 +97,17 @@ public class ProposalController {
     public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,
         @RequestBody ResponseInvestProposal responseInvestProposal)
         throws AuthException {
-        System.out.println(responseInvestProposal.getMessage());
         Long psn = jwtService.getUserInfo().getSn();
         boolean b = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
             responseInvestProposal);
         return ApiUtils.success("성공");
     }
-
+    @GetMapping("/invest/no-approve")
+    public ApiUtils.ApiResult getNoApprove(@PathVariable("csn") Long csn) throws AuthException {
+        if(jwtService.isMyFamily(csn)){
+            throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+        }
+        Long parentSn = jwtService.getUserInfo().getSn();
+        return ApiUtils.success(investProposalServiceParent.getInvestProposalNoApproved(parentSn,csn));
+    }
 }

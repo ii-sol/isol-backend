@@ -27,7 +27,6 @@ public class CorpCodeService {
         List<CorpCode> corpCodeList = corpCodeRepository.findByCorpNameContaining(corpName,pageable);
         return corpCodeList.stream().map(x -> {
             String ticker = String.format("%06d",x.getStockCode());
-            System.out.println(ticker);
             StockNaverDuraion[] apiCurrentDuraion = stockRepository.getApiCurrentDuraion(ticker);
             boolean canTranding = true;
             double currentPrice = 0;
@@ -45,7 +44,7 @@ public class CorpCodeService {
                 else if(changePrice==0)
                     changeSign = 3;
                 else changeSign =5;
-                changeRate =  changePrice/Arrays.stream(apiCurrentDuraion).toList().get(apiCurrentDuraion.length-2).getClosePrice()*100;
+                changeRate =  changePrice/Arrays.stream(apiCurrentDuraion).toList().get(apiCurrentDuraion.length-2).getClosePrice();
             }
 
             if (stockListRepository.findAllByUserSnAndTicker(userSn, ticker).isEmpty())
@@ -89,7 +88,7 @@ public class CorpCodeService {
                 else if(changePrice==0)
                     changeSign = 3;
                 else changeSign =5;
-                changeRate =  changePrice/Arrays.stream(apiCurrentDuraion).toList().get(apiCurrentDuraion.length-2).getClosePrice()*100;
+                changeRate =  changePrice/Arrays.stream(apiCurrentDuraion).toList().get(apiCurrentDuraion.length-2).getClosePrice();
             }
             if (stockListRepository.findAllByUserSnAndTicker(userSn, String.format("%06d",x.getStockCode())).isEmpty())
             {

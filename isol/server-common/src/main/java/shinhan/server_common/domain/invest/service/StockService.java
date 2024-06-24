@@ -96,6 +96,9 @@ public class StockService {
         } catch (IndexOutOfBoundsException exception){
             throw new CustomException( FAILED_NOT_FOUNT_TICKER);
         }
+        for(int i=0;i<size;i++){
+            System.out.println(stockNaverDuraionList.get(i).getClosePrice());
+        }
         String changeSign;
         if(changePrice<0){
             changeSign = "4";
@@ -105,12 +108,11 @@ public class StockService {
             changeSign = "2";
         }
         return StockFindCurrentResponse.builder()
-            .currentPrice(String.valueOf(stockNaverDuraionList.get(1).getClosePrice()*100))
+            .currentPrice(String.valueOf(stockNaverDuraionList.get(size-1).getClosePrice()*100))
             .changePrice(String.valueOf(changePrice))
-            .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(0).getClosePrice()))
+            .changeRate(String.valueOf(changePrice/stockNaverDuraionList.get(size-2).getClosePrice()*100))
             .changeSign(changeSign)
             .companyName(String.valueOf(corpCodeRepository.findByStockCode(Integer.parseInt(ticker))))
-            .companyName(ticker)
             .ticker(ticker)
             .build();
     }

@@ -22,6 +22,7 @@ import shinhan.server_parent.domain.invest.repository.InvestProposalResponseRepo
 @Service
 @Transactional
 public class InvestProposalServiceParent {
+
     InvestProposalResponseRepositoryParent investProposalResponseRepository;
     InvestProposalRepositoryParent acceptInvestProposalRepositoryParent;
     CorpCodeRepository corpCodeRepository;
@@ -70,10 +71,13 @@ public class InvestProposalServiceParent {
         }
         return investProposalHistoryResponseList;
     }
-    public InvestProposal getProposalInvestDetail(int proposalId,Long parentSn){
+
+    public InvestProposal getProposalInvestDetail(int proposalId, Long parentSn) {
         return acceptInvestProposalRepositoryParent.findByIdAndParentSn(
-            proposalId, parentSn).orElseThrow(()->new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
+                proposalId, parentSn)
+            .orElseThrow(() -> new CustomException(ErrorCode.FAILED_NOT_AUTHORITY_PROPOSAL));
     }
+
     public boolean setInvestProposalServiceParent(Long psn, int proposalId,
         ResponseInvestProposal proposal) {
         Optional<InvestProposal> resultInvestProposal = acceptInvestProposalRepositoryParent.findById(
@@ -93,5 +97,30 @@ public class InvestProposalServiceParent {
                 .build());
         }
         return true;
+    }
+
+    public List<InvestProposalHistoryResponse> getInvestProposalNoApproved(Long parentSn, Long childSn) {
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(3);
+        Timestamp startDate = Timestamp.valueOf(localDateTime);
+        List<InvestProposalHistoryResponse> investProposalHistoryResponseList = new ArrayList<>();
+        List<InvestProposal> investProposalList = acceptInvestProposalRepositoryParent.findByParentSnAndChildSnAndTradingCodeAndCreateDateAfter(parentSn,childSn,
+            (short) 1,startDate);
+        for (InvestProposal data : investProposalList) {
+            investProposalHistoryResponseList.add(
+                InvestProposalHistoryResponse.builder()
+                    .CreateDate(new Date(data.getCreateDate().getTime()))
+                    .proposeId(data.getId())
+                    .tradingCode(data.getTradingCode())
+                    .status(data.getStatus())
+                    .ticker(data.getTicker())
+                    .recieverName(String.valueOf(data.getParentSn()))
+                    .companyName(corpCodeRepository.findByStockCode(
+                        Integer.parseInt(data.getTicker())).get().getCorpName())
+                    .message(data.getMessage())
+                    .quantity(data.getQuantity())
+                    .build()
+            );
+        }
+        return investProposalHistoryResponseList;
     }
 }

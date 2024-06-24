@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shinhan.server_common.domain.invest.dto.CorpCodeResponse;
 import shinhan.server_common.domain.invest.service.CorpCodeService;
+import shinhan.server_common.global.exception.CustomException;
+import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
@@ -28,21 +30,25 @@ public class CorpCodeController {
     }
 
     @GetMapping("/{corpName}")
-    public ApiUtils.ApiResult getStockListByName(@PathVariable("corpName") String corpName,@RequestParam("cns") Long csn,
+    public ApiUtils.ApiResult getStockListByName(@PathVariable("corpName") String corpName,@RequestParam("csn") Long csn,
         @PageableDefault
             (page = 0, size = 15, sort = "corpName", direction = Direction.ASC)
         Pageable pageable)
         throws AuthException {
-        Long userSn = jwtService.getUserInfo().getSn();
+        if(!jwtService.isMyFamily(csn)){
+            throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+        }
         List<CorpCodeResponse> result = corpCodeService.getStockByName(csn,corpName,pageable);
         return ApiUtils.success(result);
     }
 
     @GetMapping("")
-    public ApiUtils.ApiResult getStockList( @RequestParam("cns")Long csn,@PageableDefault
+    public ApiUtils.ApiResult getStockList( @RequestParam("csn")Long csn,@PageableDefault
         (page = 0, size = 15, sort = "corpName", direction = Direction.ASC)Pageable pageable)
         throws AuthException {
-        Long userSn = jwtService.getUserInfo().getSn();
+        if(!jwtService.isMyFamily(csn)){
+            throw new CustomException(ErrorCode.FAILED_NO_CHILD);
+        }
         List<CorpCodeResponse> result = corpCodeService.getStock(csn,pageable);
         return ApiUtils.success(result);
     }
