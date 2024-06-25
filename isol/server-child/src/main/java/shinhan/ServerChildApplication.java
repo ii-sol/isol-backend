@@ -2,12 +2,13 @@ package shinhan;
 
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class ServerChildApplication {
+public class ServerChildApplication implements CommandLineRunner {
 //    @Autowired
 //    private final RabbitTemplate rabbitTemplate ;
 //
@@ -27,5 +28,10 @@ public ConnectionFactory connectionFactory() {
 
     public static void main(String[] args) {
         SpringApplication.run(ServerChildApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        
     }
 }
