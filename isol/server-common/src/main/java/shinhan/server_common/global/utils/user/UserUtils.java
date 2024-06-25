@@ -33,7 +33,7 @@ public class UserUtils {
      * @throws CustomException if no user is found with the given serial number
      */
     public String getNameBySerialNumber(Long serialNumber) {
-        return childRepository.findBySerialNum(serialNumber)
+        System.out.println(("ddd"+ serialNumber));
         if(serialNumber.toString().equals("300")){
             System.out.println("300 들어옴");
             return "stock";
@@ -41,8 +41,10 @@ public class UserUtils {
         Optional<Child> childOpt = childRepository.findBySerialNum(serialNumber);
         Optional<Parents> parentsOpt = parentsRepository.findBySerialNum(serialNumber);
         if (childOpt.isPresent()) {
+            System.out.println(childOpt.get().getName());
             return childOpt.get().getName();
         } else {
+            System.out.println(parentsOpt.get().getName());
             return parentsOpt.get().getName();
         }
     }
