@@ -48,7 +48,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/asers")
+    @PutMapping("/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -63,7 +63,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/users")
+    @PostMapping("/users")
     public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 

@@ -3,7 +3,6 @@ package shinhan.server_parent.domain.loan.controller;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
-import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
 import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 import shinhan.server_common.global.utils.user.UserUtils;

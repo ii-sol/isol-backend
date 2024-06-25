@@ -32,23 +32,23 @@ public class LoanController {
     @GetMapping("/loan")
     public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() throws AuthException {
 
-            long childId = jwtService.getUserInfo().getSn();
-            List<LoanDto> loans = loanService.getLoanByChildId(childId);
+        long childId = jwtService.getUserInfo().getSn();
+        List<LoanDto> loans = loanService.getLoanByChildId(childId);
 
-            for (LoanDto loan : loans) {
-                String parentName = userService.getParentsAlias(childId, loan.getParentId());
-                loan.setParentName(parentName);
+        for (LoanDto loan : loans) {
+            String parentName = userService.getParentsAlias(childId, loan.getParentId());
+            loan.setParentName(parentName);
 
 
-            }
+        }
 
-            return ApiUtils.success(loans);
+        return ApiUtils.success(loans);
     }
 
     @PostMapping("/child/loan/create")
     public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) throws AuthException {
 
-        log.info("create1 loan={}",loan);
+        log.info("create1 loan={}", loan);
 
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
