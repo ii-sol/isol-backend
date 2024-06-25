@@ -62,8 +62,8 @@ public class InvestService {
     public List<StockHistoryResponse> getStockHistory(String account, short status, int year,
         int month) {
         String queueName = "alarm";
-        rabbitTemplate.convertSendAndReceive(queueName,
-            Notification.builder().message("asdasd"));
+//        rabbitTemplate.convertSendAndReceive(queueName,
+//            Notification.builder().message("asdasd"));
         List<StockHistory> result;
         LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);

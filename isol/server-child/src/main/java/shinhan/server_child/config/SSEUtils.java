@@ -1,5 +1,11 @@
-package shinhan.server_common.notification.service;
+package shinhan.server_child.config;
 
+import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,14 +17,6 @@ import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
 import shinhan.server_common.notification.entity.Notification;
 import shinhan.server_common.notification.mongo.NotificationRepository;
-
-import java.io.IOException;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
@@ -69,7 +67,6 @@ public class SSEUtils {
 //            saveNotification(receiverSerialNumber, senderName, functionCode, message);
         //emitter가 null인 경우
         try{
-            System.out.println(emitter.toString());
             emitter.send(SseEmitter.event().name("notification").data(savedNotification));
         } catch (IOException e) {
 

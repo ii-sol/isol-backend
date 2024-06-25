@@ -87,7 +87,7 @@ public class InvestProposalServiceChild {
             userUtils.getParentsBySerialNumber(parentSn), investProposalSaveRequest.getQuantity(),trading);
         Notification notification = Notification.builder().message(message).receiverSerialNumber(parentSn).sender(
             userUtils.getNameBySerialNumber(childSn)).functionCode(6).build();
-        rabbitTemplate.convertSendAndReceive("alarm", notification);
+        rabbitTemplate.convertSendAndReceive("alarm1", notification);
         investProposalRepositoryChild.save(
             investProposalSaveRequest.toInvestProposal(childSn, parentSn));
         return childSn;

@@ -15,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class Notification {
 
@@ -30,7 +31,6 @@ public class Notification {
 
     LocalDateTime createDate;
 
-    @Builder
     public Notification(String message, int functionCode, Long receiverSerialNumber, String sender, LocalDateTime createDate) {
         this.notificationSerialNumber = UUID.randomUUID().toString();
         this.message = message;
