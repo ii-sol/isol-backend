@@ -2,7 +2,7 @@ package shinhan.server_parent.domain.invest.service;
 
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.invest.investEntity.MyStockList;
-import shinhan.server_common.domain.invest.repository.StockListRepository;
+import shinhan.server_common.domain.invest.investRepository.StockListRepository;
 
 @Service
 public class MyStockServiceParent {

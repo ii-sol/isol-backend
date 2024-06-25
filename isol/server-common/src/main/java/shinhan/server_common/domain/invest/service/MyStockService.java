@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.invest.dto.MyStockListResponse;
 import shinhan.server_common.domain.invest.investEntity.MyStockList;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-import shinhan.server_common.domain.invest.repository.StockListRepository;
+import shinhan.server_common.domain.invest.investRepository.StockListRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 
 @Service

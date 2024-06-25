@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.repository;
+package shinhan.server_common.domain.invest.investRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
