@@ -10,4 +10,5 @@ public interface StockHistoryRepository extends JpaRepository<StockHistory,Long>
         Timestamp startDate,Timestamp endDate);
     List<StockHistory> findByAccountNumAndCreateDateBetween(String accountNum,
     Timestamp startDate,Timestamp endDate);
+    List<StockHistory> findByAccountNum(String accountNum);
 }

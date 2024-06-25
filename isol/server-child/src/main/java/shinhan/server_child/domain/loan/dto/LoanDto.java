@@ -90,6 +90,33 @@ public class LoanDto {
         this.childName = childName;
         this.dueDate = dueDate;
         this.createDate = createDate;
+        this.balance = balance;
+        this.status = status;
+        this.title = title;
+        this.amount = amount;
+        this.interestRate = interestRate;
+    }
+
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int status, String title, String message) {
+        this.id = id;
+        this.dueDate = dueDate;
+        this.createDate = createDate;
+        this.period = period;
+        this.childId = childId;
+        this.parentId = parentId;
+        this.interestRate = interestRate;
+        this.amount = amount;
+        this.status = status;
+        this.title = title;
+        this.message = message;
+        this.balance = amount; // 초기 balance는 amount와 동일하게 설정
+    }
+
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, String parentName, double interestRate, int amount, int balance, int status, String title, String message) {
+>>>>>>> Stashed changes
+        this.id = id;
+        this.dueDate = dueDate;
+        this.createDate = createDate;
         this.period = period;
         this.childId = childId;
         this.parentId = parentId;
@@ -99,5 +126,28 @@ public class LoanDto {
         this.status = status;
         this.title = title;
         this.message = message;
+<<<<<<< Updated upstream
+=======
+    }
+
+    public LoanDto(int id, Date dueDate, String childName, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int balance,
+        int status, String title, String message) {
+        this.id = id;
+        this.childName = childName;
+        this.dueDate = dueDate;
+        this.createDate = createDate;
+        this.period = period;
+        this.childId = childId;
+        this.parentId = parentId;
+        this.interestRate = interestRate;
+        this.amount = amount;
+        this.balance = balance;
+        this.status = status;
+        this.title = title;
+        this.message = message;
+    }
+
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int balance, int status, String title, String message) {
+>>>>>>> Stashed changes
     }
 }

@@ -10,6 +10,7 @@ import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.notification.dto.NotificationFindAllResponse;
 import shinhan.server_common.notification.entity.Notification;
 import shinhan.server_common.notification.mongo.NotificationRepository;
+import shinhan.server_common.notification.utils.MessageHandler;
 
 import java.io.IOException;
 

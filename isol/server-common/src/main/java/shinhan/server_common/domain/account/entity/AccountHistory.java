@@ -1,16 +1,21 @@
 package shinhan.server_common.domain.account.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Getter
+
+@Entity(name = "AccountHistory")
+@EntityScan("shinhan.server_common.domain.account.entity")
 @Table(name = "account_history")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccountHistory {
     @Id

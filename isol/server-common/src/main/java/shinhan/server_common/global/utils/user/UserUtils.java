@@ -13,6 +13,8 @@ import shinhan.server_common.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -32,10 +34,17 @@ public class UserUtils {
      */
     public String getNameBySerialNumber(Long serialNumber) {
         return childRepository.findBySerialNum(serialNumber)
-                .map(Child::getName)
-                .orElseGet(() -> parentsRepository.findBySerialNum(serialNumber)
-                        .map(Parents::getName)
-                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER)));
+        if(serialNumber.toString().equals("300")){
+            System.out.println("300 들어옴");
+            return "stock";
+        }
+        Optional<Child> childOpt = childRepository.findBySerialNum(serialNumber);
+        Optional<Parents> parentsOpt = parentsRepository.findBySerialNum(serialNumber);
+        if (childOpt.isPresent()) {
+            return childOpt.get().getName();
+        } else {
+            return parentsOpt.get().getName();
+        }
     }
 
     /**

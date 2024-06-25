@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class JwtService {
 
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1800 * 1000; // 30 minutes
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 18000 * 1000; // 30 minutes
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
     private ObjectMapper objectMapper;

@@ -51,4 +51,24 @@ public class NotificationController {
         sseUtils.deleteAllNotifications(loginUserSerialNumber);
         return success(null);
     }
+
+//    @GetMapping("/test/{num}")
+//    public ApiUtils.ApiResult sendNotification(@PathVariable("num") int num) throws AuthException {
+//        System.out.println("알람 전송");
+//        if (num == 1){
+//            sseUtils.sendNotification(2173856368L, "알파코",1,"알파코가 가입했어요");
+//        } else if (num == 2) {
+//            sseUtils.sendNotification(2173856368L, "알파코",2,"엄마가 300000원 송금했어요");
+//        } else if (num == 3) {
+//            sseUtils.sendNotification(2173856368L, "알파코",3,"용돈조르기 엄마가 수락했단다");
+//        } else if (num == 4) {
+//            sseUtils.sendNotification(2173856368L, "알파코",4,"미션 실패!");
+//        } else if (num == 5) {
+//            sseUtils.sendNotification(2173856368L, "알파코",5,"대출 10000원 아빠한테 ㄱ");
+//        }  else if (num == 6) {
+//            sseUtils.sendNotification(2173856368L, "알파코",6,"삼성전자 ㄱㄱㄱ");
+//        }
+//
+//        return success(null);
+//    }
 }

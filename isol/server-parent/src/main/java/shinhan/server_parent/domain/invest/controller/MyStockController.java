@@ -45,7 +45,7 @@ public class MyStockController {
             throw new CustomException(ErrorCode.FAILED_NO_CHILD);
         }
         stockServiceParent.saveStockList(csn, ticker);
-        return success("sad");
+        return success("sad ");
     }
 
     @DeleteMapping("")
