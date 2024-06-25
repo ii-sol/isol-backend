@@ -56,7 +56,7 @@ public class JwtService {
         return createToken(UserInfoResponse.builder().sn(sn).build(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    public String getAccessToken() throws ExpiredJwtException, NullPointerException {
+    public String getAccessToken() throws ExpiredJwtException, NullPointerException, StringIndexOutOfBoundsException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("Authorization").substring(7);
     }
