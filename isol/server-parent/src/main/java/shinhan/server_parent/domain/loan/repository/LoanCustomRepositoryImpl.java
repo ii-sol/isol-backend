@@ -3,16 +3,24 @@ package shinhan.server_parent.domain.loan.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_parent.domain.loan.dto.LoanDto;
 import shinhan.server_parent.domain.loan.entity.Loan;
+import shinhan.server_common.global.utils.user.UserUtils;
 
 @Repository
 public class LoanCustomRepositoryImpl implements LoanCustomRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final UserUtils userUtils; // 유틸리티 클래스 의존성 추가
+
+    public LoanCustomRepositoryImpl(UserUtils userUtils) {
+        this.userUtils = userUtils;
+    }
 
     @Override
     public List<LoanDto> findByChildID(Long childId) {
@@ -21,25 +29,26 @@ public class LoanCustomRepositoryImpl implements LoanCustomRepository {
             .setParameter("childId", childId)
             .getResultList();
 
-        // Mapping Loan entities to LoanDto
-        List<LoanDto> loanDtos = loans.stream()
-            .map(loan -> new LoanDto(
-                loan.getId(),
-                loan.getDueDate(),
-                loan.getCreateDate(),
-                loan.getPeriod(),
-                loan.getChildId(),
-                loan.getParentId(),
-                loan.getInterestRate(),
-                loan.getAmount(),
-                loan.getStatus(),
-                loan.getTitle(),
-                loan.getMessage()))
-            .toList();
-
-        return loanDtos;
+        return loans.stream()
+            .map(loan -> {
+                LoanDto loanDto = new LoanDto(
+                    loan.getId(),
+                    loan.getDueDate(),
+                    loan.getCreateDate(),
+                    loan.getPeriod(),
+                    loan.getChildId(),
+                    loan.getParentId(),
+                    loan.getInterestRate(),
+                    loan.getAmount(),
+                    loan.getBalance(),
+                    loan.getStatus(),
+                    loan.getTitle(),
+                    loan.getMessage()
+                );
+                return loanDto;
+            })
+            .collect(Collectors.toList());
     }
-
 
     @Override
     @Transactional
@@ -67,9 +76,13 @@ public class LoanCustomRepositoryImpl implements LoanCustomRepository {
             "l.id, l.dueDate, l.createDate, l.period, l.childId, l.parentId, l.interestRate, " +
             "l.amount, l.balance, l.status, l.title, l.message) " +
             "FROM Loan l WHERE l.id = :id";
-        return entityManager.createQuery(query, LoanDto.class)
+        LoanDto loanDto = entityManager.createQuery(query, LoanDto.class)
             .setParameter("id", loanId)
             .getSingleResult();
-    }
 
+        loanDto.setChildName(userUtils.getNameBySerialNumber(loanDto.getChildId())); // 필드 설정
+        loanDto.setParentName(userUtils.getNameBySerialNumber(loanDto.getParentId())); // 필드 설정
+
+        return loanDto;
+    }
 }

@@ -38,6 +38,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/proposal")
 public class ProposalController {
+
     InvestProposalService investProposalService;
     UserService userService;
     StockService stockService;
@@ -45,11 +46,12 @@ public class ProposalController {
     InvestProposalServiceParent investProposalServiceParent;
     InvestService investService;
     AccountUtils accountUtils;
+
     @Autowired
     ProposalController(InvestProposalService investProposalService, UserService userService,
         JwtService jwtService, StockService stockService,
         InvestProposalServiceParent investProposalServiceParent,
-        InvestService investService,AccountUtils accountUtils
+        InvestService investService, AccountUtils accountUtils
     ) {
         this.investProposalService = investProposalService;
         this.userService = userService;
@@ -63,8 +65,8 @@ public class ProposalController {
     //투자 제안 내역 달변 조회하기
     @GetMapping("/invest/history/{status}")
     public ApiResult getInvestProposal(@RequestParam("year") int year,
-                                       @RequestParam("month") int month, @PathVariable("status") short status,
-                                       @RequestParam("csn") Long csn
+        @RequestParam("month") int month, @PathVariable("status") short status,
+        @RequestParam("csn") Long csn
     ) throws AuthException, AuthException {
         Map<Long, String> family = new HashMap<>();
         for (FamilyInfoResponse familyInfoResponse : jwtService.getUserInfo().getFamilyInfo()) {
@@ -75,7 +77,7 @@ public class ProposalController {
             throw new CustomException(ErrorCode.FAILED_NO_CHILD);
         }
         List<InvestProposalHistoryResponse> result = investProposalServiceParent.getProposalInvestHistory(
-                jwtService.getUserInfo().getSn(), csn, year, month, status);
+            jwtService.getUserInfo().getSn(), csn, year, month, status);
         for (InvestProposalHistoryResponse investProposalHistoryResponse : result) {
             investProposalHistoryResponse.setRecieverName(string);
         }
@@ -85,38 +87,43 @@ public class ProposalController {
     //투자제안 상세보기
     @GetMapping("/invest/{proposalId}/{year}")
     public ApiResult getInvestProposalDetail(@PathVariable("proposalId") int proposalId,
-                                             @PathVariable("year") String year)
-            throws AuthException {
+        @PathVariable("year") String year)
+        throws AuthException {
         Long psn = jwtService.getUserInfo().getSn();
         InvestProposal proposalInvestDetail = investProposalServiceParent.getProposalInvestDetail(
-                proposalId, psn);
+            proposalId, psn);
         StockFindDetailResponse stockDetail = stockService.getStockDetail2(
-                proposalInvestDetail.getTicker(), year);
+            proposalInvestDetail.getTicker(), year);
         InvestProposalResponse investProposalResponse = null;
         if (proposalInvestDetail.getStatus() == 5) {
             investProposalResponse = investProposalService.getInvestProposalResponse(proposalId);
         }
         return ApiUtils.success(InvestProposalDetailResponse.builder().companyInfo(stockDetail)
-                .requestProposal(proposalInvestDetail).responseProposal(investProposalResponse)
-                .build());
+            .requestProposal(proposalInvestDetail).responseProposal(investProposalResponse)
+            .build());
     }
 
     //투자 수락 및 거절하기
     @PostMapping("/invest/{proposalId}")
-    public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,@RequestParam("csn") Long csn,
+    public ApiUtils.ApiResult responseProposal(@PathVariable("proposalId") int proposalId,
+        @RequestParam("csn") Long csn,
         @RequestBody ResponseInvestProposal responseInvestProposal)
         throws AuthException {
         Long psn = jwtService.getUserInfo().getSn();
-        Account account = accountUtils.getAccountByUserSerialNumberAndStatus(csn,2);
-        InvestProposal result = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
+        Account account = accountUtils.getAccountByUserSerialNumberAndStatus(csn, 2);
+        InvestProposal result = investProposalServiceParent.setInvestProposalServiceParent(psn,
+            proposalId,
             responseInvestProposal);
-        try{
-        boolean b = investService.investStock(account.getAccountNum(),
-            InvestStockRequest.builder().quantity(
-                    result.getQuantity()).ticker(result.getTicker()).trading(result.getTradingCode())
-                .build());
-        }catch (CustomException e){
-            result.setStatus((short)6);
+        try {
+            if (responseInvestProposal.isAccept()) {
+                investService.investStock(account.getAccountNum(),
+                    InvestStockRequest.builder().quantity(
+                            result.getQuantity()).ticker(result.getTicker())
+                        .trading(result.getTradingCode())
+                        .build());
+            }
+        } catch (CustomException e) {
+            result.setStatus((short) 6);
             throw e;
         }
         return ApiUtils.success(true);
@@ -124,10 +131,11 @@ public class ProposalController {
 
     @GetMapping("/invest/no-approve")
     public ApiUtils.ApiResult getNoApprove(@RequestParam("csn") Long csn) throws AuthException {
-        if(!jwtService.isMyFamily(csn)){
+        if (!jwtService.isMyFamily(csn)) {
             throw new CustomException(ErrorCode.FAILED_NO_CHILD);
         }
         Long parentSn = jwtService.getUserInfo().getSn();
-        return ApiUtils.success(investProposalServiceParent.getInvestProposalNoApproved(parentSn, csn));
+        return ApiUtils.success(
+            investProposalServiceParent.getInvestProposalNoApproved(parentSn, csn));
     }
 }
