@@ -73,7 +73,6 @@ public class ProposalController {
         long userSn = jwtService.getUserInfo().getSn();
         InvestProposal proposalInvestDetail = investProposalServiceChild.getProposalInvestDetail(
                 proposalId, userSn);
-
         StockFindDetailResponse stockDetail = stockService.getStockDetail2(
                 proposalInvestDetail.getTicker(), yaer);
         InvestProposalResponse investProposalResponse = null;
@@ -89,7 +88,7 @@ public class ProposalController {
     @PostMapping("/invest/{psn}")
     public ApiResult proposeInvest(@PathVariable("psn") Long parentSn, @RequestBody
     InvestProposalSaveRequest investProposalSaveRequest) throws AuthException {
-        if(jwtService.isMyFamily(parentSn)){
+        if(!jwtService.isMyFamily(parentSn)){
             throw new CustomException(ErrorCode.FAILED_NO_PARENT);
         }
         Long result = investProposalServiceChild.proposalInvest(jwtService.getUserInfo().getSn(), parentSn,
