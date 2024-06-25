@@ -17,7 +17,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
+@RequestMapping("/api/notifications")
 public class NotificationController {
     private final SSEUtils sseUtils;
     private final JwtService jwtService;
