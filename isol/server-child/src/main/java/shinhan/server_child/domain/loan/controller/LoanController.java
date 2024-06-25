@@ -1,5 +1,7 @@
 package shinhan.server_child.domain.loan.controller;
 
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_child.domain.loan.dto.LoanDto;
 import shinhan.server_child.domain.loan.service.LoanService;
@@ -12,6 +14,7 @@ import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class LoanController {
 
@@ -28,29 +31,32 @@ public class LoanController {
     @GetMapping("/loan")
     public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() throws AuthException {
 
-        Long childId = jwtService.getUserInfo().getSn();
+            long childId = jwtService.getUserInfo().getSn();
+            List<LoanDto> loans = loanService.getLoanByChildId(childId);
 
-        List<LoanDto> loans = loanService.getLoanByChildId(childId);
+            for (LoanDto loan : loans) {
+                String parentName = userService.getParentsAlias(childId, loan.getParentId());
+                loan.setParentName(parentName);
 
 
-        for (LoanDto loan : loans) {
-            String parentName = userService.getParentsAlias(childId, loan.getParentId());
-            loan.setParentName(parentName);
-        }
-        return ApiUtils.success(loans);
+            }
+
+            return ApiUtils.success(loans);
     }
 
     @PostMapping("/child/loan/create")
     public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) throws AuthException {
 
+        log.info("create1 loan={}",loan);
+
         UserInfoResponse userInfoResponse = jwtService.getUserInfo();
 
-        Long ChildId = userInfoResponse.getSn();
+        String childName = userInfoResponse.getName();
+        long ChildId = userInfoResponse.getSn();
         loan.setChildId(ChildId);
-
+        loan.setChildName(childName);
 
         loan.setStatus(1);
-        loan.setParentName("엄마");
 
         loanService.saveLoan(loan);
 
