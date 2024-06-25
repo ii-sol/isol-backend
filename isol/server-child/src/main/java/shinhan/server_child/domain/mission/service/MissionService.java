@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
-import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
-import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
-import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
-import shinhan.server_child.domain.mission.entity.Mission;
+import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
+import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
+import shinhan.server_common.domain.mission.entity.Mission;
 import shinhan.server_child.domain.mission.repository.MissionRepository;
 
 import java.sql.Timestamp;
