@@ -110,11 +110,16 @@ public class ProposalController {
         Account account = accountUtils.getAccountByUserSerialNumberAndStatus(csn,2);
         InvestProposal result = investProposalServiceParent.setInvestProposalServiceParent(psn, proposalId,
             responseInvestProposal);
+        try{
         boolean b = investService.investStock(account.getAccountNum(),
             InvestStockRequest.builder().quantity(
                     result.getQuantity()).ticker(result.getTicker()).trading(result.getTradingCode())
                 .build());
-        return ApiUtils.success(b);
+        }catch (CustomException e){
+            result.setStatus((short)6);
+            throw e;
+        }
+        return ApiUtils.success(true);
     }
 
     @GetMapping("/invest/no-approve")

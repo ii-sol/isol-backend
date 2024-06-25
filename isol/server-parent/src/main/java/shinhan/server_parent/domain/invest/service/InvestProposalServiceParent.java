@@ -92,7 +92,6 @@ public class InvestProposalServiceParent {
 
         } else {
             resultInvestProposal.get().setStatus((short) 5);
-            System.out.println(resultInvestProposal.get().getMessage());
             investProposalResponseRepository.save(InvestProposalResponseParent.builder()
                 .message(proposal.getMessage())
                 .proposalId(proposalId)
