@@ -31,10 +31,11 @@ public class InvestProposalServiceChild {
     RabbitTemplate rabbitTemplate;
 
     InvestProposalServiceChild(InvestProposalRepositoryChild investProposalRepositoryChild,
-        CorpCodeRepository corpCodeRepository, RabbitTemplate rabbitTemplate) {
+        CorpCodeRepository corpCodeRepository, RabbitTemplate rabbitTemplate,UserUtils userUtils) {
         this.investProposalRepositoryChild = investProposalRepositoryChild;
         this.corpCodeRepository = corpCodeRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.userUtils = userUtils;
     }
 
     public List<InvestProposalHistoryResponse> getProposalInvestHistory(Long userSn, int year,
@@ -84,8 +85,9 @@ public class InvestProposalServiceChild {
         String message = MessageHandler.getMessage(514,
             userUtils.getChildBySerialNumber(childSn).getName(),
             userUtils.getParentsBySerialNumber(parentSn), investProposalSaveRequest.getQuantity(),trading);
-        rabbitTemplate.convertSendAndReceive("alarm", Notification.builder().message(message).receiverSerialNumber(parentSn).sender(
-            userUtils.getNameBySerialNumber(childSn)).functionCode(6));
+        Notification notification = Notification.builder().message(message).receiverSerialNumber(parentSn).sender(
+            userUtils.getNameBySerialNumber(childSn)).functionCode(6).build();
+        rabbitTemplate.convertSendAndReceive("alarm",notification );
         investProposalRepositoryChild.save(
             investProposalSaveRequest.toInvestProposal(childSn, parentSn));
         return childSn;
