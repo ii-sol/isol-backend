@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 @Transactional
 public class SSEUtils {
-
     private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
     private final NotificationRepository notificationRepository;
 
@@ -63,9 +62,11 @@ public class SSEUtils {
     }
 
     //알람 보내기 => message는 각자 자기 도메인에서 MessageHandler.getMessage(여러 인수들); 해서 나온거 가져오기
-    public void sendNotification(Long receiverSerialNumber, String senderName, Integer functionCode, String message){
-        SseEmitter emitter = sseEmitters.get(receiverSerialNumber);
-        Notification savedNotification = saveNotification(receiverSerialNumber, senderName, functionCode, message);
+    @RabbitListener(queues = "alarm")
+    public void sendNotification(Notification notification){
+        SseEmitter emitter = sseEmitters.get(notification.getReceiverSerialNumber());
+        Notification savedNotification = notification;
+//            saveNotification(receiverSerialNumber, senderName, functionCode, message);
         //emitter가 null인 경우
         try{
             emitter.send(SseEmitter.event().name("notification").data(savedNotification));
@@ -74,8 +75,7 @@ public class SSEUtils {
             //몽고 디비에서 저장된거 삭제하기
             notificationRepository.deleteByNotificationSerialNumber(savedNotification.getNotificationSerialNumber());
             //emitter를 삭제해야하나? => 재시도 로직을 넣어야 하나? => 재시도 횟수
-            sseEmitters.remove(receiverSerialNumber);
-
+            sseEmitters.remove(notification.getReceiverSerialNumber());
             throw new CustomException(ErrorCode.FAILED_NOTIFICATION);
         }
 

@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -28,12 +29,12 @@ public class ServerChildApplication implements CommandLineRunner{
     public Queue queue(@Value("${rabbitmq.queue}") String queueName) {
         return new Queue(queueName, false);
     }
-
     @Value("${rabbitmq.queue}")
     private String queueName;
 
     @Override
     public void run(String... args) throws Exception {
-        rabbitTemplate.convertAndSend(queueName, "Hello from Producer!");
+        Notification notification = Notification.builder().message("sadasd").sender("d아가").receiverSerialNumber(123123L).build();
+        rabbitTemplate.convertAndSend(queueName, notification);
     }
 }

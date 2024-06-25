@@ -58,9 +58,9 @@ public class MessageCode {
         messageCodes.put(511, "%s님이 종목 리스트에 %s을 제안했어요!");
         messageCodes.put(512, "%s님이 종목 리스트에 %s 제안을 수락했어요.");
         messageCodes.put(513, "%s님이 종목 리스트에 %s 제안을 거절했어요.");
-        messageCodes.put(514, "%s님이 %s을 0주 %s 제안했어요!");
-        messageCodes.put(515, "%s님이 %s을 0주 %s 제안을 수락했어요.");
-        messageCodes.put(516, "%s님이 %s을 0주 %s 제안을 거절했어요.");
+        messageCodes.put(514, "%s님이 %s을 %d주 %s 제안했어요!");
+        messageCodes.put(515, "%s님이 %s을 %d주 %s 제안을 수락했어요.");
+        messageCodes.put(516, "%s님이 %s을 %d주 %s 제안을 거절했어요.");
         messageCodes.put(517, "%s님이 종목리스트에 %s을 추가했어요.");
         messageCodes.put(520, "투자 수익이 10%% 이상이어서 신뢰도가 +5 되었어요.");
         messageCodes.put(521, "투자 손실이 10%% 이상이어서 신뢰도가 -5 되었어요.");

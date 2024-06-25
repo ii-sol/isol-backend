@@ -26,6 +26,7 @@ public class CorpCodeController {
     CorpCodeController(CorpCodeService corpCodeService, JwtService jwtService) {
         this.jwtService = jwtService;
         this.corpCodeService = corpCodeService;
+
     }
 
     @GetMapping("/{corpName}")
