@@ -1,5 +1,6 @@
 package shinhan.server_parent.domain.loan.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
@@ -12,24 +13,23 @@ import shinhan.server_parent.domain.loan.service.LoanService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class LoanController {
 
     private final LoanService loanService;
-    private final JwtService jwtService;
     private final UserUtils userUtils;
 
     public LoanController(LoanService loanService, JwtService jwtService, UserUtils userUtils) {
         this.loanService = loanService;
-        this.jwtService = jwtService;
         this.userUtils = userUtils;
     }
 
     @GetMapping("/api/loan/{childSn}")
-    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan(@PathVariable long childSn) throws AuthException {
+    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan(@PathVariable long childSn) {
+        log.info("get loans by childSn = {}", childSn);
 
         List<LoanDto> loans = loanService.getLoanByChildId(childSn);
-
         for (LoanDto loan : loans) {
             loan.setChildName(userUtils.getNameBySerialNumber(childSn));
             loan.setParentName(userUtils.getNameBySerialNumber(loan.getParentId()));
