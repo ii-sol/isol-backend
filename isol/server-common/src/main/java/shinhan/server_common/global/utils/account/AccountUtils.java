@@ -36,8 +36,10 @@ public class AccountUtils {
                 .senderAccountNum(senderAccount.getAccountNum())
                 .receiverAccountNum(recieverAccount.getAccountNum())
                 .amount(amount)
-                .createDate(LocalDateTime.now())
                 .messageCode(messageCode)
+                .senderBalance(senderAccount.getBalance())
+                .receiverBalance(recieverAccount.getBalance())
+                .createDate(LocalDateTime.now())
                 .build();
 
         accountHistoryRepository.save(newAccountHistory);
