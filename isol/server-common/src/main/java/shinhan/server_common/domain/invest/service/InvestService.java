@@ -116,11 +116,15 @@ public class InvestService {
     }
 
     public boolean investStock(String account_num, InvestStockRequest investStockRequest){
+        try{
         if(investStockRequest.getTrading()==1) {
             //"주문 매도가 맞지 않습니다."
-            return purchaseStock(account_num, investStockRequest);
+                return purchaseStock(account_num, investStockRequest);
         }else {
-            return sellStock(account_num, investStockRequest);
+                return sellStock(account_num, investStockRequest);
+        }}
+        catch (CustomException e){
+            throw e;
         }
     }
 
@@ -128,6 +132,8 @@ public class InvestService {
     boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
         Account userAccount = accountUtils.getAccountByAccountNum(account_num);
         Account systemInvestAccount = accountUtils.getAccountByAccountNum("300");
+
+
 
         //계좌 상한선에 맞춰서 + 메세지 코드 변경
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
@@ -141,6 +147,7 @@ public class InvestService {
             portfolioRepository.save(investStockRequest.toEntityPortfolio(account_num,currentPrice));
             return true;
         }else{
+
             int tempSum = prePortfolio.get().getAveragePrice()*prePortfolio.get().getQuantity();
             short tempQuantity = prePortfolio.get().getQuantity();
             tempSum+= investStockRequest.getQuantity()*currentPrice;

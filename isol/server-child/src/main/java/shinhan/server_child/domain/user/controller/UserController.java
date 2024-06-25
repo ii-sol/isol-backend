@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import shinhan.server_child.domain.loan.service.LoanService;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.account.dto.AccountFindOneResponse;
 import shinhan.server_common.domain.account.service.AccountService;
+import shinhan.server_common.domain.invest.service.InvestService;
 import shinhan.server_common.domain.user.dto.*;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
@@ -31,6 +33,7 @@ public class UserController {
     private AccountService accountService;
     private JwtService jwtService;
     private LoanService loanService;
+    private InvestService investService;
 
 
     @GetMapping("/users/{sn}")
@@ -139,11 +142,14 @@ public class UserController {
 
         long childId = jwtService.getUserInfo().getSn();
 
-        ChildFindOneResponse user = userService.getChild(userInfo.getSn());
+        ChildFindOneResponse user = userService.getChild(childId);
+        AccountFindOneResponse account = accountService.findAccount(childId, 2);
 
         int score = user.getScore();
-
         score += (5 * loanService.findCompleteLoanCount(childId));
+        if(investService.getPortfolio(account.getAccountNum()).getTotalProfit()>0.1){
+            score += 5;
+        }
 
         if (user != null) {
             return success(score);

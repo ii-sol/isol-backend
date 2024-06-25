@@ -101,6 +101,13 @@ public class InvestProposalServiceParent {
         return resultInvestProposal.get();
     }
 
+    public InvestProposal setInvestProposalImpossible(InvestProposal investProposal){
+        investProposal.setStatus((short) 6);
+        System.out.println(investProposal.getStatus());
+        acceptInvestProposalRepositoryParent.save(investProposal);
+        return investProposal;
+    }
+
     public List<InvestProposalHistoryResponse> getInvestProposalNoApproved(Long parentSn, Long childSn) {
         LocalDateTime localDateTime = LocalDateTime.now().minusDays(3);
         Timestamp startDate = Timestamp.valueOf(localDateTime);

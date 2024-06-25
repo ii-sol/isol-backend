@@ -1,9 +1,18 @@
 package shinhan.server_common.global.utils.user;
 
+import static shinhan.server_common.global.utils.ApiUtils.error;
+import static shinhan.server_common.global.utils.ApiUtils.success;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import shinhan.server_common.domain.account.dto.AccountFindOneResponse;
+import shinhan.server_common.domain.account.service.AccountService;
+import shinhan.server_common.domain.user.dto.ChildFindOneResponse;
 import shinhan.server_common.domain.user.entity.Child;
 import shinhan.server_common.domain.user.entity.Family;
 import shinhan.server_common.domain.user.entity.Parents;
@@ -15,6 +24,9 @@ import shinhan.server_common.global.exception.ErrorCode;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import shinhan.server_common.global.security.JwtService;
+import shinhan.server_common.global.security.dto.UserInfoResponse;
+import shinhan.server_common.global.utils.ApiUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -62,5 +74,4 @@ public class UserUtils {
 
         return family.getParentsAlias();
     }
-
 }
