@@ -9,6 +9,7 @@ import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleChange
 import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleSaveOneRequest;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
+import shinhan.server_common.global.utils.scheduler.SchedulerUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TotalAllowanceFindAllResponse;
@@ -28,6 +29,7 @@ public class AllowanceController {
     private final AllowanceService allowanceService;
     private final JwtService jwtService;
     private final DynamicScheduler dynamicScheduler;
+    private final SchedulerUtils schedulerUtils;
 
     //부모 - 전체 용돈 내역 조회하기
     @GetMapping("history")
@@ -66,11 +68,12 @@ public class AllowanceController {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         String taskId = makeTaskId(loginUserSerialNumber, request.getChildSerialNumber());
 
-        System.out.println(taskId);
         LocalDateTime createDate = LocalDateTime.now();
+        String cronExpression = schedulerUtils.generateTransmitCronExpression(createDate);
+
         allowanceService.createMonthlyAllowance(loginUserSerialNumber, createDate, request);
 
-        dynamicScheduler.scheduleTask(taskId, createDate.plusSeconds(1), request.getPeriod(),() -> {
+        dynamicScheduler.scheduleTask(taskId, cronExpression, request.getPeriod(),() -> {
             allowanceService.transmitMoneyforSchedule(loginUserSerialNumber, request.getChildSerialNumber(), request.getAmount());
         });
         return success(null);
@@ -82,10 +85,10 @@ public class AllowanceController {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         String taskId = makeTaskId(loginUserSerialNumber, request.getChildSerialNumber());
 
-        System.out.println(taskId);
+        String cronExpression = schedulerUtils.generateTransmitCronExpression(request.getDateBeforeChange());
         allowanceService.changeMonthlyAllowance(loginUserSerialNumber, request);
 
-        dynamicScheduler.rescheduleTask(taskId, request.getDateBeforeChange().plusSeconds(1), request.getPeriod(),() -> {
+        dynamicScheduler.rescheduleTask(taskId, cronExpression, request.getPeriod(),() -> {
             allowanceService.transmitMoneyforSchedule(loginUserSerialNumber, request.getChildSerialNumber(), request.getAmount());
         });
         return success(null);

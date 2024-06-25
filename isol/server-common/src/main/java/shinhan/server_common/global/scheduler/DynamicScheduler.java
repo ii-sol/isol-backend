@@ -32,10 +32,10 @@ public class DynamicScheduler implements SchedulingConfigurer {
         taskRegistrar.setTaskScheduler(taskScheduler);  // TaskScheduler 설정 추가
     }
 
-    // 스케줄링 시작 메소드
-    public void scheduleTask(String taskId, LocalDateTime executionTime, Integer period, Runnable task) {
+    // 정기 이체 관련 스케줄링 시작 메소드 ( 용돈, 대출 )
+    public void scheduleTask(String taskId, String cronExpression, Integer period, Runnable task) {
         executionInfoMap.put(taskId, new ExecutionInfo(period, 0));
-        String cronExpression = "*/5 * * * * *";
+//        String cronExpression = generateTransmitCronExpression(executionTime);
 
         CronTask cronTask = new CronTask(() -> {
             executionInfoMap.get(taskId).incrementCount();
@@ -52,27 +52,28 @@ public class DynamicScheduler implements SchedulingConfigurer {
     }
 
     // 스케줄링 변경하기
-    public void rescheduleTask(String taskId, LocalDateTime newExecutionTime, Integer period, Runnable task) {
+    public void rescheduleTask(String taskId, String cronExpression, Integer period, Runnable task) {
         int executedCount = executionInfoMap.get(taskId).getCount();
         System.out.println(executedCount);
 
+        //지금까지 있던 스케줄링 멈추기
         stopScheduledTask(taskId);
-
-        String newCronExpression = retestGenerateCronExpression(newExecutionTime);
-        System.out.println(newCronExpression);
-        executionInfoMap.put(taskId, new ExecutionInfo(period - executedCount, 0));
-
-        CronTask cronTask = new CronTask(() -> {
-            executionInfoMap.get(taskId).incrementCount();
-            task.run();
-            if (executionInfoMap.get(taskId).getLimit() <= executionInfoMap.get(taskId).getCount()) {
-                stopScheduledTask(taskId);
-            }
-        }, new CronTrigger(newCronExpression));
-
-        ScheduledFuture<?> future = taskScheduler.schedule(cronTask.getRunnable(), cronTask.getTrigger());
-        cronTasks.put(taskId, cronTask);
-        scheduledFutures.put(taskId, future);
+        //아래랑 scheduleTask랑 같음
+        scheduleTask(taskId, cronExpression, period-executedCount, task);
+//        String newCronExpression = generateTransmitCronExpression(newExecutionTime);
+//        executionInfoMap.put(taskId, new ExecutionInfo(period - executedCount, 0));
+//
+//        CronTask cronTask = new CronTask(() -> {
+//            executionInfoMap.get(taskId).incrementCount();
+//            task.run();
+//            if (executionInfoMap.get(taskId).getLimit() <= executionInfoMap.get(taskId).getCount()) {
+//                stopScheduledTask(taskId);
+//            }
+//        }, new CronTrigger(newCronExpression));
+//
+//        ScheduledFuture<?> future = taskScheduler.schedule(cronTask.getRunnable(), cronTask.getTrigger());
+//        cronTasks.put(taskId, cronTask);
+//        scheduledFutures.put(taskId, future);
     }
 
     // 스케줄링 취소하기
@@ -89,14 +90,14 @@ public class DynamicScheduler implements SchedulingConfigurer {
         }
     }
 
-    // 스케줄링 시간 정하는 메소드
-    private String testGenerateCronExpression(LocalDateTime executionTime) {
+    // 이체 시간 정하는 메소드 => 한달에 한번 오후 1시에 출금
+    private String generateTransmitCronExpression(LocalDateTime executionTime) {
         int month = executionTime.getMonthValue();
         int day = executionTime.getDayOfMonth();
-        return String.format("0 */1 * %d %d *", day, month);
+        return String.format("0 0 13 %d %d *", day, month);
     }
 
-    // 스케줄링 시간 정하는 메소드
+    // 김현수껄로?
     private String retestGenerateCronExpression(LocalDateTime executionTime) {
         int month = executionTime.getMonthValue();
         int day = executionTime.getDayOfMonth();
