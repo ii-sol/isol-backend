@@ -26,18 +26,26 @@ public class AccountHistory {
     @Column(name = "amount", nullable = false)
     private int amount;
 
-    @Column(name = "create_date", nullable = false)
-    private LocalDateTime createDate;
-
     @Column(name = "message_code", nullable = true)
     private int messageCode;
 
+    @Column(name="sender_balance")
+    private int senderBalance;
+
+    @Column(name="receiver_balance")
+    private int receiverBalance;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime createDate;
+
     @Builder
-    public AccountHistory(String senderAccountNum, String receiverAccountNum, int amount, LocalDateTime createDate, int messageCode) {
+    public AccountHistory(String senderAccountNum, String receiverAccountNum, int amount, int senderBalance, int receiverBalance,LocalDateTime createDate, int messageCode) {
         this.senderAccountNum = senderAccountNum;
         this.receiverAccountNum = receiverAccountNum;
         this.amount = amount;
-        this.createDate = createDate;
         this.messageCode = messageCode;
+        this.senderBalance = senderBalance;
+        this.receiverBalance = receiverBalance;
+        this.createDate = createDate;
     }
 }

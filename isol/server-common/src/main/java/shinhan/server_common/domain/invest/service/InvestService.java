@@ -156,7 +156,6 @@ public class InvestService {
         Account userAccount = accountUtils.getAccountByAccountNum(account_num);
         Account systempInvestAccount = accountUtils.getAccountByAccountNum("300");
 
-
         //계좌 상한선에 맞춰서 + 메세지 코드 변경
 
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
@@ -168,6 +167,7 @@ public class InvestService {
                 investStockRequest.getTicker()).orElseThrow(() -> {
                 return new CustomException(FAILED_SHORTAGE_MONEY);
             }));
+
         if(prePortfolio.isEmpty()){
             throw new CustomException(FAILED_SHORTAGE_MONEY);
         } else if (prePortfolio.get().getQuantity()< investStockRequest.getQuantity()) {

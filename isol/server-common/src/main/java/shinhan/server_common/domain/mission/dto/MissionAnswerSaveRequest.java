@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.mission.dto;
+package shinhan.server_common.domain.mission.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
