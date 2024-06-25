@@ -27,7 +27,7 @@ public class LoanController {
 
 
     @GetMapping("/loan/{childSn}")
-    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan(@PathVariable long childSn) throws AuthException {
+    public ApiUtils.ApiResult<List<LoanDto>> getChildLoan(@PathVariable long childSn) throws AuthException {    
 
         List<LoanDto> loans = loanService.getLoanByChildId(childSn);
         for (LoanDto loan : loans) {
