@@ -9,7 +9,6 @@ import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-import shinhan.server_common.global.exception.CustomException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -25,7 +24,6 @@ public class DynamicScheduler implements SchedulingConfigurer {
     private final Map<String, CronTask> cronTasks = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
     private final Map<String, ExecutionInfo> executionInfoMap = new ConcurrentHashMap<>();
-//    private final Map<String, ErrorCountInfo> errorCountMap = new ConcurrentHashMap<>();
 
     private final TaskScheduler taskScheduler;
 
@@ -37,22 +35,11 @@ public class DynamicScheduler implements SchedulingConfigurer {
     // 정기 이체 관련 스케줄링 시작 메소드 ( 용돈, 대출 )
     public void scheduleTask(String taskId, String cronExpression, Integer period, Runnable task) {
         executionInfoMap.put(taskId, new ExecutionInfo(period, 0));
-//        errorCountMap.put(taskId, new ErrorCountInfo(3, 0));
 //        String cronExpression = generateTransmitCronExpression(executionTime);
 
         CronTask cronTask = new CronTask(() -> {
             executionInfoMap.get(taskId).incrementCount();
             task.run();
-
-//            try{
-//            task.run();
-//            } catch(CustomException e){
-//                errorCountMap.get(taskId).incrementCount();
-//                if(errorCountMap.get(taskId).getLimit() <= errorCountMap.get(taskId).getCount()){
-//                    stopScheduledTask(taskId);
-//                }
-//            }
-
             if (executionInfoMap.get(taskId).getLimit() <= executionInfoMap.get(taskId).getCount()) {
                 stopScheduledTask(taskId);
             }

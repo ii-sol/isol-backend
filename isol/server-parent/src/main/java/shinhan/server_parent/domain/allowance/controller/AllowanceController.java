@@ -3,16 +3,12 @@ package shinhan.server_parent.domain.allowance.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.global.exception.AuthException;
-import shinhan.server_common.global.exception.CustomException;
-import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.scheduler.DynamicScheduler;
 import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleChangeOneRequest;
 import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleSaveOneRequest;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.utils.account.AccountUtils;
 import shinhan.server_common.global.utils.scheduler.SchedulerUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
@@ -34,7 +30,6 @@ public class AllowanceController {
     private final JwtService jwtService;
     private final DynamicScheduler dynamicScheduler;
     private final SchedulerUtils schedulerUtils;
-    private final AccountUtils accountUtils;
 
     //부모 - 전체 용돈 내역 조회하기
     @GetMapping("history")
@@ -76,13 +71,8 @@ public class AllowanceController {
         LocalDateTime createDate = LocalDateTime.now();
         String cronExpression = schedulerUtils.generateTransmitCronExpression(createDate);
 
-        //TODO: 리팩토링 필수
-        Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(loginUserSerialNumber, 3);
-        if(parentsAccount.getBalance() < request.getAmount()){
-            throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE);
-        }
-
         allowanceService.createMonthlyAllowance(loginUserSerialNumber, createDate, request);
+
         dynamicScheduler.scheduleTask(taskId, cronExpression, request.getPeriod(),() -> {
             allowanceService.transmitMoneyforSchedule(loginUserSerialNumber, request.getChildSerialNumber(), request.getAmount());
         });
