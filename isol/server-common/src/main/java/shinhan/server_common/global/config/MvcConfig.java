@@ -11,7 +11,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("auth/main");
+        registry.addViewController("/api/**").setViewName("forward:/");
     }
 
     @Bean
