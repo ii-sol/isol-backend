@@ -5,7 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Date;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shinhan.server_parent.domain.loan.dto.LoanDto;
@@ -13,36 +15,53 @@ import shinhan.server_parent.domain.loan.dto.LoanDto;
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name ="loan")
 public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
-    @Column(nullable = false)
-    Date dueDate;
+    @Column(nullable = false, name ="due_date")
+    private Date dueDate;
 
-    @Column(nullable = false)
-    Date createDate;
+    @Column(nullable = false, name ="create_date")
+    private Date createDate;
 
-    int period;
+    private int period;
 
-    String childName;
+    @Column(name = "child_id")
+    private Long childId;
 
-    Long childId;
+    @Column(name = "parent_id")
+    private Long parentId;
 
-    Long parentId;
+    @Column(name ="interest_rate")
+    private double interestRate;
 
-    float interestRate;
+    private int amount;
 
-    int amount;
+    private int balance;
 
-    int balance;
+    private int status;
 
-    int status;
+    private String title;
 
-    String title;
+    private String message;
 
-    String message;
-
+    public Loan(LoanDto loanDto) {
+        this.createDate = new Date();
+        this.dueDate = new Date(System.currentTimeMillis() + (long) loanDto.getPeriod() * 30 * 24 * 60 * 60 * 1000);
+        this.period = loanDto.getPeriod();
+        this.childId =  loanDto.getChildId();
+        this.parentId = loanDto.getParentId();
+        this.interestRate = loanDto.getInterestRate();
+        this.amount = loanDto.getAmount();
+        this.balance = loanDto.getAmount();
+        this.status = 1;
+        this.title = loanDto.getTitle();
+        this.message = loanDto.getMessage();
+    }
 }
+
