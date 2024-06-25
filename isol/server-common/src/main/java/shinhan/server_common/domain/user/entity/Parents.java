@@ -11,6 +11,7 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "parents")
 public class Parents {
 
     @Id

@@ -87,6 +87,7 @@ public class LoanDto {
     public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int balance,
         int status, String title, String message) {
         this.id = id;
+        this.childName = childName;
         this.dueDate = dueDate;
         this.createDate = createDate;
         this.period = period;

@@ -9,9 +9,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
-@SpringBootApplication(scanBasePackages = {"shinhan.server_parent", "shinhan.server_common"})
-@EnableJpaRepositories(basePackages={"shinhan.server_parent","shinhan.server_common.domain"})
-@EnableMongoRepositories(basePackages = {"shinhan.server_common.notification.mongo"})
+@SpringBootApplication
 public class ServerParentApplication {
 
     public static void main(String[] args) {
