@@ -13,67 +13,44 @@ import lombok.Setter;
 public class LoanDto {
 
     int id;
-
     Date dueDate;
-
     Date createDate;
-
     int period;
-
+    String childName;
     Long childId;
-
     Long parentId;
-
     String parentName;
-
     float interestRate;
-
     int amount;
-
     int balance;
-
     int status;
-
     String title;
-
     String message;
 
-    public LoanDto(int id, Date dueDate, Date createDate, int balance, int status, String title, int amount, float interestRate) {
-        this.interestRate = interestRate;
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount,
+        int balance, int status, String title, String message) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;
+        this.period = period;
+        this.childId = childId;
+        this.parentId = parentId;
+        this.interestRate = interestRate;
+        this.amount = amount;
         this.balance = balance;
         this.status = status;
         this.title = title;
-        this.amount = amount;
-    }
-
-    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount,
-        int status, String title, String message) {
-        this.id = id;
-        this.dueDate = dueDate;
-        this.createDate = createDate;
-        this.period = period;
-        this.childId = childId;
-        this.parentId = parentId;
-        this.interestRate = interestRate;
-        this.amount = amount;
-        this.balance = amount;
-        this.status = status;
-        this.title = title;
         this.message = message;
-
     }
 
-    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount, int balance, int status, String title, String message) {
+    public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, float interestRate, int amount, int status,
+        String title, String message, int balance) {
         this.id = id;
         this.dueDate = dueDate;
         this.createDate = createDate;
         this.period = period;
         this.childId = childId;
         this.parentId = parentId;
-        this.parentName = "엄마";
         this.interestRate = interestRate;
         this.amount = amount;
         this.balance = balance;
