@@ -25,6 +25,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api")
 public class UserController {
 
     private UserService userService;

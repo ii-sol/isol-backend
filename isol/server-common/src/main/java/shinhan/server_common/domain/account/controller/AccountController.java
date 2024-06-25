@@ -14,7 +14,7 @@ import java.util.List;
 import static shinhan.server_common.global.utils.ApiUtils.success;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/account")
 @Slf4j
 @RequiredArgsConstructor
 public class AccountController {

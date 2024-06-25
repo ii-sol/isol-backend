@@ -12,6 +12,7 @@ import shinhan.server_parent.domain.loan.service.LoanService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class LoanController {
 
     private final LoanService loanService;
