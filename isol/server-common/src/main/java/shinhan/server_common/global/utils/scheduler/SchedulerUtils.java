@@ -25,6 +25,6 @@ public class SchedulerUtils {
     public String retestGenerateCronExpression(LocalDateTime executionTime) {
         int month = executionTime.getMonthValue();
         int day = executionTime.getDayOfMonth();
-        return String.format("* * * %d %d *", day, month);
+        return String.format("*/2 * * %d %d *", day, month);
     }
 }

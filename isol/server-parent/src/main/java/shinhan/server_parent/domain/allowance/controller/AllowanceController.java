@@ -85,7 +85,7 @@ public class AllowanceController {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         String taskId = makeTaskId(loginUserSerialNumber, request.getChildSerialNumber());
 
-        String cronExpression = schedulerUtils.generateTransmitCronExpression(request.getDateBeforeChange());
+        String cronExpression = schedulerUtils.retestGenerateCronExpression(request.getDateBeforeChange());
         allowanceService.changeMonthlyAllowance(loginUserSerialNumber, request);
 
         dynamicScheduler.rescheduleTask(taskId, cronExpression, request.getPeriod(),() -> {
