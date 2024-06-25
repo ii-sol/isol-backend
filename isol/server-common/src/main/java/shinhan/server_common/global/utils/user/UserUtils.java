@@ -13,9 +13,6 @@ import shinhan.server_common.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -26,41 +23,73 @@ public class UserUtils {
     private final ParentsRepository parentsRepository;
     private final FamilyRepository familyRepository;
 
-    //serialNumber로 이름 조회
-    //TODO:Refactoring 필요
+    /**
+     * Retrieves the name of a user by their serial number.
+     *
+     * @param serialNumber the serial number of the user
+     * @return the name of the user
+     * @throws CustomException if no user is found with the given serial number
+     */
     public String getNameBySerialNumber(Long serialNumber) {
-        Optional<Child> childOpt = childRepository.findBySerialNum(serialNumber);
-        Optional<Parents> parentsOpt = parentsRepository.findBySerialNum(serialNumber);
-        if (childOpt.isPresent()) {
-            return childOpt.get().getName();
-        } else {
-            return parentsOpt.get().getName();
-        }
+        return childRepository.findBySerialNum(serialNumber)
+                .map(Child::getName)
+                .orElseGet(() -> parentsRepository.findBySerialNum(serialNumber)
+                        .map(Parents::getName)
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER)));
     }
 
-    //serailNumber로 사용자 조회
-    public Child getChildBySerialNumber(Long serialNumber){
+    /**
+     * Retrieves a Child entity by their serial number.
+     *
+     * @param serialNumber the serial number of the child
+     * @return the Child entity
+     * @throws CustomException if no child is found with the given serial number
+     */
+    public Child getChildBySerialNumber(Long serialNumber) {
         return childRepository.findBySerialNum(serialNumber)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
-    public Parents getParentsBySerialNumber(Long serialNumber){
+    /**
+     * Retrieves a Parents entity by their serial number.
+     *
+     * @param serialNumber the serial number of the parent
+     * @return the Parents entity
+     * @throws CustomException if no parent is found with the given serial number
+     */
+    public Parents getParentsBySerialNumber(Long serialNumber) {
         return parentsRepository.findBySerialNum(serialNumber)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
+    /**
+     * Retrieves the alias of a parent within a family relationship.
+     *
+     * @param childSn   the serial number of the child
+     * @param parentsSn the serial number of the parent
+     * @return the alias of the parent
+     * @throws CustomException if the child, parent, or family relationship is not found
+     */
     public String getParentsAlias(long childSn, long parentsSn) {
-        Child child = childRepository.findBySerialNum(childSn)
-                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+        Child child = getChildBySerialNumber(childSn);
+        Parents parents = getParentsBySerialNumber(parentsSn);
 
-        Parents parents = parentsRepository.findBySerialNum(parentsSn)
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
-
-        Family family = familyRepository
-                .findByChildAndParents(child, parents)
-                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
-
-        return family.getParentsAlias();
+        return familyRepository.findByChildAndParents(child, parents)
+                .map(Family::getParentsAlias)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
+    /**
+     * Updates the score of a child.
+     *
+     * @param sn     the serial number of the child
+     * @param change the amount to change the score by
+     * @return the updated score
+     * @throws CustomException if the child is not found
+     */
+    public int updateScore(long sn, int change) {
+        Child child = getChildBySerialNumber(sn);
+        child.setScore(child.getScore() + change);
+        return childRepository.save(child).getScore();
+    }
 }

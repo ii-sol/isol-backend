@@ -1,4 +1,4 @@
-package shinhan.server_parent.domain.mission.dto;
+package shinhan.server_common.domain.mission.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

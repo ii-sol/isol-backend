@@ -48,18 +48,21 @@ public class LoanService {
 
         int childScore = userService.getScore(childId) + 5 * findCompleteLoanCount(childId);
 
-        double InterestRate = userService.getChildManage(childId).getBaseRate();
+        double interestRate = userService.getChildManage(childId).getBaseRate();
 
-        if (childScore > 90) {
-            InterestRate = -2.0;
-        } else if (childScore > 70) {
-            InterestRate = -1.0;
-        } else if (childScore > 30) {
-            InterestRate = +1.0;
-        } else if (childScore > 10) {
-            InterestRate = -1.0;
+        if (childScore < 19) {
+            interestRate = interestRate + 2.0;
+        } else if (childScore <= 39) {
+            interestRate = interestRate + 1.0;
+        } else if (childScore <= 59) {
+            interestRate = interestRate - 0.0;
+        } else if (childScore <= 79) {
+            interestRate = interestRate + 1.0;
         }
-        loanDto.setInterestRate(InterestRate);
+        else if (childScore <= 100) {
+            interestRate = interestRate - 2.0;
+        }
+        loanDto.setInterestRate(interestRate);
 
         loanDto.setStatus(1);
         Loan loan = new Loan(loanDto);

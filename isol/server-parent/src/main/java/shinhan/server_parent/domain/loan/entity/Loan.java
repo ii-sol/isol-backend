@@ -27,6 +27,8 @@ public class Loan {
 
     int period;
 
+    String childName;
+
     Long childId;
 
     Long parentId;
@@ -43,17 +45,4 @@ public class Loan {
 
     String message;
 
-    public Loan(LoanDto loanDto) {
-        this.createDate = new Date();
-        this.dueDate = new Date(System.currentTimeMillis() + (long)loanDto.getPeriod() * 30 * 24 * 60 * 60 * 1000);
-        this.period = loanDto.getPeriod();
-        this.childId = loanDto.getChildId();
-        this.parentId = loanDto.getParentId();
-        this.interestRate = loanDto.getInterestRate();
-        this.amount = loanDto.getAmount();
-        this.balance = loanDto.getAmount();
-        this.status = 1;
-        this.title = loanDto.getTitle();
-        this.message = loanDto.getMessage();
-    }
 }

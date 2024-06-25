@@ -17,6 +17,8 @@ public class AccountHistoryFindAllResponse {
     private String recieverName;
     private int amount;
     private int messageCode;
+    private int senderBalance; // 보낸사람 계좌 잔고
+    private int receiverBalance; // 받은 사람 계좌 잔고
     private LocalDateTime createDate;
 
     public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, String senderName, String recieverName ){
@@ -25,6 +27,8 @@ public class AccountHistoryFindAllResponse {
                 .recieverName(recieverName)
                 .amount(accountHistory.getAmount())
                 .messageCode(accountHistory.getMessageCode())
+                .senderBalance(accountHistory.getSenderBalance())
+                .receiverBalance(accountHistory.getReceiverBalance())
                 .createDate(accountHistory.getCreateDate())
                 .build();
     }

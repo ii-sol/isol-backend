@@ -1,9 +1,9 @@
-package shinhan.server_parent.domain.mission.entity;
+package shinhan.server_common.domain.mission.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Check;
-import shinhan.server_parent.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 @Check(constraints = "status IN (1, 2, 3, 4, 5, 6)")
 @Table(name = "mission")
+@NamedStoredProcedureQuery(
+        name = "update_mission_expiration",
+        procedureName = "update_mission_expiration"
+)
 public class Mission {
 
     @Id
@@ -46,7 +50,7 @@ public class Mission {
                 .parentsSn(parentsSn)
                 .content(content)
                 .price(price)
-                .completeDate(completeDate)
+                .createDate(createDate)
                 .dueDate(dueDate)
                 .completeDate(completeDate)
                 .status(status)

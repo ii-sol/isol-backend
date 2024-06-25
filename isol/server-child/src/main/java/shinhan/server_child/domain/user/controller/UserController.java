@@ -33,7 +33,7 @@ public class UserController {
     private LoanService loanService;
 
 
-    @GetMapping("/users/{sn}")
+    @GetMapping("/api/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -47,7 +47,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/users")
+    @PutMapping("/api/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -62,7 +62,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users")
+    @PostMapping("/api/users")
     public ApiUtils.ApiResult connectFamily(@Valid @RequestBody FamilySaveRequest familySaveRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -92,7 +92,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/users/{parents-sn}")
+    @DeleteMapping("/api/users/{parents-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -121,7 +121,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/contacts")
+    @GetMapping("/api/users/contacts")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
         List<ContactsFindOneInterface> contacts = userService.getContacts();
 
@@ -133,7 +133,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/score")
+    @GetMapping("/api/users/score")
     public ApiUtils.ApiResult getScore(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -153,14 +153,14 @@ public class UserController {
         }
     }
 
-    @PutMapping("/users/score/{change}")
+    @PutMapping("/api/users/score/{change}")
     public ApiUtils.ApiResult updateScore(@PathVariable("change") int change) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
-    @GetMapping("/users/child-manage")
+    @GetMapping("/api/users/child-manage")
     public ApiUtils.ApiResult getChildManage() throws Exception {
 
         UserInfoResponse userInfo = jwtService.getUserInfo();
@@ -168,12 +168,12 @@ public class UserController {
         return success(userService.getChildManage(userInfo.getSn()));
     }
 
-    @GetMapping("/auth/main")
+    @GetMapping("/api/auth/main")
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
 
-    @PostMapping("/auth/join")
+    @PostMapping("/api/auth/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
@@ -187,7 +187,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/useful-phone")
+    @PostMapping("/api/auth/useful-phone")
     public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest, HttpServletResponse response) {
         if (userService.checkPhone(phoneFindRequest)) {
             return success(true);
@@ -197,7 +197,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/api/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
@@ -228,12 +228,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/api/auth/logout")
     public ApiUtils.ApiResult logout(HttpServletResponse response) {
         return success(""); // main으로 redirection
     }
 
-    @PostMapping("/auth/token")
+    @PostMapping("/api/auth/token")
     public ApiUtils.ApiResult refreshToken(HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {

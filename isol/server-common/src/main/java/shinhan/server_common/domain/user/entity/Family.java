@@ -9,7 +9,7 @@ import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
+@Table(name = "family", uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
 public class Family {
 
     @Id
