@@ -13,16 +13,5 @@
         <module name="isol.server-parent.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="isol.server_child" target="17" />
-      <module name="isol.server_child.main" target="17" />
-      <module name="isol.server_child.test" target="17" />
-      <module name="isol.server_common" target="17" />
-      <module name="isol.server_common.main" target="17" />
-      <module name="isol.server_common.test" target="17" />
-      <module name="isol.server_parent" target="17" />
-      <module name="isol.server_parent.main" target="17" />
-      <module name="isol.server_parent.test" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>

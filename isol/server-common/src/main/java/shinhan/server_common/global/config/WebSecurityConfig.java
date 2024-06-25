@@ -27,10 +27,9 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/auth/**", "/allowance/**").permitAll()
+                        .requestMatchers("/auth/**", "/allowance/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .cors(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout") // 로그아웃 엔드포인트 설정

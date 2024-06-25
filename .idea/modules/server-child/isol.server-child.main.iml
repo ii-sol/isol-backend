@@ -4,8 +4,14 @@
     <content url="file://$MODULE_DIR$/../../../isol/server-child/build/generated/sources/annotationProcessor/java/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../isol/server-child/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../isol/server-child/src/main" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$/../../../isol/server-child/src/main/resources" type="java-resource" />
-    </content>
+  </component>
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <datasource-mapping />
+        <naming-strategy-map />
+      </configuration>
+    </facet>
   </component>
 </module>
