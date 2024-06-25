@@ -69,6 +69,7 @@ public class SSEUtils {
 //            saveNotification(receiverSerialNumber, senderName, functionCode, message);
         //emitter가 null인 경우
         try{
+            System.out.println(emitter.toString());
             emitter.send(SseEmitter.event().name("notification").data(savedNotification));
         } catch (IOException e) {
 
