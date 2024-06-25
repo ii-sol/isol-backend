@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.repository;
+package shinhan.server_common.domain.invest.investRepository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
