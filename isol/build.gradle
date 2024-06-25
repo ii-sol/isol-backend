@@ -44,6 +44,16 @@ allprojects {
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
+	tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
+		enabled = false
+	}
+	tasks.named('jar') { //빌드할 때 jar 파일로 하겠다는 의미
+		enabled = true
+	}
 }
 
 project(':server-common') { // 컴파일 시 multi-module-database 로딩
