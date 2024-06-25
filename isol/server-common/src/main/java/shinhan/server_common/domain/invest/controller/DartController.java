@@ -12,7 +12,7 @@ import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
 import shinhan.server_common.domain.invest.service.StockService;
 import shinhan.server_common.global.utils.ApiUtils;
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/api/stocks")
 public class DartController {
     StockService stockService;
     @Autowired

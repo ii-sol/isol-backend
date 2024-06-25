@@ -16,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/api")
 public class LoanController {
 
     private final LoanService loanService;
@@ -28,7 +29,7 @@ public class LoanController {
         this.userService = userService;
     }
 
-    @GetMapping("/loan")
+    @GetMapping("/api/loan")
     public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() throws AuthException {
 
             long childId = jwtService.getUserInfo().getSn();
@@ -44,7 +45,7 @@ public class LoanController {
             return ApiUtils.success(loans);
     }
 
-    @PostMapping("/child/loan/create")
+    @PostMapping("/api/child/loan/create")
     public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) throws AuthException {
 
         log.info("create1 loan={}",loan);
@@ -64,7 +65,7 @@ public class LoanController {
     }
 
 
-    @GetMapping("/loan/detail/{loanId}")
+    @GetMapping("/api/loan/detail/{loanId}")
     public ApiResult<LoanDto> getChildLoan(@PathVariable int loanId) {
 
 
@@ -74,7 +75,7 @@ public class LoanController {
         return ApiUtils.success(loanDto);
     }
 
-    @GetMapping("loan/credit")
+    @GetMapping("/api/loan/credit")
     public ApiResult<Integer> getChildCredit() throws AuthException {
 
         long childId = jwtService.getUserInfo().getSn();

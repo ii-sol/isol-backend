@@ -18,7 +18,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 
 
 @RestController
-@RequestMapping("allowance")
+@RequestMapping("/api/allowance")
 @Slf4j
 @RequiredArgsConstructor
 public class AllowanceController {
