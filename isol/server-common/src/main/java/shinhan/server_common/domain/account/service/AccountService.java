@@ -59,7 +59,7 @@ public class AccountService {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
 
-        List<AccountHistoryFindAllResponse> findAccountHistories = accountHistoryRepository.findByAccountAndCreateDateBetween(findAccount, startDateTime, endDateTime)
+        List<AccountHistoryFindAllResponse> findAccountHistories = accountHistoryRepository.findByAccountAndCreateDateBetween(findAccount.getAccountNum(), startDateTime, endDateTime)
                 .stream()
                 .map(history -> {
                             Account senderAccount = accountUtils.getAccountByAccountNum(history.getSenderAccountNum());

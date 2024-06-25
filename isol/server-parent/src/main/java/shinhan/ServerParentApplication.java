@@ -9,6 +9,4 @@ public class ServerParentApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServerParentApplication.class, args);
     }
-
-
 }
