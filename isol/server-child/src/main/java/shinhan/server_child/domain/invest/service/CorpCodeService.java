@@ -9,7 +9,7 @@
 //import shinhan.server_common.domain.invest.entity.CorpCode;
 //import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
 //import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-//import shinhan.server_common.domain.invest.repository.StockListRepository;
+//import shinhan.server_common.domain.invest.investRepository.StockListRepository;
 //import shinhan.server_common.domain.invest.repository.StockRepository;
 //
 //@Service
