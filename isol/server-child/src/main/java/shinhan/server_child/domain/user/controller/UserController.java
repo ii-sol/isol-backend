@@ -197,7 +197,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/api/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
