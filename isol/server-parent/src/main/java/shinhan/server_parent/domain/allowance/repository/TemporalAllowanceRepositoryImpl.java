@@ -10,26 +10,26 @@ public class TemporalAllowanceRepositoryImpl implements TemporalAllowanceReposit
     @Autowired
     EntityManager entityManager;
 
-    public List<TemporalAllowance> findByUserSerialNumberAndCreateDate(Long userSerialNumber, Integer year, Integer month, Long csn){
-        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parentsSerialNumber = :serialNumber AND m.childSerialNumber = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
-
-        return entityManager.createQuery(jpql, TemporalAllowance.class)
-                .setParameter("serialNumber", userSerialNumber)
-                .setParameter("csn", csn)
-                .setParameter("month", month)
-                .setParameter("year", year)
-                .getResultList();
-    }
-
-    @Override
-    public List<TemporalAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(Long userSerialNumber, Long csn, Integer status) {
-        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parentsSerialNumber = :serialNumber AND m.childSerialNumber = :csn AND m.status = :status";
-
-        return entityManager.createQuery(jpql, TemporalAllowance.class)
-                .setParameter("serialNumber", userSerialNumber)
-                .setParameter("csn", csn)
-                .setParameter("status", status)
-                .getResultList();
-    }
+//    public List<TemporalAllowance> findByUserSerialNumberAndCreateDate(Long userSerialNumber, Integer year, Integer month, Long csn){
+//        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parentsSerialNumber = :serialNumber AND m.childSerialNumber = :csn AND FUNCTION('MONTH', m.createDate) = :month AND FUNCTION('YEAR', m.createDate) = :year";
+//
+//        return entityManager.createQuery(jpql, TemporalAllowance.class)
+//                .setParameter("serialNumber", userSerialNumber)
+//                .setParameter("csn", csn)
+//                .setParameter("month", month)
+//                .setParameter("year", year)
+//                .getResultList();
+//    }
+//
+//    @Override
+//    public List<TemporalAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(Long userSerialNumber, Long csn, Integer status) {
+//        String jpql = "SELECT m FROM TemporalAllowance m WHERE m.parentsSerialNumber = :serialNumber AND m.childSerialNumber = :csn AND m.status = :status";
+//
+//        return entityManager.createQuery(jpql, TemporalAllowance.class)
+//                .setParameter("serialNumber", userSerialNumber)
+//                .setParameter("csn", csn)
+//                .setParameter("status", status)
+//                .getResultList();
+//    }
 
 }
