@@ -19,7 +19,7 @@ import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
 
 @RestController
-@RequestMapping("/corp")
+@RequestMapping("/api/corp")
 public class CorpCodeController {
     CorpCodeService corpCodeService;
     JwtService jwtService;

@@ -14,7 +14,7 @@ import shinhan.server_common.global.utils.account.AccountUtils;
 import static shinhan.server_common.global.utils.ApiUtils.success;
 
 @RestController
-@RequestMapping("/invest")
+@RequestMapping("/api/invest")
 public class InvestController {
 
 

@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/proposal")
+@RequestMapping("/api/proposal")
 public class ProposalController {
 
     InvestProposalService investProposalService;

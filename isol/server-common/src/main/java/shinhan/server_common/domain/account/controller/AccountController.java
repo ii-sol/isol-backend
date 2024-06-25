@@ -55,4 +55,13 @@ public class AccountController {
         ChildAccountFindOneResponse response = accountService.findChildAccount(csn, 2);
         return success(response);
     }
+
+    //부모가 아이의 계좌 내역 조회
+    @GetMapping("find/history")
+    public ApiUtils.ApiResult findChildAccountHistory(@RequestParam("csn") Long csn, @RequestParam("year") Integer year, @RequestParam("month") Integer month, @RequestParam("status") Integer status) throws AuthException {
+        Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
+        List<AccountHistoryFindAllResponse> response = accountService.findAccountHistory(csn ,year, month, status);
+        return success(response);
+
+    }
 }

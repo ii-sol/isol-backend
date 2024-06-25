@@ -21,13 +21,13 @@ public class TemporalAllowanceRepositoryImpl implements TemporalAllowanceReposit
 //                .getResultList();
 //    }
 
-    public List<TemporalAllowance> findByChildSerialNumberAndCreateDateAndStatus(Long userSerialNumber, Integer year, Integer month){
-        String jpql = "select t from TemporalAllowance t where t.childSerialNumber = :serialNumber and t.status IN (4, 5, 6) and FUNCTION('MONTH', t.createDate) = :month AND FUNCTION('YEAR', t.createDate) = :year";
-
-        return entityManager.createQuery(jpql, TemporalAllowance.class)
-                .setParameter("serialNumber", userSerialNumber)
-                .setParameter("month", month)
-                .setParameter("year", year)
-                .getResultList();
-    }
+//    public List<TemporalAllowance> findByChildSerialNumberAndCreateDateAndStatus(Long userSerialNumber, Integer year, Integer month){
+//        String jpql = "select t from TemporalAllowance t where t.childSerialNumber = :serialNumber and t.status IN (4, 5, 6) and FUNCTION('MONTH', t.createDate) = :month AND FUNCTION('YEAR', t.createDate) = :year";
+//
+//        return entityManager.createQuery(jpql, TemporalAllowance.class)
+//                .setParameter("serialNumber", userSerialNumber)
+//                .setParameter("month", month)
+//                .setParameter("year", year)
+//                .getResultList();
+//    }
 }
