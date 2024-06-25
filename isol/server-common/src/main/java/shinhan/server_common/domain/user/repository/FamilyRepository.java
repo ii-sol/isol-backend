@@ -30,6 +30,7 @@ public interface FamilyRepository extends JpaRepository<Family, Integer> {
             "FROM Family f " +
             "WHERE f.parents.serialNum = :sn " +
             "ORDER BY sn")
+
     List<FamilyInfoInterface> findChildInfo(@Param("sn") long sn);
 
     Optional<Family> findByChildAndParents(Child child, Parents parents);
