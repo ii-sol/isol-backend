@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/isol-backend.iml" filepath="$PROJECT_DIR$/.idea/isol-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/server-child/isol.server-child.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server-child/isol.server-child.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/server-common/isol.server-common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server-common/isol.server-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/server-parent/isol.server-parent.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server-parent/isol.server-parent.main.iml" />
     </modules>
   </component>
 </project>

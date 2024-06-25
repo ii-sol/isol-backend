@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
+import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleChangeOneRequest;
+import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleSaveOneRequest;
 import shinhan.server_common.global.utils.account.AccountUtils;
 import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
 import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
@@ -85,6 +87,50 @@ public class AllowanceService {
                     return MonthlyAllowanceFindAllResponse.of(allowance, getMonthsBetween(allowance.getCreateDate(), allowance.getDueDate()));
                 })
                 .toList();
+    }
+
+    // 새로운 정기 용돈 repository에 저장하기
+    public void createMonthlyAllowance(Long loginUserSerialNumber, LocalDateTime createDate , MonthlyAllowanceScheduleSaveOneRequest request) {
+        MonthlyAllowance newMonthlyAllowance = MonthlyAllowance.builder()
+                .price(request.getAmount())
+                .parentsSerialNumber(loginUserSerialNumber)
+                .childSerialNumber(request.getChildSerialNumber())
+                .createDate(createDate)
+                .dueDate(createDate.plusMonths(request.getPeriod()))
+                .status(3)
+                .build();
+        monthlyAllowanceRepository.save(newMonthlyAllowance);
+    }
+
+    public void transmitMoneyforSchedule(Long parentsSerialNumber, Long childSerialNumber, Integer amount){
+        System.out.println("scheduling 테스트 중");
+        Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(parentsSerialNumber, 3);
+        Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(childSerialNumber, 1);
+//        System.out.println(parentsAccount);
+//        System.out.println(childAccount);
+
+        System.out.println("이체시작");
+        accountUtils.transferMoneyByAccount(parentsAccount, childAccount, amount, 4);
+    }
+
+    public void changeMonthlyAllowance(Long loginUserSerialNumber, MonthlyAllowanceScheduleChangeOneRequest request) {
+
+        monthlyAllowanceRepository.deleteById(request.getIdBeforeChange());
+
+        MonthlyAllowance changedMonthlyAllowance = MonthlyAllowance.builder()
+                .price(request.getAmount())
+                .parentsSerialNumber(loginUserSerialNumber)
+                .childSerialNumber(request.getChildSerialNumber())
+                .createDate(request.getDateBeforeChange())
+                .dueDate(request.getDateBeforeChange().plusMonths(request.getPeriod()))
+                .status(3)
+                .build();
+        monthlyAllowanceRepository.save(changedMonthlyAllowance);
+    }
+
+    public void deleteMonthlyAllowance(Integer monthlyId) {
+        monthlyAllowanceRepository.deleteById(monthlyId);
+
     }
 
     // duedate와 startdate의 개월수 차이 구하기
