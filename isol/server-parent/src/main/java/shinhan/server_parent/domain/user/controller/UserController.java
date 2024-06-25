@@ -31,7 +31,7 @@ public class UserController {
     private AccountService accountService;
     private JwtService jwtService;
 
-    @GetMapping("/users/{sn}")
+    @GetMapping("/api/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -45,7 +45,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/users")
+    @PutMapping("/api/users")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -60,7 +60,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/users/{child-sn}")
+    @DeleteMapping("/api/users/{child-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -89,7 +89,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/score/{child-sn}")
+    @GetMapping("/api/users/score/{child-sn}")
     public ApiUtils.ApiResult getScore(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -101,7 +101,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/child-manage/{child-sn}")
+    @GetMapping("/api/users/child-manage/{child-sn}")
     public ApiUtils.ApiResult getChildManage(@PathVariable("child-sn") long childSn, HttpServletResponse response) throws Exception {
         if (jwtService.isMyFamily(childSn)) {
             return success(userService.getChildManage(childSn));
@@ -111,7 +111,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/users/child-manage")
+    @PutMapping("/api/users/child-manage")
     public ApiUtils.ApiResult updateChildManage(@Valid @RequestBody ChildManageUpdateRequest childManageUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -142,7 +142,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/useful-phone")
+    @PostMapping("/api/auth/useful-phone")
     public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest, HttpServletResponse response) {
         if (userService.checkPhone(phoneFindRequest)) {
             return success(true);
@@ -183,12 +183,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/api/auth/logout")
     public ApiUtils.ApiResult logout(HttpServletResponse response) {
         return success(""); // main으로 redirection
     }
 
-    @PostMapping("/auth/token")
+    @PostMapping("/api/auth/token")
     public ApiUtils.ApiResult refreshToken(HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {
