@@ -23,7 +23,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/missions")
+@RequestMapping("/api/missions")
 public class MissionController {
 
     private final MissionService missionService;

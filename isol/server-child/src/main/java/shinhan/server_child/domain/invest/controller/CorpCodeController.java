@@ -17,7 +17,7 @@ import shinhan.server_common.global.utils.ApiUtils;
 import java.util.List;
 
 @RestController
-@RequestMapping("/corp")
+@RequestMapping("/api/corp")
 public class CorpCodeController {
     CorpCodeService corpCodeService;
     JwtService jwtService;

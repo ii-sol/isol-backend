@@ -27,7 +27,7 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@RequestMapping("/proposal")
+@RequestMapping("/api/proposal")
 public class ProposalController {
 
     InvestProposalService investProposalService;

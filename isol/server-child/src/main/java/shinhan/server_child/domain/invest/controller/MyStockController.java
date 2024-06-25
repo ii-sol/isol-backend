@@ -10,7 +10,7 @@ import shinhan.server_common.global.utils.ApiUtils;
 import static shinhan.server_common.global.utils.ApiUtils.success;
 
 @RestController
-@RequestMapping("/my-stocks")
+@RequestMapping("/api/my-stocks")
 public class MyStockController {
     MyStockService myStockService;
     JwtService jwtService;
