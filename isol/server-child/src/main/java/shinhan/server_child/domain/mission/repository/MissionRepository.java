@@ -3,7 +3,7 @@ package shinhan.server_child.domain.mission.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import shinhan.server_child.domain.mission.entity.Mission;
+import shinhan.server_common.domain.mission.entity.Mission;
 
 import java.util.List;
 

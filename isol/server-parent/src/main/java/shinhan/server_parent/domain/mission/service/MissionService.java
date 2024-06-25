@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
-import shinhan.server_parent.domain.mission.dto.MissionAnswerSaveRequest;
-import shinhan.server_parent.domain.mission.dto.MissionFindOneResponse;
-import shinhan.server_parent.domain.mission.dto.MissionSaveRequest;
-import shinhan.server_parent.domain.mission.entity.Mission;
+import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
+import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
+import shinhan.server_common.domain.mission.entity.Mission;
+import shinhan.server_common.global.utils.user.UserUtils;
 import shinhan.server_parent.domain.mission.repository.MissionRepository;
 
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class MissionService {
 
     private final MissionRepository missionRepository;
+    private final UserUtils userUtils;
 
     public MissionFindOneResponse getMission(int id) {
         Mission mission = missionRepository.findById(id)
@@ -85,7 +87,9 @@ public class MissionService {
                 return missionRepository.save(mission).convertToMissionFindOneResponse();
             } else if (mission.getStatus() == 6) {
                 mission.setStatus(4);
-                return missionRepository.save(mission).convertToMissionFindOneResponse();
+                userUtils.updateScore(missionAnswerSaveRequest.getChildSn(), 1);
+                missionRepository.updateMissionExpiration();
+                return missionRepository.findById(missionRepository.save(mission).getId()).get().convertToMissionFindOneResponse();
             }
         } else if (mission.getStatus() == 1) {
             mission.setStatus(5);

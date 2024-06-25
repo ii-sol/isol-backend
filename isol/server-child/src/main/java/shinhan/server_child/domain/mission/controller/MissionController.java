@@ -6,20 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhan.server_child.domain.mission.dto.MissionAnswerSaveRequest;
-import shinhan.server_child.domain.mission.dto.MissionFindOneResponse;
-import shinhan.server_child.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_child.domain.mission.service.MissionService;
-import shinhan.server_child.domain.user.service.UserService;
-import shinhan.server_common.domain.user.dto.ChildFindOneResponse;
-import shinhan.server_common.domain.user.dto.ParentsFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
+import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.utils.user.UserUtils;
-import shinhan.server_common.notification.service.SSEUtils;
-import shinhan.server_common.notification.utils.MessageHandler;
 
 import java.util.List;
 
@@ -33,10 +27,7 @@ import static shinhan.server_common.global.utils.ApiUtils.success;
 public class MissionController {
 
     private final MissionService missionService;
-    private final UserService userService;
     private final JwtService jwtService;
-    private final SSEUtils sseUtils;
-    private final UserUtils userUtils;
 
     @GetMapping("/{id}")
     public ApiUtils.ApiResult getMission(@PathVariable("id") int id) throws AuthException {
@@ -91,11 +82,7 @@ public class MissionController {
     }
 
     @GetMapping("/history")
-    public ApiUtils.ApiResult getMissionsHistory(
-            @RequestParam(value = "year") int year,
-            @RequestParam(value = "month") int month,
-            @RequestParam(value = "status", required = false) Integer status,
-            HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult getMissionsHistory(@RequestParam(value = "year") int year, @RequestParam(value = "month") int month, @RequestParam(value = "status", required = false) Integer status, HttpServletResponse response) throws Exception {
 
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -116,13 +103,7 @@ public class MissionController {
 
         if (userInfo.getSn() == missionSaveRequest.getChildSn()) {
             if (jwtService.isMyFamily(missionSaveRequest.getParentsSn())) {
-                ChildFindOneResponse child = userService.getChild(userInfo.getSn());
-                ParentsFindOneResponse parents = userService.getParents(missionSaveRequest.getParentsSn());
-
                 MissionFindOneResponse mission = missionService.createMission(missionSaveRequest);
-
-                String newMessage = MessageHandler.getMessage(310, child.getName());
-                sseUtils.sendNotification(parents.getSn(), userUtils.getParentsAlias(child.getSn(), parents.getSn()), 4, newMessage);
 
                 return success(mission);
             }
