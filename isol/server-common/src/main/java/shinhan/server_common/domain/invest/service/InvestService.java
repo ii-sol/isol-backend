@@ -41,11 +41,12 @@ public class InvestService {
 
     AccountUtils accountUtils;
     CorpCodeRepository corpCodeRepository;
-    @Autowired
+    RabbitTemplate rabbitTemplate;
+        @Autowired
     InvestService(StockRepository stockRepository, PortfolioRepository portfolioRepository,
         StockHistoryRepository stockHistoryRepository
         , StockService stockService, CorpCodeRepository corpCodeRepository,
-        AccountUtils accountUtils
+        AccountUtils accountUtils,RabbitTemplate rabbitTemplate
     ) {
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
@@ -53,15 +54,9 @@ public class InvestService {
         this.stockService = stockService;
         this.corpCodeRepository = corpCodeRepository;
         this.accountUtils = accountUtils;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendObject(Notification notification) {
-        notification = Notification.builder()
-            .createDate(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-            .message("testsss").receiverSerialNumber(12312312L).sender("asd").build();
-//        rabbitTemplate.convertAndSend("alarm", notification);
-        System.out.println("객체 전송: " + notification);
-    }
 
     public List<StockHistoryResponse> getStockHistory(String account, short status, int year,
         int month) {

@@ -1,37 +1,40 @@
 package shinhan;
 
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import shinhan.server_common.notification.entity.Notification;
 
 @SpringBootApplication
-public class ServerChildApplication implements CommandLineRunner {
-//    @Autowired
-//    private final RabbitTemplate rabbitTemplate ;
-//
-//    public ServerChildApplication(RabbitTemplate rabbitTemplate) {
-//        this.rabbitTemplate = rabbitTemplate;
-//    }
-@Bean
-public ConnectionFactory connectionFactory() {
-    CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-    connectionFactory.setHost("${ec2-13-124-164-1.ap-northeast-2.compute.amazonaws.com}"); // RabbitMQ host
-    connectionFactory.setPort(5672); // RabbitMQ port
-    connectionFactory.setUsername("new_user"); // RabbitMQ username
-    connectionFactory.setPassword("new_password"); // RabbitMQ password
-    // Other connection settings can be added as needed
-    return connectionFactory;
-}
+public class ServerChildApplication implements CommandLineRunner{
+    @Autowired
+    private final RabbitTemplate rabbitTemplate ;
+
+    public ServerChildApplication(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ServerChildApplication.class, args);
     }
 
+    
+
+    @Value("${rabbitmq.message}")
+    private String queueName;
+
     @Override
     public void run(String... args) throws Exception {
-        
+//            notification = Notification.builder()
+//                .createDate(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+//                .message("testsss").receiverSerialNumber(12312312L).sender("asd").build();
+            rabbitTemplate.convertAndSend("alarm", "sdfsdf");
+//            System.out.println("객체 전송: " + notification);
+
     }
 }
