@@ -34,7 +34,7 @@ public class UserController {
     private LoanService loanService;
 
 
-    @GetMapping("/api/users/{sn}")
+    @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -48,7 +48,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/api/users")
+    @PutMapping("/asers")
     public ApiUtils.ApiResult updateUser(@Valid @RequestBody ChildUpdateRequest childUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -93,7 +93,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/api/users/{parents-sn}")
+    @DeleteMapping("/users/{parents-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable("parents-sn") long parentsSn, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -122,7 +122,7 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/api/users/contacts")
+    @GetMapping("/users/contacts")
     public ApiUtils.ApiResult getPhones(HttpServletResponse response) {
         List<ContactsFindOneInterface> contacts = userService.getContacts();
 
@@ -134,7 +134,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/users/score")
+    @GetMapping("/users/score")
     public ApiUtils.ApiResult getScore(HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
@@ -154,14 +154,14 @@ public class UserController {
         }
     }
 
-    @PutMapping("/api/users/score/{change}")
+    @PutMapping("/users/score/{change}")
     public ApiUtils.ApiResult updateScore(@PathVariable("change") int change) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 
-    @GetMapping("/api/users/child-manage")
+    @GetMapping("/users/child-manage")
     public ApiUtils.ApiResult getChildManage() throws Exception {
 
         UserInfoResponse userInfo = jwtService.getUserInfo();
@@ -169,12 +169,12 @@ public class UserController {
         return success(userService.getChildManage(userInfo.getSn()));
     }
 
-    @GetMapping("/api/auth/main")
+    @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
 
-    @PostMapping("/api/auth/join")
+    @PostMapping("/auth/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         ChildFindOneResponse user = userService.join(joinInfoSaveRequest);
 
@@ -188,7 +188,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/auth/useful-phone")
+    @PostMapping("/auth/useful-phone")
     public ApiUtils.ApiResult checkPhone(@Valid @RequestBody PhoneFindRequest phoneFindRequest, HttpServletResponse response) {
         if (userService.checkPhone(phoneFindRequest)) {
             return success(true);
@@ -198,7 +198,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/auth/login")
+    @PostMapping("/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ChildFindOneResponse user = userService.login(loginInfoFindRequest);
@@ -229,12 +229,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/auth/logout")
+    @PostMapping("/auth/logout")
     public ApiUtils.ApiResult logout(HttpServletResponse response) {
         return success(""); // main으로 redirection
     }
 
-    @PostMapping("/api/auth/token")
+    @PostMapping("/auth/token")
     public ApiUtils.ApiResult refreshToken(HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {

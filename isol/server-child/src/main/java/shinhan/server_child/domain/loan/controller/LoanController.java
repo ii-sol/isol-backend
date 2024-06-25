@@ -29,7 +29,7 @@ public class LoanController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/loan")
+    @GetMapping("/loan")
     public ApiUtils.ApiResult<List<LoanDto>> getChildLoan() throws AuthException {
 
             long childId = jwtService.getUserInfo().getSn();
@@ -45,7 +45,7 @@ public class LoanController {
             return ApiUtils.success(loans);
     }
 
-    @PostMapping("/api/child/loan/create")
+    @PostMapping("/child/loan/create")
     public ApiUtils.ApiResult<String> createChildLoan(@RequestBody LoanDto loan) throws AuthException {
 
         log.info("create1 loan={}",loan);
@@ -65,7 +65,7 @@ public class LoanController {
     }
 
 
-    @GetMapping("/api/loan/detail/{loanId}")
+    @GetMapping("/loan/detail/{loanId}")
     public ApiResult<LoanDto> getChildLoan(@PathVariable int loanId) {
 
 
@@ -75,7 +75,7 @@ public class LoanController {
         return ApiUtils.success(loanDto);
     }
 
-    @GetMapping("/api/loan/credit")
+    @GetMapping("/loan/credit")
     public ApiResult<Integer> getChildCredit() throws AuthException {
 
         long childId = jwtService.getUserInfo().getSn();
