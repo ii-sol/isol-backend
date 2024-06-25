@@ -21,6 +21,7 @@ public class InvestProposalServiceChild {
     InvestProposalRepositoryChild investProposalRepositoryChild;
 
     CorpCodeRepository corpCodeRepository;
+
     InvestProposalServiceChild(InvestProposalRepositoryChild investProposalRepositoryChild,
     CorpCodeRepository corpCodeRepository){
         this.investProposalRepositoryChild = investProposalRepositoryChild;

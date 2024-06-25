@@ -2,6 +2,7 @@ package shinhan.server_common.notification.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -29,6 +30,11 @@ public class SSEUtils {
     private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
     private final NotificationRepository notificationRepository;
 
+    @RabbitListener(queues = "alarm")
+    public void receiveMessage(Notification notification){
+        System.out.println(notification.getMessage());
+        System.out.println(notification.getReceiverSerialNumber());
+    }
     //SSE에 등록
     public SseEmitter subscribe(Long serialNumber) {
         SseEmitter emitter = new SseEmitter(7200000L);// 2시간 타임아웃

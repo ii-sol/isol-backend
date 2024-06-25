@@ -17,7 +17,8 @@ import shinhan.server_common.global.exception.ErrorCode;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class UserUtils {
+public class
+        UserUtils {
 
     private final ChildRepository childRepository;
     private final ParentsRepository parentsRepository;

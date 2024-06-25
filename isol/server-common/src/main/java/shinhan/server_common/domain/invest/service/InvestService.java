@@ -4,9 +4,13 @@ import static shinhan.server_common.global.exception.ErrorCode.FAILED_SHORTAGE_M
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.account.entity.Account;
@@ -24,43 +28,61 @@ import shinhan.server_common.domain.invest.investRepository.StockHistoryReposito
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.utils.account.AccountUtils;
+import shinhan.server_common.notification.entity.Notification;
 
 @Service
 @Transactional
 public class InvestService {
+
     StockRepository stockRepository;
     StockService stockService;
     PortfolioRepository portfolioRepository;
     StockHistoryRepository stockHistoryRepository;
 
     AccountUtils accountUtils;
-
+    RabbitTemplate rabbitTemplate;
     CorpCodeRepository corpCodeRepository;
-    InvestService(StockRepository stockRepository,PortfolioRepository portfolioRepository, StockHistoryRepository stockHistoryRepository
-    ,StockService stockService, CorpCodeRepository corpCodeRepository , AccountUtils accountUtils
-    ){
+    @Autowired
+    InvestService(StockRepository stockRepository, PortfolioRepository portfolioRepository,
+        StockHistoryRepository stockHistoryRepository
+        , StockService stockService, CorpCodeRepository corpCodeRepository,
+        AccountUtils accountUtils, RabbitTemplate rabbitTemplate
+    ) {
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
         this.stockHistoryRepository = stockHistoryRepository;
         this.stockService = stockService;
         this.corpCodeRepository = corpCodeRepository;
         this.accountUtils = accountUtils;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
-    public List<StockHistoryResponse> getStockHistory(String account,short status,int year,int month){
+    public void sendObject(Notification notification) {
+        notification = Notification.builder()
+            .createDate(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+            .message("testsss").receiverSerialNumber(12312312L).sender("asd").build();
+        rabbitTemplate.convertAndSend("alarm", notification);
+        System.out.println("객체 전송: " + notification);
+    }
+
+    public List<StockHistoryResponse> getStockHistory(String account, short status, int year,
+        int month) {
         List<StockHistory> result;
         LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
         Timestamp startTimeStamp = Timestamp.valueOf(startDateTime);
         Timestamp endTimeStamp = Timestamp.valueOf(endDateTime);
-        if(status == 0){
-            result = stockHistoryRepository.findByAccountNumAndCreateDateBetween(account,startTimeStamp,endTimeStamp);
-        }else
-            result = stockHistoryRepository.findByAccountNumAndTradingCodeAndCreateDateBetween(account,status,startTimeStamp,endTimeStamp);
+        if (status == 0) {
+            result = stockHistoryRepository.findByAccountNumAndCreateDateBetween(account,
+                startTimeStamp, endTimeStamp);
+        } else {
+            result = stockHistoryRepository.findByAccountNumAndTradingCodeAndCreateDateBetween(
+                account, status, startTimeStamp, endTimeStamp);
+        }
         List<StockHistoryResponse> stockHistoryResponseList = new ArrayList<>();
-        for(StockHistory data : result)
-        {
-            String companyName = corpCodeRepository.findByStockCode(Integer.parseInt(data.getTicker())).get().getCorpName();
+        for (StockHistory data : result) {
+            String companyName = corpCodeRepository.findByStockCode(
+                Integer.parseInt(data.getTicker())).get().getCorpName();
             StockHistoryResponse stockHistoryResponse = StockHistoryResponse.builder()
                 .stockPrice(data.getStockPrice())
                 .tradingCode(data.getTradingCode())
@@ -74,21 +96,21 @@ public class InvestService {
         return stockHistoryResponseList;
     }
 
-    public PortfolioResponse getPortfolio(String account){
+    public PortfolioResponse getPortfolio(String account) {
         List<Portfolio> portfolioList = portfolioRepository.findByAccountNum(account);
         int totalEvaluationAmount = 0;
         int totalPurchaseAmount = 0;
         double totalProfit = 0;
         List<InvestTradeDetailResponse> investTradeDetailResponseList = new ArrayList<>();
-        for(Portfolio data : portfolioList){
+        for (Portfolio data : portfolioList) {
             StockFindCurrentResponse stockCurrent2 = stockService.getStockCurrent2(
                 data.getTicker());
             double currentPrice = Double.parseDouble(stockCurrent2.getCurrentPrice());
             int averagePrice = data.getAveragePrice();
             String companyName = stockCurrent2.getCompanyName();
 
-            double profit = (double) currentPrice / averagePrice*100 -100;
-            int profitAndLossAmount = (int) ((currentPrice-averagePrice) * data.getQuantity());
+            double profit = (double) currentPrice / averagePrice * 100 - 100;
+            int profitAndLossAmount = (int) ((currentPrice - averagePrice) * data.getQuantity());
             Optional<CorpCode> byStockCode = corpCodeRepository.findByStockCode(
                 Integer.parseInt(data.getTicker()));
             investTradeDetailResponseList.add(
@@ -101,31 +123,32 @@ public class InvestService {
                     .profitAnsLossAmount(profitAndLossAmount)
                     .build()
             );
-            totalEvaluationAmount+=currentPrice*data.getQuantity();
-            totalPurchaseAmount+=averagePrice*data.getQuantity();
+            totalEvaluationAmount += currentPrice * data.getQuantity();
+            totalPurchaseAmount += averagePrice * data.getQuantity();
         }
-        for(InvestTradeDetailResponse data : investTradeDetailResponseList){
-            data.setHoldingRatio((double) (data.getEvaluationAmount() * data.getQuantity()) /totalEvaluationAmount);
+        for (InvestTradeDetailResponse data : investTradeDetailResponseList) {
+            data.setHoldingRatio(
+                (double) (data.getEvaluationAmount() * data.getQuantity()) / totalEvaluationAmount);
         }
         return PortfolioResponse.builder()
-            .totalProfit((double) totalEvaluationAmount /totalPurchaseAmount*100 -100)
+            .totalProfit((double) totalEvaluationAmount / totalPurchaseAmount * 100 - 100)
             .totalEvaluationAmount(totalEvaluationAmount)
             .totalPurchaseAmount(totalPurchaseAmount)
             .investTradeList(investTradeDetailResponseList)
             .build();
     }
 
-    public boolean investStock(String account_num, InvestStockRequest investStockRequest){
-        if(investStockRequest.getTrading()==1) {
+    public boolean investStock(String account_num, InvestStockRequest investStockRequest) {
+        if (investStockRequest.getTrading() == 1) {
             //"주문 매도가 맞지 않습니다."
             return purchaseStock(account_num, investStockRequest);
-        }else {
+        } else {
             return sellStock(account_num, investStockRequest);
         }
     }
 
 
-    boolean purchaseStock(String account_num, InvestStockRequest investStockRequest){
+    boolean purchaseStock(String account_num, InvestStockRequest investStockRequest) {
         Account userAccount = accountUtils.getAccountByAccountNum(account_num);
         Account systemInvestAccount = accountUtils.getAccountByAccountNum("300");
 
@@ -133,26 +156,30 @@ public class InvestService {
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
             investStockRequest.getTicker());
         int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-        accountUtils.transferMoneyByAccount(userAccount,systemInvestAccount,currentPrice* investStockRequest.getQuantity(),1);
-        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
-        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(account_num,
+        accountUtils.transferMoneyByAccount(userAccount, systemInvestAccount,
+            currentPrice * investStockRequest.getQuantity(), 1);
+        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num, currentPrice));
+        Optional<Portfolio> prePortfolio = portfolioRepository.findByAccountNumAndTicker(
+            account_num,
             investStockRequest.getTicker());
-        if(prePortfolio.isEmpty()){
-            portfolioRepository.save(investStockRequest.toEntityPortfolio(account_num,currentPrice));
+        if (prePortfolio.isEmpty()) {
+            portfolioRepository.save(
+                investStockRequest.toEntityPortfolio(account_num, currentPrice));
             return true;
-        }else{
-            int tempSum = prePortfolio.get().getAveragePrice()*prePortfolio.get().getQuantity();
+        } else {
+            int tempSum = prePortfolio.get().getAveragePrice() * prePortfolio.get().getQuantity();
             short tempQuantity = prePortfolio.get().getQuantity();
-            tempSum+= investStockRequest.getQuantity()*currentPrice;
-            tempQuantity+= investStockRequest.getQuantity();
-            int averagePrice = tempSum/tempQuantity;
+            tempSum += investStockRequest.getQuantity() * currentPrice;
+            tempQuantity += investStockRequest.getQuantity();
+            int averagePrice = tempSum / tempQuantity;
             prePortfolio.get().setQuantity(tempQuantity);
             prePortfolio.get().setAveragePrice(averagePrice);
             portfolioRepository.save(prePortfolio.get());
             return true;
         }
     }
-    boolean sellStock(String account_num, InvestStockRequest investStockRequest){
+
+    boolean sellStock(String account_num, InvestStockRequest investStockRequest) {
         Account userAccount = accountUtils.getAccountByAccountNum(account_num);
         Account systempInvestAccount = accountUtils.getAccountByAccountNum("300");
 
@@ -161,30 +188,31 @@ public class InvestService {
         StockFindCurrentResponse stockFindCurrentResponse = stockService.getStockCurrent2(
             investStockRequest.getTicker());
         int currentPrice = (int) Double.parseDouble(stockFindCurrentResponse.getCurrentPrice());
-        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num,currentPrice));
+        stockHistoryRepository.save(investStockRequest.toEntityHistory(account_num, currentPrice));
         Optional<Portfolio> prePortfolio = Optional.ofNullable(
             portfolioRepository.findByAccountNumAndTicker(account_num,
                 investStockRequest.getTicker()).orElseThrow(() -> {
                 return new CustomException(FAILED_SHORTAGE_MONEY);
             }));
 
-        if(prePortfolio.isEmpty()){
+        userAccount.getUserSerialNumber();
+
+        if (prePortfolio.isEmpty()) {
             throw new CustomException(FAILED_SHORTAGE_MONEY);
-        } else if (prePortfolio.get().getQuantity()< investStockRequest.getQuantity()) {
+        } else if (prePortfolio.get().getQuantity() < investStockRequest.getQuantity()) {
             throw new CustomException(FAILED_SHORTAGE_MONEY);
-        }
-        else{
+        } else {
             short tempQuantity = prePortfolio.get().getQuantity();
-            tempQuantity-= investStockRequest.getQuantity();
+            tempQuantity -= investStockRequest.getQuantity();
             Long id = prePortfolio.get().getId();
-            if(tempQuantity==0)
+            if (tempQuantity == 0) {
                 portfolioRepository.deleteById(id);
-            else
-            {
+            } else {
                 prePortfolio.get().setQuantity(tempQuantity);
                 portfolioRepository.save(prePortfolio.get());
             }
-            accountUtils.transferMoneyByAccount(systempInvestAccount,userAccount,currentPrice*investStockRequest.getQuantity(),1);
+            accountUtils.transferMoneyByAccount(systempInvestAccount, userAccount,
+                currentPrice * investStockRequest.getQuantity(), 1);
             return true;
         }
     }
