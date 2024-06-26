@@ -47,6 +47,7 @@ public class CorpCodeController {
     public ApiUtils.ApiResult getStockList(@PageableDefault
                                                    (page = 0, size = 15, sort = "corpName", direction = Direction.ASC) Pageable pageable)
             throws AuthException {
+        System.out.println(pageable);
         Long userSn = jwtService.getUserInfo().getSn();
         List<CorpCodeResponse> result = corpCodeService.getStock(userSn, pageable);
         return ApiUtils.success(result);

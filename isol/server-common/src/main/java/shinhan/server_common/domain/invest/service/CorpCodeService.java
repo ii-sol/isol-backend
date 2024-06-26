@@ -68,6 +68,8 @@ public class CorpCodeService {
     }
     public List<CorpCodeResponse> getStock(Long userSn , Pageable pageable){
         Page<CorpCode> corpCodeList = corpCodeRepository.findAll(pageable);
+        System.out.println("getStock");
+        System.out.println(corpCodeList.get().toList().get(0).getCorpName());
         return corpCodeList.stream().map(x -> {
             String ticker = String.format("%06d",x.getStockCode());
             System.out.println(ticker);
