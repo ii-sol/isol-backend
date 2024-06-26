@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.loan.dto.LoanDto;
 import shinhan.server_child.domain.loan.entity.Loan;
-import shinhan.server_child.domain.loan.repository.LoanCustomRepository;
 import shinhan.server_child.domain.loan.repository.LoanRepository;
 import shinhan.server_child.domain.user.service.UserService;
 import shinhan.server_common.global.exception.AuthException;
@@ -17,22 +16,19 @@ import java.util.List;
 @Service
 public class LoanService {
 
-    private final LoanCustomRepository loanCustomRepository;
     private final LoanRepository loanRepository;
     private final UserService userService;
     private final JwtService jwtService;
 
-
     public LoanService(LoanRepository loanRepository, UserService userService,
                        JwtService jwtService) {
-        this.loanCustomRepository = loanRepository;
         this.loanRepository = loanRepository;
         this.userService = userService;
         this.jwtService = jwtService;
     }
 
     public List<LoanDto> getLoanByChildId(Long childId) {
-        return loanCustomRepository.findByChildID(childId);
+        return loanRepository.findByChildID(childId);
     }
 
     @Transactional
@@ -70,11 +66,11 @@ public class LoanService {
     }
 
     public LoanDto findOne(int loanId) {
-        return loanCustomRepository.findLoanById(loanId);
+        return loanRepository.findLoanById(loanId);
     }
 
     public int findCompleteLoanCount(Long childId) {
-        return loanCustomRepository.findCompleteLoanCount(childId);
+        return loanRepository.findCompleteLoanCount(childId);
     }
 
 
