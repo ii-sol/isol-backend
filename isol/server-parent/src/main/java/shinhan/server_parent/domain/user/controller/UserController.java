@@ -123,13 +123,13 @@ public class UserController {
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/api/auth/main")
+    @GetMapping("/auth/main")
 
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
 
-    @PostMapping("/api/auth/join")
+    @PostMapping("/auth/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         ParentsFindOneResponse user = userService.join(joinInfoSaveRequest);
 
@@ -152,7 +152,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/auth/login")
+    @PostMapping("/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         try {
             ParentsFindOneResponse user = userService.login(loginInfoFindRequest);
