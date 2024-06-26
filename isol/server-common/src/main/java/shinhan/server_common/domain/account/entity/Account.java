@@ -24,7 +24,7 @@ public class Account {
     private Long userSerialNumber;
 
     @Column(name = "balance", nullable = true)
-    private int balance;
+    private int balance=300000;
 
     @Column(name = "status", nullable = false)
     private int status;
