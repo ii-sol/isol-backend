@@ -42,7 +42,7 @@ public class AllowanceController {
     }
 
     //아이 - 부 모 모두에게서 용돈 조르기 내역 조회(과거, 이미 끝남 - 완료, 취소)
-    @GetMapping("temporal/history")
+    @GetMapping("/temporal/history")
     public ApiUtils.ApiResult findTemporalAllowances(@RequestParam("year") Integer year, @RequestParam("month") Integer month) throws AuthException {
         Long loginUserSerialNumber = jwtService.getUserInfo().getSn();
         List<TemporalChildAllowanceFindAllResponse> response = allowanceService.findChildTemporalAllowances(loginUserSerialNumber, year, month);
