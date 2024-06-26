@@ -163,10 +163,40 @@ public class UserController {
 
     @GetMapping("/users/child-manage")
     public ApiUtils.ApiResult getChildManage() throws Exception {
-
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
         return success(userService.getChildManage(userInfo.getSn()));
+    }
+
+    @GetMapping("/users/my-family")
+    public ApiUtils.ApiResult getMyFamily(HttpServletResponse response) {
+        try {
+            UserInfoResponse userInfo = jwtService.getUserInfo();
+            List<FamilyInfoResponse> myFamilyInfo = userService.getFamilyInfo(userInfo.getSn());
+
+            myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
+
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .sn(userInfo.getSn())
+                    .name(userInfo.getName())
+                    .profileId(userInfo.getProfileId())
+                    .familyInfo(myFamilyInfo)
+                    .build();
+            JwtTokenResponse jwtTokenResponse = JwtTokenResponse.builder()
+                    .accessToken(jwtService.createAccessToken(userInfoResponse))
+                    .refreshToken(jwtService.createRefreshToken(userInfo.getSn()))
+                    .build();
+
+            jwtService.sendJwtToken(jwtTokenResponse);
+
+            return success(myFamilyInfo);
+        } catch (AuthException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return error("가족 관계 조회에 실패하였습니다 " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception ee) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return error("가족 관계 조회에 실패하였습니다 " + ee.getClass() + ee.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping("/auth/main")
