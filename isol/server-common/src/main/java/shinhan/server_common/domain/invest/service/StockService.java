@@ -5,18 +5,14 @@ import static shinhan.server_common.global.exception.ErrorCode.FAILED_NOT_FOUNT_
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 import shinhan.server_common.domain.invest.dto.StockFindDetailResponse;
-import shinhan.server_common.domain.invest.entity.StockDartPoten;
-import shinhan.server_common.domain.invest.entity.StockDartProfit;
-import shinhan.server_common.domain.invest.entity.StockDivideOutput;
-import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
-import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
-import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
-import shinhan.server_common.domain.invest.entity.StockNaverIntegration;
+import shinhan.server_common.domain.invest.entity.*;
 import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.domain.invest.repository.StockRepository;
 import shinhan.server_common.global.exception.CustomException;
@@ -49,8 +45,10 @@ public class StockService {
     public StockFindDetailResponse getStockDetail2(String ticker,String year){
         StockNaverDuraion[] stockNaverDuraions = stockRepository.getApiDuraion(ticker,year);
         StockNaverIntegration stockNaverIntegration = stockRepository.getApiIntegration(ticker);
-        StockDartPoten stockDartPoten = stockRepository.getApiDartPoten("00126380");
-        StockDartProfit stockDartProfit = stockRepository.getApiDartProfit("00126380");
+        Optional<CorpCode> corpCode = corpCodeRepository.findByCorpCode(Integer.parseInt(ticker));
+        System.out.println(corpCode.get().getCorpCode());
+        StockDartPoten stockDartPoten = stockRepository.getApiDartPoten(String.valueOf(corpCode.get().getCorpCode()));
+        StockDartProfit stockDartProfit = stockRepository.getApiDartProfit(String.valueOf(corpCode.get().getCorpCode()));
         double currentPrice = Arrays.stream(stockNaverDuraions).toList().get(stockNaverDuraions.length-1).getClosePrice();
         double prePrice = Arrays.stream(stockNaverDuraions).toList().get(stockNaverDuraions.length-2).getClosePrice();
         double changePrice =
@@ -66,6 +64,8 @@ public class StockService {
         }else{
             changeSign=1;
         }
+        System.out.println(stockDartProfit.getList().get(5).getIdx_val());
+        System.out.println(stockDartPoten.getList().get(2).getIdx_val());
         return StockFindDetailResponse.builder()
             .charts(List.of(stockNaverDuraions))
             .changePrice(changePrice+"")
