@@ -23,10 +23,13 @@ public class CorpCodeService {
         this.stockRepository = stockRepository;
     }
 
+
+
     public List<CorpCodeResponse> getStockByName(Long userSn ,String corpName, Pageable pageable){
         List<CorpCode> corpCodeList = corpCodeRepository.findByCorpNameContaining(corpName,pageable);
         return corpCodeList.stream().map(x -> {
             String ticker = String.format("%06d",x.getStockCode());
+
             StockNaverDuraion[] apiCurrentDuraion = stockRepository.getApiCurrentDuraion(ticker);
             boolean canTranding = true;
             double currentPrice = 0;

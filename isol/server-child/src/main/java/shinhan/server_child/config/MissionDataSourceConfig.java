@@ -23,7 +23,6 @@ import java.util.Objects;
         entityManagerFactoryRef = "missionEntityManagerFactory",
         transactionManagerRef = "missionTransactionManager")
 public class MissionDataSourceConfig {
-
     @Value("${MISSION_DB_URL}")
     private String dbUrl;
     @Value("${MISSION_DB_USERNAME}")

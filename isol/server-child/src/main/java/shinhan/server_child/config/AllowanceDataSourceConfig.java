@@ -24,7 +24,6 @@ import java.util.Objects;
         entityManagerFactoryRef = "allowanceEntityManagerFactory",
         transactionManagerRef = "allowanceTransactionManager")
 public class AllowanceDataSourceConfig {
-
     @Value("${ALLOWANCE_DB_URL}")
     private String dbUrl;
     @Value("${ALLOWANCE_DB_USERNAME}")

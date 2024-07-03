@@ -1,5 +1,6 @@
 package shinhan.server_child.domain.loan.service;
 
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_child.domain.loan.dto.LoanDto;
@@ -7,11 +8,13 @@ import shinhan.server_child.domain.loan.entity.Loan;
 import shinhan.server_child.domain.loan.repository.LoanCustomRepository;
 import shinhan.server_child.domain.loan.repository.LoanRepository;
 import shinhan.server_child.domain.user.service.UserService;
+import shinhan.server_common.domain.account.entity.Account;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;
 
 import java.util.List;
+import shinhan.server_common.global.utils.account.AccountUtils;
 
 
 @Service
@@ -21,14 +24,16 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final UserService userService;
     private final JwtService jwtService;
-
+    AccountUtils accountUtils;
+//    private final LoanRepository loanCustomRepository;
 
     public LoanService(LoanRepository loanRepository, UserService userService,
-                       JwtService jwtService) {
-        this.loanCustomRepository = loanRepository;
+                       JwtService jwtService, LoanRepository loanCustomRepository,AccountUtils accountUtils) {
         this.loanRepository = loanRepository;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.loanCustomRepository = loanCustomRepository;
+        this.accountUtils = accountUtils;
     }
 
     public List<LoanDto> getLoanByChildId(Long childId) {
@@ -69,6 +74,22 @@ public class LoanService {
         loanRepository.save(loan);
     }
 
+    public void acceptLoan(Long loginUserSerialNumber , Integer loanId) {
+        LoanDto loan = loanRepository.findLoanById(loanId);
+
+        Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(loginUserSerialNumber,3);
+        Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(loan.getChildId(),1);
+
+        loanCustomRepository.acceptLoan(loanId);
+        accountUtils.transferMoneyByAccount(parentsAccount, childAccount, loan.getAmount(), 6);
+
+        LocalDateTime createDate = LocalDateTime.now().plusMonths(1);
+        String cronExpression = schedulerUtils.generateTransmitCronExpression(createDate);
+//        dynamicScheduler.scheduleTask(loginUserSerialNumber.toString()+loanId,
+//                cronExpression,()->{
+//                    System.out.println("asfkjasldfk");
+//                }
+    }
     public LoanDto findOne(int loanId) {
         return loanCustomRepository.findLoanById(loanId);
     }
