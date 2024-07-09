@@ -18,9 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @EnableConfigurationProperties(DataSourceProperties.class)
 @EnableJpaRepositories(
-        basePackages = {
-                "shinhan.server_parent.domain.invest.repository",
-                "shinhan.server_common.domain.invest.repository"},
+        basePackages = "shinhan.server_common.domain.invest.repository",
         entityManagerFactoryRef = "investEntityManagerFactory",
         transactionManagerRef = "investTransactionManager")
 public class InvestDataSourceConfig {
@@ -49,7 +47,6 @@ public class InvestDataSourceConfig {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan(
-                "shinhan.server_parent.domain.invest.entity",
                 "shinhan.server_common.domain.invest.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
