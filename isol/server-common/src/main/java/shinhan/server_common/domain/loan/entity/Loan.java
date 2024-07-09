@@ -1,21 +1,15 @@
-package shinhan.server_parent.domain.loan.entity;
+package shinhan.server_common.domain.loan.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.util.Date;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_parent.domain.loan.dto.LoanDto;
+import shinhan.server_common.domain.loan.dto.LoanDto;
+
+import java.util.Date;
 
 @Getter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name ="loan")
 public class Loan {
 

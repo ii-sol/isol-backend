@@ -1,12 +1,11 @@
 package shinhan.server_parent.domain.loan.controller;
 
 import org.springframework.web.bind.annotation.*;
+import shinhan.server_common.domain.loan.dto.LoanDto;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.utils.ApiUtils;
-import shinhan.server_common.global.utils.ApiUtils.ApiResult;
 import shinhan.server_common.global.utils.user.UserUtils;
-import shinhan.server_parent.domain.loan.dto.LoanDto;
 import shinhan.server_parent.domain.loan.service.LoanService;
 
 import java.util.List;
@@ -50,7 +49,7 @@ public class LoanController {
     }
 
     @GetMapping("/loan/detail/{loanId}")
-    public ApiResult<LoanDto> getChildLoan(@PathVariable int loanId) {
+    public ApiUtils.ApiResult<LoanDto> getChildLoan(@PathVariable int loanId) {
         LoanDto loanDto = loanService.findOne(loanId);
         return ApiUtils.success(loanDto);
     }

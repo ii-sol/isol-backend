@@ -20,7 +20,7 @@ import java.util.Objects;
 @Configuration
 @EnableConfigurationProperties(DataSourceProperties.class)
 @EnableJpaRepositories(
-        basePackages = "shinhan.server_parent.domain.loan.repository",
+        basePackages = "shinhan.server_common.domain.loan.repository",
         entityManagerFactoryRef = "loanEntityManagerFactory",
         transactionManagerRef = "loanTransactionManager")
 public class LoanDataSourceConfig {
@@ -49,7 +49,7 @@ public class LoanDataSourceConfig {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan(
-                "shinhan.server_parent.domain.loan.entity");
+                "shinhan.server_common.domain.loan.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

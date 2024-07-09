@@ -1,10 +1,11 @@
-package shinhan.server_child.domain.loan.dto;
+package shinhan.server_common.domain.loan.dto;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -28,7 +29,7 @@ public class LoanDto {
     private String message;
 
     public LoanDto(int id, Date dueDate, Date createDate, int period, Long childId, Long parentId, double interestRate, int amount, int balance,
-        int status, String title, String message) {
+                   int status, String title, String message) {
 
         this.id = id;
         this.dueDate = dueDate;
