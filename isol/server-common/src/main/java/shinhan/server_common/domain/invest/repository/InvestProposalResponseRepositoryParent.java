@@ -1,7 +1,7 @@
-package shinhan.server_parent.domain.invest.repository;
+package shinhan.server_common.domain.invest.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shinhan.server_parent.domain.invest.entity.InvestProposalResponseParent;
+import shinhan.server_common.domain.invest.entity.InvestProposalResponseParent;
 
 public interface InvestProposalResponseRepositoryParent extends JpaRepository<InvestProposalResponseParent,Integer> {
 }

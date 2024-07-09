@@ -1,4 +1,4 @@
-package shinhan.server_parent.domain.invest.dto;
+package shinhan.server_common.domain.invest.dto;
 
 import lombok.Data;
 
