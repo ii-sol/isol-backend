@@ -1,10 +1,10 @@
-package shinhan.server_child.domain.allowance.dto;
+package shinhan.server_common.domain.allowance.dto.parents;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_child.domain.allowance.entity.TemporalAllowance;
+import shinhan.server_common.domain.allowance.entity.TemporalAllowance;
 
 import java.time.LocalDateTime;
 
@@ -12,19 +12,17 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TemporalChildAllowanceFindAllResponse {
+public class TemporalAllowanceFindAllResponse {
     private int id;
     private int amount;
-    private String name;
-    private int status;
+    private String content;
     private LocalDateTime createDate;
 
-    public static TemporalChildAllowanceFindAllResponse of(TemporalAllowance temporalAllowance, String name){
-        return TemporalChildAllowanceFindAllResponse.builder()
+    public static TemporalAllowanceFindAllResponse from(TemporalAllowance temporalAllowance){
+        return TemporalAllowanceFindAllResponse.builder()
                 .id(temporalAllowance.getId())
                 .amount(temporalAllowance.getPrice())
-                .name(name)
-                .status(temporalAllowance.getStatus())
+                .content(temporalAllowance.getContent())
                 .createDate(temporalAllowance.getCreateDate())
                 .build();
     }

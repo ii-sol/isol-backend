@@ -1,29 +1,32 @@
-package shinhan.server_parent.domain.allowance.repository;
+package shinhan.server_common.domain.allowance.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import shinhan.server_parent.domain.allowance.entity.TemporalAllowance;
+import shinhan.server_common.domain.allowance.entity.MonthlyAllowance;
 
 import java.util.List;
 
-public interface TemporalAllowanceRepository extends JpaRepository<TemporalAllowance, Integer>, TemporalAllowanceRepositoryCustom {
-    @Query("SELECT m FROM TemporalAllowance m " +
+
+public interface MonthlyAllowanceRepository extends JpaRepository<MonthlyAllowance, Integer> {
+
+    List<MonthlyAllowance> findByChildSerialNumberAndStatus(Long serialNumber, Integer status);
+    @Query("SELECT m FROM MonthlyAllowance m " +
             "WHERE m.parentsSerialNumber = :serialNumber " +
             "AND m.childSerialNumber = :csn " +
             "AND FUNCTION('MONTH', m.createDate) = :month " +
             "AND FUNCTION('YEAR', m.createDate) = :year")
-    List<TemporalAllowance> findByUserSerialNumberAndCreateDate(
+    List<MonthlyAllowance> findByUserSerialNumberAndCreateDate(
             @Param("serialNumber") Long serialNumber,
             @Param("year") Integer year,
             @Param("month") Integer month,
             @Param("csn") Long csn);
 
-    @Query("SELECT m FROM TemporalAllowance m " +
+    @Query("SELECT m FROM MonthlyAllowance m " +
             "WHERE m.parentsSerialNumber = :serialNumber " +
             "AND m.childSerialNumber = :csn " +
             "AND m.status = :status")
-    List<TemporalAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(
+    List<MonthlyAllowance> findByParentsSerialNumberAndChildrenSerialNumberAndStatus(
             @Param("serialNumber") Long serialNumber,
             @Param("csn") Long csn,
             @Param("status") Integer status);

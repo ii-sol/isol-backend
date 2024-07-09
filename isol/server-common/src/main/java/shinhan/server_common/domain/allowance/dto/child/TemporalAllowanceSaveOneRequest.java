@@ -1,4 +1,4 @@
-package shinhan.server_child.domain.allowance.dto;
+package shinhan.server_common.domain.allowance.dto.child;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

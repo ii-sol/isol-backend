@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_child.domain.allowance.dto.MonthlyAllowanceFindOneResponse;
-import shinhan.server_child.domain.allowance.dto.TemporalAllowanceSaveOneRequest;
-import shinhan.server_child.domain.allowance.dto.TemporalChildAllowanceFindAllResponse;
-import shinhan.server_child.domain.allowance.dto.UnAcceptTemporalAllowanceFindAllResponse;
-import shinhan.server_child.domain.allowance.entity.TemporalAllowance;
-import shinhan.server_child.domain.allowance.repository.MonthlyAllowanceRepository;
-import shinhan.server_child.domain.allowance.repository.TemporalAllowanceRepository;
-import shinhan.server_common.domain.user.entity.Child;
-import shinhan.server_common.domain.user.entity.Parents;
+import shinhan.server_common.domain.allowance.dto.child.MonthlyAllowanceFindOneResponse;
+import shinhan.server_common.domain.allowance.dto.child.TemporalAllowanceSaveOneRequest;
+import shinhan.server_common.domain.allowance.dto.child.TemporalChildAllowanceFindAllResponse;
+import shinhan.server_common.domain.allowance.dto.child.UnAcceptTemporalAllowanceFindAllResponse;
+import shinhan.server_common.domain.allowance.entity.TemporalAllowance;
+import shinhan.server_common.domain.allowance.repository.MonthlyAllowanceRepository;
+import shinhan.server_common.domain.allowance.repository.TemporalAllowanceRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.utils.user.UserUtils;
@@ -27,8 +25,8 @@ import java.util.List;
 @Transactional
 public class AllowanceService {
 
-    private final TemporalAllowanceRepository temporalAllowanceRepository;
     private final MonthlyAllowanceRepository monthlyAllowanceRepository;
+    private final TemporalAllowanceRepository temporalAllowanceRepository;
     private final UserUtils userUtils;
 
     //자식 - 용돈 조르기 신청 여기서 tempUser = 자식

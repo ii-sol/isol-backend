@@ -1,32 +1,28 @@
-package shinhan.server_child.domain.allowance.entity;
+package shinhan.server_common.domain.allowance.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import shinhan.server_common.domain.user.entity.Child;
-import shinhan.server_common.domain.user.entity.Parents;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "monthly_allowance")
-public class MonthlyAllowance {
+@AllArgsConstructor
+@Table(name = "temporal_allowance")
+public class TemporalAllowance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
 
     @Column(name = "parents_sn")
     private Long parentsSerialNumber;
 
     @Column(name = "child_sn")
     private Long childSerialNumber;
+
+    private String content;
 
     private Integer price;
 
@@ -39,12 +35,17 @@ public class MonthlyAllowance {
     private Integer status;
 
     @Builder
-    public MonthlyAllowance(Long parentsSerialNumber, Long childSerialNumber, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
+    public TemporalAllowance(Long parentsSerialNumber, Long childSerialNumber, String content, Integer price, LocalDateTime createDate, LocalDateTime dueDate, Integer status) {
         this.parentsSerialNumber = parentsSerialNumber;
         this.childSerialNumber = childSerialNumber;
+        this.content = content;
         this.price = price;
         this.createDate = createDate;
         this.dueDate = dueDate;
+        this.status = status;
+    }
+
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

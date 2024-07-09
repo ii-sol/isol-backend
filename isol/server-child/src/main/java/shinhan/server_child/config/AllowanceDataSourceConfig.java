@@ -20,7 +20,7 @@ import java.util.Objects;
 @Configuration
 @EnableConfigurationProperties(DataSourceProperties.class)
 @EnableJpaRepositories(
-        basePackages = "shinhan.server_child.domain.allowance.repository",
+        basePackages = "shinhan.server_common.domain.allowance.repository",
         entityManagerFactoryRef = "allowanceEntityManagerFactory",
         transactionManagerRef = "allowanceTransactionManager")
 public class AllowanceDataSourceConfig {
@@ -49,7 +49,7 @@ public class AllowanceDataSourceConfig {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan(
-                "shinhan.server_child.domain.allowance.entity");
+                "shinhan.server_common.domain.allowance.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

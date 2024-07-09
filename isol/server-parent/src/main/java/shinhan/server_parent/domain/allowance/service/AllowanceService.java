@@ -1,22 +1,25 @@
 package shinhan.server_parent.domain.allowance.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.account.entity.Account;
+import shinhan.server_common.domain.allowance.dto.parents.MonthlyAllowanceFindAllResponse;
+import shinhan.server_common.domain.allowance.dto.parents.TemporalAllowanceFindAllResponse;
+import shinhan.server_common.domain.allowance.dto.parents.TotalAllowanceFindAllResponse;
+import shinhan.server_common.domain.allowance.entity.MonthlyAllowance;
+import shinhan.server_common.domain.allowance.entity.TemporalAllowance;
+import shinhan.server_common.domain.allowance.repository.MonthlyAllowanceRepository;
+import shinhan.server_common.domain.allowance.repository.TemporalAllowanceRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleChangeOneRequest;
 import shinhan.server_common.global.scheduler.dto.MonthlyAllowanceScheduleSaveOneRequest;
 import shinhan.server_common.global.utils.account.AccountUtils;
-import shinhan.server_parent.domain.allowance.dto.MonthlyAllowanceFindAllResponse;
-import shinhan.server_parent.domain.allowance.dto.TemporalAllowanceFindAllResponse;
-import shinhan.server_parent.domain.allowance.dto.TotalAllowanceFindAllResponse;
-import shinhan.server_parent.domain.allowance.entity.MonthlyAllowance;
-import shinhan.server_parent.domain.allowance.entity.TemporalAllowance;
-import shinhan.server_parent.domain.allowance.repository.MonthlyAllowanceRepository;
-import shinhan.server_parent.domain.allowance.repository.TemporalAllowanceRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class AllowanceService {
 
-    private final TemporalAllowanceRepository temporalAllowanceRepository;
     private final MonthlyAllowanceRepository monthlyAllowanceRepository;
+    private final TemporalAllowanceRepository temporalAllowanceRepository;
     private final AccountUtils accountUtils;
 
     // 부모 용돈 내역 조회하기

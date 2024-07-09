@@ -1,33 +1,31 @@
-package shinhan.server_child.domain.allowance.dto;
+package shinhan.server_common.domain.allowance.dto.parents;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_child.domain.allowance.entity.MonthlyAllowance;
+import shinhan.server_common.domain.allowance.entity.MonthlyAllowance;
+
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Builder
-public class MonthlyAllowanceFindOneResponse {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MonthlyAllowanceFindAllResponse {
     private int id;
     private int amount;
-    private String name;
     private int period;
     private LocalDateTime createDate;
     private LocalDateTime dueDate;
 
-    public static MonthlyAllowanceFindOneResponse of(MonthlyAllowance allowance, Integer period, String parentsName){
-        return MonthlyAllowanceFindOneResponse.builder()
+    public static MonthlyAllowanceFindAllResponse of(MonthlyAllowance allowance, Integer period){
+        return MonthlyAllowanceFindAllResponse.builder()
                 .id(allowance.getId())
                 .amount(allowance.getPrice())
-                .name(parentsName)
                 .period(period)
                 .createDate(allowance.getCreateDate())
                 .dueDate(allowance.getDueDate())
                 .build();
     }
-
 }

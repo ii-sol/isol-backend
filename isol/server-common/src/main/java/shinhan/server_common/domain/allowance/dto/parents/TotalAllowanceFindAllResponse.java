@@ -1,11 +1,11 @@
-package shinhan.server_parent.domain.allowance.dto;
+package shinhan.server_common.domain.allowance.dto.parents;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shinhan.server_parent.domain.allowance.entity.MonthlyAllowance;
-import shinhan.server_parent.domain.allowance.entity.TemporalAllowance;
+import shinhan.server_common.domain.allowance.entity.MonthlyAllowance;
+import shinhan.server_common.domain.allowance.entity.TemporalAllowance;
 
 import java.time.LocalDateTime;
 
