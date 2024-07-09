@@ -46,9 +46,7 @@ public class LoanDataSourceConfig {
             @Qualifier("loanDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan(
-                "shinhan.server_common.domain.loan.entity");
-
+        em.setPackagesToScan("shinhan.server_common.domain.loan.entity");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 

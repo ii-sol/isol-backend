@@ -49,7 +49,6 @@ public class ExternalDataSourceConfig {
         em.setPackagesToScan(
                 "shinhan.server_common.domain.account.entity",
                 "shinhan.server_common.domain.stock.entity");
-
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 

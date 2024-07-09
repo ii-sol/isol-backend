@@ -46,9 +46,7 @@ public class AllowanceDataSourceConfig {
             @Qualifier("allowanceDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan(
-                "shinhan.server_common.domain.allowance.entity");
-
+        em.setPackagesToScan("shinhan.server_common.domain.allowance.entity");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 

@@ -46,9 +46,7 @@ public class InvestDataSourceConfig {
             @Qualifier("investDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan(
-                "shinhan.server_common.domain.invest.entity");
-
+        em.setPackagesToScan("shinhan.server_common.domain.invest.entity");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 

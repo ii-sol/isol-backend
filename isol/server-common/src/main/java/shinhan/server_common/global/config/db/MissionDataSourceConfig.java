@@ -46,9 +46,7 @@ public class MissionDataSourceConfig {
             @Qualifier("missionDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan(
-                "shinhan.server_common.domain.mission.entity");
-
+        em.setPackagesToScan("shinhan.server_common.domain.mission.entity");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 

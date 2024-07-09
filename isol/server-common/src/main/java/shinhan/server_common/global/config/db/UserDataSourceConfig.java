@@ -51,9 +51,7 @@ public class UserDataSourceConfig {
             @Qualifier("userDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan(
-                "shinhan.server_common.domain.user.entity");
-
+        em.setPackagesToScan("shinhan.server_common.domain.user.entity");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 
