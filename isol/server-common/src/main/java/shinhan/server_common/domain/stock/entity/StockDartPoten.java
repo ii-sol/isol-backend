@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_common.domain.stock.entity;
 
 import java.util.List;
 import lombok.Getter;

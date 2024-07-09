@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.entity;
+package shinhan.server_common.domain.stock.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class StockDivideDetail {
+public class StockCurrentPriceOutput {
     @JsonProperty("thstrm")
-    private String dividendYield;
+    private String dividendRate;
 }

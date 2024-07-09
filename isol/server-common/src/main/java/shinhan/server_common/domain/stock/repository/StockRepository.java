@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.repository;
+package shinhan.server_common.domain.stock.repository;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -6,19 +6,18 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException.Conflict;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
-import shinhan.server_common.domain.invest.entity.StockDartPoten;
-import shinhan.server_common.domain.invest.entity.StockDartProfit;
-import shinhan.server_common.domain.invest.entity.StockDivideOutput;
-import shinhan.server_common.domain.invest.entity.StockDuraionPriceOutput;
-import shinhan.server_common.domain.invest.entity.StockFianceResponseOutput;
-import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
-import shinhan.server_common.domain.invest.entity.StockNaverIntegration;
+import shinhan.server_common.domain.stock.entity.StockDartPoten;
+import shinhan.server_common.domain.stock.entity.StockDartProfit;
+import shinhan.server_common.domain.stock.entity.StockDivideOutput;
+import shinhan.server_common.domain.stock.entity.StockDuraionPriceOutput;
+import shinhan.server_common.domain.stock.entity.StockFianceResponseOutput;
+import shinhan.server_common.domain.stock.entity.StockNaverDuraion;
+import shinhan.server_common.domain.stock.entity.StockNaverIntegration;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 

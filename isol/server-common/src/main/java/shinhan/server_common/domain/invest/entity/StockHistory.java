@@ -1,4 +1,4 @@
-package shinhan.server_common.domain.invest.investEntity;
+package shinhan.server_common.domain.invest.entity;
 
 
 import jakarta.persistence.Column;
@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
-import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
