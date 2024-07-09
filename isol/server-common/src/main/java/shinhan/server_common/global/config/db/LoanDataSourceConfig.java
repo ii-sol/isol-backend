@@ -1,5 +1,7 @@
-package shinhan.server_child.config;
+package shinhan.server_common.global.config.db;
 
+import java.util.Objects;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -13,26 +15,23 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-import java.util.Objects;
-
 @Configuration
 @EnableConfigurationProperties(DataSourceProperties.class)
 @EnableJpaRepositories(
-        basePackages = "shinhan.server_child.domain.mission.repository",
-        entityManagerFactoryRef = "missionEntityManagerFactory",
-        transactionManagerRef = "missionTransactionManager")
-public class MissionDataSourceConfig {
+        basePackages = "shinhan.server_common.domain.loan.repository",
+        entityManagerFactoryRef = "loanEntityManagerFactory",
+        transactionManagerRef = "loanTransactionManager")
+public class LoanDataSourceConfig {
 
-    @Value("${MISSION_DB_URL}")
+    @Value("${LOAN_DB_URL}")
     private String dbUrl;
-    @Value("${MISSION_DB_USERNAME}")
+    @Value("${LOAN_DB_USERNAME}")
     private String dbUsername;
-    @Value("${MISSION_DB_PASSWORD}")
+    @Value("${LOAN_DB_PASSWORD}")
     private String dbPassword;
 
     @Bean
-    public DataSource missionDataSource() {
+    public DataSource loanDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(dbUrl);
@@ -43,12 +42,12 @@ public class MissionDataSourceConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean missionEntityManagerFactory(
-            @Qualifier("missionDataSource") DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean loanEntityManagerFactory(
+            @Qualifier("loanDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan(
-                "shinhan.server_common.domain.mission.entity");
+                "shinhan.server_common.domain.loan.entity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -57,8 +56,8 @@ public class MissionDataSourceConfig {
     }
 
     @Bean
-    public PlatformTransactionManager missionTransactionManager(
-            @Qualifier("missionEntityManagerFactory") LocalContainerEntityManagerFactoryBean missionEntityManagerFactory) {
-        return new JpaTransactionManager(Objects.requireNonNull(missionEntityManagerFactory.getObject()));
+    public PlatformTransactionManager loanTransactionManager(
+            @Qualifier("loanEntityManagerFactory") LocalContainerEntityManagerFactoryBean loanEntityManagerFactory) {
+        return new JpaTransactionManager(Objects.requireNonNull(loanEntityManagerFactory.getObject()));
     }
 }
