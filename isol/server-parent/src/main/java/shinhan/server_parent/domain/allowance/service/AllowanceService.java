@@ -1,10 +1,7 @@
 package shinhan.server_parent.domain.allowance.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.account.entity.Account;
@@ -38,77 +35,93 @@ public class AllowanceService {
     private final AccountUtils accountUtils;
 
     // 부모 용돈 내역 조회하기
-    public List<TotalAllowanceFindAllResponse> findTotalAllowances(Long userSerialNumber, Integer year, Integer month, Long childSerialNumber) {
+    public List<TotalAllowanceFindAllResponse> findTotalAllowances(Long userSerialNumber,
+        Integer year, Integer month, Long childSerialNumber) {
 
         List<TotalAllowanceFindAllResponse> response = new ArrayList<>();
 
-        List<TemporalAllowance> temporalAllowances = temporalAllowanceRepository.findByUserSerialNumberAndCreateDate(userSerialNumber, year, month, childSerialNumber);
+        List<TemporalAllowance> temporalAllowances = temporalAllowanceRepository.findByUserSerialNumberAndCreateDate(
+            userSerialNumber, year, month, childSerialNumber);
         response.addAll(temporalAllowances.stream()
-                .map(TotalAllowanceFindAllResponse::from)
-                .toList());
+            .map(TotalAllowanceFindAllResponse::from)
+            .toList());
 
-        List<MonthlyAllowance> monthlyAllowances = monthlyAllowanceRepository.findByUserSerialNumberAndCreateDate(userSerialNumber, year, month, childSerialNumber);
+        List<MonthlyAllowance> monthlyAllowances = monthlyAllowanceRepository.findByUserSerialNumberAndCreateDate(
+            userSerialNumber, year, month, childSerialNumber);
         response.addAll(monthlyAllowances.stream()
-                .map(TotalAllowanceFindAllResponse::from)
-                .toList());
+            .map(TotalAllowanceFindAllResponse::from)
+            .toList());
 
         return response;
 
     }
 
     //용돈 조르기 수락/거절
-    public void handleAllowanceAcception(Integer temporalAllowanceId ,Boolean accept) {
+    public void handleAllowanceAcception(Integer temporalAllowanceId, Boolean accept) {
         // 해당되는 용돈 조르기 가져옴
-        TemporalAllowance temporalAllowance = temporalAllowanceRepository.findById(temporalAllowanceId)
-                .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_TEMPORAL_ALLOWANCE));
+        TemporalAllowance temporalAllowance = temporalAllowanceRepository.findById(
+                temporalAllowanceId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPORAL_ALLOWANCE));
 
         // 수락했으면, 계좌 이체하기 + temporalAllowance의 status 변경
-        if(accept){
-            Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getParentsSerialNumber(), 3);
-            Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(temporalAllowance.getChildSerialNumber(),1);
-            accountUtils.transferMoneyByAccount(parentsAccount, childAccount, temporalAllowance.getPrice(), 3);
+        if (accept) {
+            Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(
+                temporalAllowance.getParentsSerialNumber(), 3);
+            Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(
+                temporalAllowance.getChildSerialNumber(), 1);
+            accountUtils.transferMoneyByAccount(parentsAccount, childAccount,
+                temporalAllowance.getPrice(), 3);
             temporalAllowance.setStatus(4);// 완료 상태로 바꾸기
-        }else{
+        } else {
             temporalAllowance.setStatus(5);// 거절 상태로 바꾸기
         }
     }
 
     //용돈 조르기 내역 조회하기(아직 승인 안한) - 용돈 페이지
-    public List<TemporalAllowanceFindAllResponse> findTemporalAllowances(Long userSerialNumber, Long childSerialNumber) {
+    public List<TemporalAllowanceFindAllResponse> findTemporalAllowances(Long userSerialNumber,
+        Long childSerialNumber) {
 
-        return temporalAllowanceRepository.findByParentsSerialNumberAndChildrenSerialNumberAndStatus(userSerialNumber, childSerialNumber, 1)
-                .stream().map(allowance -> {
-                    return TemporalAllowanceFindAllResponse.from(allowance);
-                })
-                .toList();
+        return temporalAllowanceRepository.findByParentsSerialNumberAndChildrenSerialNumberAndStatus(
+                userSerialNumber, childSerialNumber, 1)
+            .stream().map(allowance -> {
+                return TemporalAllowanceFindAllResponse.from(allowance);
+            })
+            .toList();
     }
 
     //현재 진행중인 정기 용돈 조회하기
-    public List<MonthlyAllowanceFindAllResponse> findMonthlyAllowances(Long userSerialNumber, Long childSerialNumber) {
-        return monthlyAllowanceRepository.findByParentsSerialNumberAndChildrenSerialNumberAndStatus(userSerialNumber, childSerialNumber, 3)
-                .stream().map(allowance -> {
-                    return MonthlyAllowanceFindAllResponse.of(allowance, getMonthsBetween(allowance.getCreateDate(), allowance.getDueDate()));
-                })
-                .toList();
+    public List<MonthlyAllowanceFindAllResponse> findMonthlyAllowances(Long userSerialNumber,
+        Long childSerialNumber) {
+        return monthlyAllowanceRepository.findByParentsSerialNumberAndChildrenSerialNumberAndStatus(
+                userSerialNumber, childSerialNumber, 3)
+            .stream().map(allowance -> {
+                return MonthlyAllowanceFindAllResponse.of(allowance,
+                    getMonthsBetween(allowance.getCreateDate(), allowance.getDueDate()));
+            })
+            .toList();
     }
 
     // 새로운 정기 용돈 repository에 저장하기
-    public void createMonthlyAllowance(Long loginUserSerialNumber, LocalDateTime createDate , MonthlyAllowanceScheduleSaveOneRequest request) {
+    public void createMonthlyAllowance(Long loginUserSerialNumber, LocalDateTime createDate,
+        MonthlyAllowanceScheduleSaveOneRequest request) {
         MonthlyAllowance newMonthlyAllowance = MonthlyAllowance.builder()
-                .price(request.getAmount())
-                .parentsSerialNumber(loginUserSerialNumber)
-                .childSerialNumber(request.getChildSerialNumber())
-                .createDate(createDate)
-                .dueDate(createDate.plusMonths(request.getPeriod()))
-                .status(3)
-                .build();
+            .price(request.getAmount())
+            .parentsSerialNumber(loginUserSerialNumber)
+            .childSerialNumber(request.getChildSerialNumber())
+            .createDate(createDate)
+            .dueDate(createDate.plusMonths(request.getPeriod()))
+            .status(3)
+            .build();
         monthlyAllowanceRepository.save(newMonthlyAllowance);
     }
 
-    public void transmitMoneyforSchedule(Long parentsSerialNumber, Long childSerialNumber, Integer amount){
+    public void transmitMoneyforSchedule(Long parentsSerialNumber, Long childSerialNumber,
+        Integer amount) {
         System.out.println("scheduling 테스트 중");
-        Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(parentsSerialNumber, 3);
-        Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(childSerialNumber, 1);
+        Account parentsAccount = accountUtils.getAccountByUserSerialNumberAndStatus(
+            parentsSerialNumber, 3);
+        Account childAccount = accountUtils.getAccountByUserSerialNumberAndStatus(childSerialNumber,
+            1);
 //        System.out.println(parentsAccount);
 //        System.out.println(childAccount);
 
@@ -116,18 +129,19 @@ public class AllowanceService {
         accountUtils.transferMoneyByAccount(parentsAccount, childAccount, amount, 4);
     }
 
-    public void changeMonthlyAllowance(Long loginUserSerialNumber, MonthlyAllowanceScheduleChangeOneRequest request) {
+    public void changeMonthlyAllowance(Long loginUserSerialNumber,
+        MonthlyAllowanceScheduleChangeOneRequest request) {
 
         monthlyAllowanceRepository.deleteById(request.getIdBeforeChange());
 
         MonthlyAllowance changedMonthlyAllowance = MonthlyAllowance.builder()
-                .price(request.getAmount())
-                .parentsSerialNumber(loginUserSerialNumber)
-                .childSerialNumber(request.getChildSerialNumber())
-                .createDate(request.getDateBeforeChange())
-                .dueDate(request.getDateBeforeChange().plusMonths(request.getPeriod()))
-                .status(3)
-                .build();
+            .price(request.getAmount())
+            .parentsSerialNumber(loginUserSerialNumber)
+            .childSerialNumber(request.getChildSerialNumber())
+            .createDate(request.getDateBeforeChange())
+            .dueDate(request.getDateBeforeChange().plusMonths(request.getPeriod()))
+            .status(3)
+            .build();
         monthlyAllowanceRepository.save(changedMonthlyAllowance);
     }
 

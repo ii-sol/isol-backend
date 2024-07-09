@@ -9,7 +9,7 @@ import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.domain.mission.entity.Mission;
-import shinhan.server_child.domain.mission.repository.MissionRepository;
+import shinhan.server_common.domain.mission.repository.MissionRepositoryChild;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class MissionService {
 
-    private final MissionRepository missionRepository;
+    private final MissionRepositoryChild missionRepository;
 
     public MissionFindOneResponse getMission(int id) {
         Mission mission = missionRepository.findById(id)

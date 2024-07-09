@@ -6,11 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shinhan.server_common.domain.invest.dto.CorpCodeResponse;
-import shinhan.server_common.domain.invest.entity.CorpCode;
-import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
-import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-import shinhan.server_common.domain.invest.investRepository.StockListRepository;
-import shinhan.server_common.domain.invest.repository.StockRepository;
+import shinhan.server_common.domain.stock.entity.CorpCode;
+import shinhan.server_common.domain.stock.entity.StockNaverDuraion;
+import shinhan.server_common.domain.stock.repository.CorpCodeRepository;
+import shinhan.server_common.domain.invest.repository.StockListRepository;
+import shinhan.server_common.domain.stock.repository.StockRepository;
 
 @Service
 public class CorpCodeService {
