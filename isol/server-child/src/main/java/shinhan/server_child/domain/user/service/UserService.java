@@ -53,17 +53,21 @@ public class UserService {
         Child child = childRepository.findBySerialNum(childUpdateRequest.getSerialNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
-        child.setPhoneNum(childUpdateRequest.getPhoneNum());
-        child.setName(childUpdateRequest.getName());
-        child.setBirthDate(childUpdateRequest.getBirthDate());
-        child.setProfileId(childUpdateRequest.getProfileId());
+        if (childRepository.findByPhoneNum(childUpdateRequest.getPhoneNum()).isEmpty()) {
+            child.setPhoneNum(childUpdateRequest.getPhoneNum());
+            child.setName(childUpdateRequest.getName());
+            child.setBirthDate(childUpdateRequest.getBirthDate());
+            child.setProfileId(childUpdateRequest.getProfileId());
 
-        Child updatedChild = childRepository.save(child);
+            Child updatedChild = childRepository.save(child);
 
-        if (isUpdated(childUpdateRequest, updatedChild)) {
-            return updatedChild.convertToUserFindOneResponse();
+            if (isUpdated(childUpdateRequest, updatedChild)) {
+                return updatedChild.convertToUserFindOneResponse();
+            } else {
+                throw new InternalError("회원 정보 변경이 실패하였습니다.");
+            }
         } else {
-            throw new InternalError("회원 정보 변경이 실패하였습니다.");
+            throw new InternalError("이미 가입된 전화번호입니다.");
         }
     }
 

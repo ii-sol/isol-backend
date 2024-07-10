@@ -11,8 +11,8 @@ public class ServerParentApplication {
         SpringApplication.run(ServerParentApplication.class, args);
     }
 
-    @RabbitListener(queues = "asdfsdf")
-    public void listen(String message) {
-        System.out.println("Received: " + message);
-    }
+//    @RabbitListener(queues = "asdfsdf")
+//    public void listen(String message) {
+//        System.out.println("Received: " + message);
+//    }
 }

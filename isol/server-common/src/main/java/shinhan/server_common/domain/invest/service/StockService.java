@@ -45,12 +45,12 @@ public class StockService {
     public StockFindDetailResponse getStockDetail2(String ticker,String year){
         StockNaverDuraion[] stockNaverDuraions = stockRepository.getApiDuraion(ticker,year);
         StockNaverIntegration stockNaverIntegration = stockRepository.getApiIntegration(ticker);
-        StockDartPoten stockDartPoten;
-        StockDartProfit stockDartProfit;
-        Optional<CorpCode> corpCode = corpCodeRepository.findByCorpCode(Integer.parseInt(ticker));
-        System.out.println(corpCode.get().getCorpCode());
-        stockDartPoten = stockRepository.getApiDartPoten(String.valueOf(corpCode.get().getCorpCode()));
-        stockDartProfit = stockRepository.getApiDartProfit(String.valueOf(corpCode.get().getCorpCode()));
+        StockDartPoten stockDartPoten = stockRepository.getApiDartPoten("00126380");
+        StockDartProfit stockDartProfit = stockRepository.getApiDartProfit("00126380");
+//        Optional<CorpCode> corpCode = corpCodeRepository.findByCorpCode(Integer.parseInt(ticker));
+//        System.out.println(corpCode.get().getCorpCode());
+//        StockDartPoten stockDartPoten = stockRepository.getApiDartPoten(String.valueOf(corpCode.get().getCorpCode()));
+//        StockDartProfit stockDartProfit = stockRepository.getApiDartProfit(String.valueOf(corpCode.get().getCorpCode()));
         double currentPrice = Arrays.stream(stockNaverDuraions).toList().get(stockNaverDuraions.length-1).getClosePrice();
         double prePrice = Arrays.stream(stockNaverDuraions).toList().get(stockNaverDuraions.length-2).getClosePrice();
         double changePrice =

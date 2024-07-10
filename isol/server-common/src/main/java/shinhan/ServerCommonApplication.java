@@ -14,8 +14,8 @@ public class ServerCommonApplication {
         SpringApplication.run(ServerCommonApplication.class, args);
     }
 
-    @RabbitListener(queues = "hello")
-    public void listen(String message) {
-        System.out.println("Received: " + message);
-    }
+//    @RabbitListener(queues = "hello")
+//    public void listen(String message) {
+//        System.out.println("Received: " + message);
+//    }
 }

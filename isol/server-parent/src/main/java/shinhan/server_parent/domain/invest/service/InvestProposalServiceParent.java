@@ -15,7 +15,7 @@ import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
 import shinhan.server_common.global.exception.CustomException;
 import shinhan.server_common.global.exception.ErrorCode;
 import shinhan.server_parent.domain.invest.dto.ResponseInvestProposal;
-import shinhan.server_parent.domain.invest.entity.InvestProposalResponseParent;
+import shinhan.server_common.domain.invest.investEntity.InvestProposalResponseParent;
 import shinhan.server_parent.domain.invest.repository.InvestProposalRepositoryParent;
 import shinhan.server_parent.domain.invest.repository.InvestProposalResponseRepositoryParent;
 
