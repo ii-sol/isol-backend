@@ -1,13 +1,11 @@
 package shinhan.server_child.domain.loan.service;
 
-import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_child.domain.loan.dto.LoanDto;
-import shinhan.server_child.domain.loan.entity.Loan;
-import shinhan.server_child.domain.loan.repository.LoanRepository;
 import shinhan.server_child.domain.user.service.UserService;
-import shinhan.server_common.domain.account.entity.Account;
+import shinhan.server_common.domain.loan.dto.LoanDto;
+import shinhan.server_common.domain.loan.entity.Loan;
+import shinhan.server_common.domain.loan.repository.LoanRepository;
 import shinhan.server_common.global.exception.AuthException;
 import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.UserInfoResponse;

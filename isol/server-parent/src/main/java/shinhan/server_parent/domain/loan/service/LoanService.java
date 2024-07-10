@@ -2,8 +2,8 @@ package shinhan.server_parent.domain.loan.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import shinhan.server_parent.domain.loan.dto.LoanDto;
-import shinhan.server_parent.domain.loan.repository.LoanRepository;
+import shinhan.server_common.domain.loan.dto.LoanDto;
+import shinhan.server_common.domain.loan.repository.LoanRepository;
 
 @Service
 public class LoanService {
@@ -15,7 +15,7 @@ public class LoanService {
     }
 
     public List<LoanDto> getLoanByChildId(Long childId) {
-        return loanRepository.findByChildId(childId);
+        return loanRepository.findByChildID(childId);
     }
 
     public void acceptLoan(int loanId) {

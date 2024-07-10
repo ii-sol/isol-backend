@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shinhan.server_common.domain.invest.dto.MyStockListResponse;
-import shinhan.server_common.domain.invest.investEntity.MyStockList;
-import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
-import shinhan.server_common.domain.invest.investRepository.StockListRepository;
+import shinhan.server_common.domain.invest.entity.MyStockList;
+import shinhan.server_common.domain.stock.repository.CorpCodeRepository;
+import shinhan.server_common.domain.invest.repository.StockListRepository;
 import shinhan.server_common.domain.invest.dto.StockFindCurrentResponse;
 
 @Service

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import shinhan.server_common.domain.invest.entity.StockNaverDuraion;
+import shinhan.server_common.domain.stock.entity.StockNaverDuraion;
 
 @Getter
 @Builder

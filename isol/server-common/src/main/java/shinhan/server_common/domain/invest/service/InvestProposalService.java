@@ -3,9 +3,9 @@ package shinhan.server_common.domain.invest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shinhan.server_common.domain.invest.investEntity.InvestProposalResponse;
-import shinhan.server_common.domain.invest.investRepository.InvestProposalResponseRepository;
-import shinhan.server_common.domain.invest.repository.CorpCodeRepository;
+import shinhan.server_common.domain.invest.entity.InvestProposalResponse;
+import shinhan.server_common.domain.invest.repository.InvestProposalResponseRepository;
+import shinhan.server_common.domain.stock.repository.CorpCodeRepository;
 
 @Service
 @Transactional
