@@ -42,7 +42,7 @@ public class UserService {
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
         return child.convertToUserFindOneResponse();
     }
