@@ -151,7 +151,11 @@ public class UserService {
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findChildInfo(sn)
                 .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
+                .map(myFamily -> FamilyInfoResponse.builder()
+                    .sn(myFamily.getSn())
+                    .profileId(myFamily.getProfileId())
+                    .name(myFamily.getName())
+                    .build())
                 .collect(Collectors.toList());
     }
 }
