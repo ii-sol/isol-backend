@@ -30,7 +30,7 @@ public class JoinInfoSaveRequest {
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Pattern(regexp = "\\d{6}", message = "비밀번호는 6자리 숫자여야 합니다.")
     private String accountInfo;
-    private Integer profileId;
+    private Integer profileId = 1;
 
     public Child convertToChild(long serialNum, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(accountInfo);
