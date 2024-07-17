@@ -47,19 +47,19 @@ public class UserService {
         return child.convertToUserFindOneResponse();
     }
 
-    public ParentsFindOneResponse updateUser(ParentsUpdateRequest parentsUpdateRequest) {
-        Parents parents = parentsRepository.findBySerialNum(parentsUpdateRequest.getSerialNum())
+    public ParentsFindOneResponse updateUser(UserUpdateRequest userUpdateRequest) {
+        Parents parents = parentsRepository.findBySerialNum(userUpdateRequest.getSerialNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
-        if (childRepository.findByPhoneNum(parentsUpdateRequest.getPhoneNum()).isEmpty()) {
-            parents.setPhoneNum(parentsUpdateRequest.getPhoneNum());
-            parents.setName(parentsUpdateRequest.getName());
-            parents.setBirthDate(parentsUpdateRequest.getBirthDate());
-            parents.setProfileId(parentsUpdateRequest.getProfileId());
+        if (childRepository.findByPhoneNum(userUpdateRequest.getPhoneNum()).isEmpty()) {
+            parents.setPhoneNum(userUpdateRequest.getPhoneNum());
+            parents.setName(userUpdateRequest.getName());
+            parents.setBirthDate(userUpdateRequest.getBirthDate());
+            parents.setProfileId(userUpdateRequest.getProfileId());
 
             Parents updatedParents = parentsRepository.save(parents);
 
-            if (isUpdated(parentsUpdateRequest, updatedParents)) {
+            if (isUpdated(userUpdateRequest, updatedParents)) {
                 return updatedParents.convertToUserFindOneResponse();
             } else {
                 throw new InternalError("회원 정보 변경이 실패하였습니다.");
@@ -69,11 +69,11 @@ public class UserService {
         }
     }
 
-    private boolean isUpdated(ParentsUpdateRequest parentsUpdateRequest, Parents updatedParents) {
-        return updatedParents.getPhoneNum().equals(parentsUpdateRequest.getPhoneNum())
-                && updatedParents.getName().equals(parentsUpdateRequest.getName())
-                && updatedParents.getBirthDate().equals(parentsUpdateRequest.getBirthDate())
-                && updatedParents.getProfileId() == parentsUpdateRequest.getProfileId();
+    private boolean isUpdated(UserUpdateRequest userUpdateRequest, Parents updatedParents) {
+        return updatedParents.getPhoneNum().equals(userUpdateRequest.getPhoneNum())
+                && updatedParents.getName().equals(userUpdateRequest.getName())
+                && updatedParents.getBirthDate().equals(userUpdateRequest.getBirthDate())
+                && updatedParents.getProfileId() == userUpdateRequest.getProfileId();
     }
 
     public void disconnectFamily(long sn, long childSn) {

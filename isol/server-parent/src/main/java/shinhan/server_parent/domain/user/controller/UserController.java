@@ -46,11 +46,11 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ApiUtils.ApiResult updateUser(@Valid @RequestBody ParentsUpdateRequest parentsUpdateRequest, HttpServletResponse response) throws Exception {
+    public ApiUtils.ApiResult updateUser(@Valid @RequestBody UserUpdateRequest userUpdateRequest, HttpServletResponse response) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo();
 
-        parentsUpdateRequest.setSerialNum(userInfo.getSn());
-        ParentsFindOneResponse user = userService.updateUser(parentsUpdateRequest);
+        userUpdateRequest.setSerialNum(userInfo.getSn());
+        ParentsFindOneResponse user = userService.updateUser(userUpdateRequest);
 
         if (user != null) {
             return success(user);
