@@ -34,11 +34,25 @@ public class JoinInfoSaveRequest {
 
     public Child convertToChild(long serialNum, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(accountInfo);
-        return new Child(serialNum, phoneNum, name, birthDate, encodedPassword, profileId);
+        return Child.builder()
+            .serialNum(serialNum)
+            .phoneNum(phoneNum)
+            .name(name)
+            .birthDate(birthDate)
+            .accountInfo(encodedPassword)
+            .profileId(profileId)
+            .build();
     }
 
     public Parents convertToParents(long serialNum, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(accountInfo);
-        return new Parents(serialNum, phoneNum, name, birthDate, encodedPassword, profileId);
+        return Parents.builder()
+            .serialNum(serialNum)
+            .phoneNum(phoneNum)
+            .name(name)
+            .birthDate(birthDate)
+            .accountInfo(encodedPassword)
+            .profileId(profileId)
+            .build();
     }
 }

@@ -11,6 +11,7 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "parents")
 public class Parents {
 
@@ -34,16 +35,13 @@ public class Parents {
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId = 1;
 
-    public Parents(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
-        this.serialNum = serialNum;
-        this.phoneNum = phoneNum;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.accountInfo = accountInfo;
-        this.profileId = profileId;
-    }
-
     public ParentsFindOneResponse convertToUserFindOneResponse() {
-        return new ParentsFindOneResponse(serialNum, phoneNum, name, birthDate, profileId);
+        return ParentsFindOneResponse.builder()
+            .sn(serialNum)
+            .phoneNum(phoneNum)
+            .name(name)
+            .birthDate(birthDate)
+            .profileId(profileId)
+            .build();
     }
 }

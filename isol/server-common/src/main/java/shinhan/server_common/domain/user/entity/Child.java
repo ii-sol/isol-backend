@@ -12,6 +12,7 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Check(constraints = "score >= 0 AND score <= 100")
 @Table(name = "child")
 public class Child {
@@ -39,15 +40,6 @@ public class Child {
     @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 50")
     private int score = 50;
 
-    public Child(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
-        this.serialNum = serialNum;
-        this.phoneNum = phoneNum;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.accountInfo = accountInfo;
-        this.profileId = profileId;
-    }
-
     @PrePersist
     @PreUpdate
     private void validateScore() {
@@ -55,6 +47,13 @@ public class Child {
     }
 
     public ChildFindOneResponse convertToUserFindOneResponse() {
-        return new ChildFindOneResponse(serialNum, phoneNum, name, birthDate, profileId, score);
+        return ChildFindOneResponse.builder()
+            .sn(serialNum)
+            .phoneNum(phoneNum)
+            .name(name)
+            .birthDate(birthDate)
+            .profileId(profileId)
+            .score(score)
+            .build();
     }
 }
