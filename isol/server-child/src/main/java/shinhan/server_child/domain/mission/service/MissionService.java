@@ -9,7 +9,7 @@ import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.domain.mission.entity.Mission;
-import shinhan.server_common.domain.mission.repository.MissionRepositoryChild;
+import shinhan.server_common.domain.mission.repository.MissionRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class MissionService {
 
-    private final MissionRepositoryChild missionRepository;
+    private final MissionRepository missionRepository;
 
     public MissionFindOneResponse getMission(int id) {
         Mission mission = missionRepository.findById(id)
@@ -33,14 +33,14 @@ public class MissionService {
     }
 
     public List<MissionFindOneResponse> getMissions(long childSn, int s1, int s2) {
-        List<Mission> missions = missionRepository.findMissions(childSn, s1, s2);
+        List<Mission> missions = missionRepository.findChildMissions(childSn, s1, s2);
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
     }
 
     public List<MissionFindOneResponse> getMissions(long childSn, int s) {
-        List<Mission> missions = missionRepository.findMissions(childSn, s);
+        List<Mission> missions = missionRepository.findChildMissions(childSn, s);
         return missions.stream()
                 .map(Mission::convertToMissionFindOneResponse)
                 .collect(Collectors.toList());
@@ -50,9 +50,9 @@ public class MissionService {
         List<Mission> missions = null;
 
         if (status == null) {
-            missions = missionRepository.findMissionsHistory(childSn, year, month);
+            missions = missionRepository.findChildMissionsHistory(childSn, year, month);
         } else {
-            missions = missionRepository.findMissionsHistory(childSn, year, month, status);
+            missions = missionRepository.findChildMissionsHistory(childSn, year, month, status);
         }
 
         return missions.stream()
