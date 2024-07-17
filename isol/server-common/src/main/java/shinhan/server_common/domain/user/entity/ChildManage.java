@@ -10,6 +10,7 @@ import shinhan.server_common.domain.user.dto.ChildManageFindOneResponse;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Check(constraints = "base_rate >= 0")
 @Table(name = "child_manage")
 public class ChildManage {
@@ -31,11 +32,11 @@ public class ChildManage {
     @Column(name = "loan_limit", columnDefinition = "MEDIUMINT UNSIGNED")
     private int loanLimit = 100;
 
-    public ChildManage(Child child) {
-        this.child = child;
-    }
-
     public ChildManageFindOneResponse convertToChildManageFIndOneResponse() {
-        return new ChildManageFindOneResponse(baseRate, investLimit, loanLimit);
+        return ChildManageFindOneResponse.builder()
+            .baseRate(baseRate)
+            .investLimit(investLimit)
+            .loanLimit(loanLimit)
+            .build();
     }
 }

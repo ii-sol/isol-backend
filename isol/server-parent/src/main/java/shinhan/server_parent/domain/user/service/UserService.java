@@ -95,7 +95,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
         ChildManage childManage = childManageRepository.findByChild(child)
-                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+                .orElseGet(() -> childManageRepository.save(ChildManage.builder().child(child).build()));
 
         return childManage.convertToChildManageFIndOneResponse();
     }
@@ -105,7 +105,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
         ChildManage childManage = childManageRepository.findByChild(child)
-                .orElseGet(() -> childManageRepository.save(new ChildManage(child)));
+                .orElseGet(() -> childManageRepository.save(ChildManage.builder().child(child).build()));
 
         childManage.setBaseRate(childManageUpdateRequest.getBaseRate());
         childManage.setInvestLimit(childManageUpdateRequest.getInvestLimit());
