@@ -51,7 +51,7 @@ public class UserService {
         Parents parents = parentsRepository.findBySerialNum(userUpdateRequest.getSerialNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
-        if (childRepository.findByPhoneNum(userUpdateRequest.getPhoneNum()).isEmpty()) {
+        if (parentsRepository.findByPhoneNum(userUpdateRequest.getPhoneNum()).isEmpty()) {
             parents.setPhoneNum(userUpdateRequest.getPhoneNum());
             parents.setName(userUpdateRequest.getName());
             parents.setBirthDate(userUpdateRequest.getBirthDate());
