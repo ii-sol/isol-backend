@@ -1,6 +1,7 @@
 package test;
 
 import java.sql.Date;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -375,7 +376,8 @@ public class UserTestClass {
 
         LoginInfoFindRequest loginRequest = new LoginInfoFindRequest("010-0000-0000", "000000");
 
-        when(parentsRepository.findByPhoneNum("010-0000-0000")).thenReturn(Optional.of(mockParents));
+        when(parentsRepository.findByPhoneNum("010-0000-0000")).thenReturn(
+            Optional.of(mockParents));
         when(passwordEncoder.matches("111111", mockParents.getAccountInfo())).thenReturn(false);
 
         assertThatThrownBy(() -> userService.login(loginRequest))
@@ -387,7 +389,6 @@ public class UserTestClass {
     public void login_WhenUserDoesNotExist_ShouldThrowAuthException() {
         LoginInfoFindRequest loginRequest = new LoginInfoFindRequest("010-0000-0000", "000000");
 
-
         when(parentsRepository.findByPhoneNum("010-0000-0000")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.login(loginRequest))
@@ -395,31 +396,55 @@ public class UserTestClass {
             .hasMessage("사용자가 존재하지 않습니다.");
     }
 
-//    @Test
-//    public void getFamilyInfo_ShouldReturnListOfFamilyInfoResponse() {
-//        long sn = 1000000000;
-//
-//        Family mockFamily1 = Family.builder()
-//            .sn(1000000001)
-//            .profileId(1)
-//            .name("아이")
-//            .build();
-//
-//        Family mockFamily2 = Family.builder()
-//            .sn(1000000002)
-//            .profileId(1)
-//            .name("아이2")
-//            .build();
-//
-//        when(familyRepository.findChildInfo(sn)).thenReturn(List.of(mockFamily1, mockFamily2));
-//
-//        List<FamilyInfoResponse> result = userService.getFamilyInfo(sn);
-//        assertThat(result).hasSize(2);
-//        assertThat(result.get(0).getSn()).isEqualTo(mockFamily1.getSn());
-//        assertThat(result.get(0).getProfileId()).isEqualTo(mockFamily1.getProfileId());
-//        assertThat(result.get(0).getName()).isEqualTo(mockFamily1.getName());
-//        assertThat(result.get(1).getSn()).isEqualTo(mockFamily2.getSn());
-//        assertThat(result.get(1).getProfileId()).isEqualTo(mockFamily2.getProfileId());
-//        assertThat(result.get(1).getName()).isEqualTo(mockFamily2.getName());
-//    }
+    @Test
+    public void getFamilyInfo_ShouldReturnListOfFamilyInfoResponse() {
+        long sn = 1000000000;
+
+        FamilyInfoInterface mockFamilyInfo1 = new FamilyInfoInterface() {
+            @Override
+            public long getSn() {
+                return 1000000001;
+            }
+
+            @Override
+            public int getProfileId() {
+                return 1;
+            }
+
+            @Override
+            public String getName() {
+                return "아이";
+            }
+        };
+
+        FamilyInfoInterface mockFamilyInfo2 = new FamilyInfoInterface() {
+            @Override
+            public long getSn() {
+                return 1000000002;
+            }
+
+            @Override
+            public int getProfileId() {
+                return 2;
+            }
+
+            @Override
+            public String getName() {
+                return "아이2";
+            }
+        };
+
+        when(familyRepository.findChildInfo(sn)).thenReturn(
+            List.of(mockFamilyInfo1, mockFamilyInfo2));
+
+        List<FamilyInfoResponse> result = userService.getFamilyInfo(sn);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getSn()).isEqualTo(mockFamilyInfo1.getSn());
+        assertThat(result.get(0).getProfileId()).isEqualTo(mockFamilyInfo1.getProfileId());
+        assertThat(result.get(0).getName()).isEqualTo(mockFamilyInfo1.getName());
+        assertThat(result.get(1).getSn()).isEqualTo(mockFamilyInfo2.getSn());
+        assertThat(result.get(1).getProfileId()).isEqualTo(mockFamilyInfo2.getProfileId());
+        assertThat(result.get(1).getName()).isEqualTo(mockFamilyInfo2.getName());
+    }
 }
