@@ -9,6 +9,7 @@ import shinhan.server_common.domain.user.dto.FamilyFindOneResponse;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "family", uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
 public class Family {
 
@@ -24,13 +25,12 @@ public class Family {
     @Column(name = "parents_alias", length = 15)
     private String parentsAlias;
 
-    public Family(Child child, Parents parents, String parentsAlias) {
-        this.child = child;
-        this.parents = parents;
-        this.parentsAlias = parentsAlias;
-    }
-
     public FamilyFindOneResponse convertToFamilyFindOneResponse() {
-        return new FamilyFindOneResponse(id, child.getSerialNum(), parents.getSerialNum(), parentsAlias);
+        return FamilyFindOneResponse.builder()
+            .id(id)
+            .childSn(child.getSerialNum())
+            .parentsSn(parents.getSerialNum())
+            .parentsAlias(parentsAlias)
+            .build();
     }
 }
