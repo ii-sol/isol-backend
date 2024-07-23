@@ -68,9 +68,9 @@ public class UserServiceTest {
         childSn = 1000000001L;
         mockChild = Child.builder()
             .serialNum(childSn)
-            .name("부모")
+            .name("아이")
             .phoneNum("010-0000-0000")
-            .birthDate(Date.valueOf("1990-01-01"))
+            .birthDate(Date.valueOf("2010-01-01"))
             .profileId(1)
             .accountInfo("$2a$10$D9yY91eRRO.GH9j2Ll1UPe/AXgYQYqv9UNuBlgNYL5.5dGJ19j06e")
             .score(50)
