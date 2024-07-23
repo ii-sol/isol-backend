@@ -37,21 +37,21 @@ public class UserService {
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return child.convertToUserFindOneResponse();
     }
 
     public ParentsFindOneResponse getParents(long sn) {
         Parents parents = parentsRepository.findBySerialNum(sn)
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
         return parents.convertToUserFindOneResponse();
     }
 
     public ChildFindOneResponse updateUser(UserUpdateRequest userUpdateRequest) {
         Child child = childRepository.findBySerialNum(userUpdateRequest.getSerialNum())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         if (childRepository.findByPhoneNum(userUpdateRequest.getPhoneNum()).isEmpty()) {
             child.setPhoneNum(userUpdateRequest.getPhoneNum());
@@ -73,33 +73,37 @@ public class UserService {
 
     private boolean isUpdated(UserUpdateRequest userUpdateRequest, Child updatedChild) {
         return updatedChild.getPhoneNum().equals(userUpdateRequest.getPhoneNum())
-                && updatedChild.getName().equals(userUpdateRequest.getName())
-                && updatedChild.getBirthDate().equals(userUpdateRequest.getBirthDate())
-                && updatedChild.getProfileId() == userUpdateRequest.getProfileId();
+            && updatedChild.getName().equals(userUpdateRequest.getName())
+            && updatedChild.getBirthDate().equals(userUpdateRequest.getBirthDate())
+            && updatedChild.getProfileId() == userUpdateRequest.getProfileId();
     }
 
     public int connectFamily(FamilySaveRequest familySaveRequest) {
         Child child = childRepository.findBySerialNum(familySaveRequest.getSn())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         Parents parents = parentsRepository.findByPhoneNum(familySaveRequest.getPhoneNum())
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
-        Family family = familyRepository.save(new Family(child, parents, familySaveRequest.getParentsAlias()));
+        Family family = familyRepository.save(Family.builder()
+            .child(child)
+            .parents(parents)
+            .parentsAlias(familySaveRequest.getParentsAlias())
+            .build());
 
         return family.getId();
     }
 
     public void disconnectFamily(long sn, long parentsSn) {
         Child child = childRepository.findBySerialNum(sn)
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         Parents parents = parentsRepository.findBySerialNum(parentsSn)
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
         Family family = familyRepository
-                .findByChildAndParents(child, parents)
-                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
+            .findByChildAndParents(child, parents)
+            .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
     }
@@ -110,10 +114,11 @@ public class UserService {
 
     public ChildManageFindOneResponse getChildManage(long childSn) {
         Child child = childRepository.findBySerialNum(childSn)
-                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
         ChildManage childManage = childManageRepository.findByChild(child)
-                .orElseGet(() -> childManageRepository.save(ChildManage.builder().child(child).build()));
+            .orElseGet(
+                () -> childManageRepository.save(ChildManage.builder().child(child).build()));
 
         return childManage.convertToChildManageFIndOneResponse();
     }
@@ -125,7 +130,7 @@ public class UserService {
 
     public int updateScore(ScoreUpdateRequest scoreUpdateRequest) {
         Child child = childRepository.findBySerialNum(scoreUpdateRequest.getSn())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         child.setScore(child.getScore() + scoreUpdateRequest.getChange());
         Child updatedChild = childRepository.save(child);
@@ -136,7 +141,8 @@ public class UserService {
     public ChildFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         long serialNum = childRepository.generateSerialNum();
         log.info("Generated serial number={}", serialNum);
-        Child child = childRepository.save(joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
+        Child child = childRepository.save(
+            joinInfoSaveRequest.convertToChild(serialNum, passwordEncoder));
 
         return child.convertToUserFindOneResponse();
     }
@@ -145,10 +151,13 @@ public class UserService {
         return childRepository.findByPhoneNum(phoneFindRequest.getPhoneNum()).isEmpty();
     }
 
-    public ChildFindOneResponse login(LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
-        Child child = childRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
+    public ChildFindOneResponse login(LoginInfoFindRequest loginInfoFindRequest)
+        throws AuthException {
+        Child child = childRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum())
+            .orElseThrow(() -> new AuthException("사용자가 존재하지 않습니다."));
 
-        if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), child.getAccountInfo())) {
+        if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(),
+            child.getAccountInfo())) {
             throw new AuthException("INVALID_CREDENTIALS");
         }
 
@@ -157,21 +166,22 @@ public class UserService {
 
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
         return familyRepository.findParentsInfo(sn)
-                .stream()
-                .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(), myFamily.getName()))
-                .collect(Collectors.toList());
+            .stream()
+            .map(myFamily -> new FamilyInfoResponse(myFamily.getSn(), myFamily.getProfileId(),
+                myFamily.getName()))
+            .collect(Collectors.toList());
     }
 
     public String getParentsAlias(long childSn, long parentsSn) {
         Child child = childRepository.findBySerialNum(childSn)
-                .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("아이 사용자가 존재하지 않습니다."));
 
         Parents parents = parentsRepository.findBySerialNum(parentsSn)
-                .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
+            .orElseThrow(() -> new NoSuchElementException("부모 사용자가 존재하지 않습니다."));
 
         Family family = familyRepository
-                .findByChildAndParents(child, parents)
-                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
+            .findByChildAndParents(child, parents)
+            .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         return family.getParentsAlias();
     }
