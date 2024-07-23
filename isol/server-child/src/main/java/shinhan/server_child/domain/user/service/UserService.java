@@ -185,10 +185,10 @@ public class UserService {
     }
 
     public int getScore(long childSn) {
+        Child child = childRepository.findBySerialNum(childSn)
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
-        ChildFindOneResponse user = getChild(childSn);
-
-        int score = user.getScore();
+        int score = child.getScore();
 
         return score;
     }
