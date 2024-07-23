@@ -15,7 +15,6 @@ import shinhan.server_common.domain.user.repository.ChildRepository;
 import shinhan.server_common.domain.user.repository.FamilyRepository;
 import shinhan.server_common.domain.user.repository.ParentsRepository;
 import shinhan.server_common.global.exception.AuthException;
-import shinhan.server_common.global.security.JwtService;
 import shinhan.server_common.global.security.dto.FamilyInfoResponse;
 
 import java.util.List;
@@ -33,7 +32,6 @@ public class UserService {
     private final ParentsRepository parentsRepository;
     private final FamilyRepository familyRepository;
     private final ChildManageRepository childManageRepository;
-    private final JwtService jwtService;
 
     public ChildFindOneResponse getChild(long sn) {
         Child child = childRepository.findBySerialNum(sn)
