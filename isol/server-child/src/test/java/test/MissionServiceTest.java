@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -76,5 +77,45 @@ class MissionServiceTest {
         assertThatThrownBy(() -> missionService.getMission(100))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("미션이 존재하지 않습니다.");
+    }
+
+    @Test
+    void first_getMissions_WhenMissionsExists_ShouldReturnList() {
+        when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(
+            List.of(mission1, mission2));
+
+        List<Mission> result = missionRepository.findChildMissions(childSn, 1, 2);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0)).isEqualTo(mission1);
+        assertThat(result.get(1)).isEqualTo(mission2);
+    }
+
+    @Test
+    void first_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
+        when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(Collections.emptyList());
+
+        List<Mission> result = missionRepository.findChildMissions(childSn, 1, 2);
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void second_getMissions_WhenMissionsExists_ShouldReturnList() {
+        when(missionRepository.findChildMissions(childSn, 1)).thenReturn(List.of(mission1));
+
+        List<Mission> result = missionRepository.findChildMissions(childSn, 1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(mission1);
+    }
+
+    @Test
+    void second_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
+        when(missionRepository.findChildMissions(childSn, 1)).thenReturn(Collections.emptyList());
+
+        List<Mission> result = missionRepository.findChildMissions(childSn, 1);
+
+        assertThat(result).hasSize(0);
     }
 }
