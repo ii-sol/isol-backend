@@ -93,7 +93,8 @@ class MissionServiceTest {
 
     @Test
     void first_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
-        when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(Collections.emptyList());
+        when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(
+            Collections.emptyList());
 
         List<Mission> result = missionRepository.findChildMissions(childSn, 1, 2);
 
@@ -115,6 +116,38 @@ class MissionServiceTest {
         when(missionRepository.findChildMissions(childSn, 1)).thenReturn(Collections.emptyList());
 
         List<Mission> result = missionRepository.findChildMissions(childSn, 1);
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void getMissionsHistory_WhenStatusIsNull_ShouldReturnList() {
+        when(missionRepository.findChildMissionsHistory(childSn, 2024, 8)).thenReturn(
+            List.of(mission4, mission5));
+
+        List<Mission> result = missionRepository.findChildMissionsHistory(childSn, 2024, 8);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0)).isEqualTo(mission4);
+        assertThat(result.get(1)).isEqualTo(mission5);
+    }
+
+    @Test
+    void getMissionsHistory_WhenStatusExists_ShouldReturnList() {
+        when(missionRepository.findChildMissionsHistory(childSn, 2024, 8, 4)).thenReturn(
+            List.of(mission4));
+
+        List<Mission> result = missionRepository.findChildMissionsHistory(childSn, 2024, 8, 4);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(mission4);
+    }
+
+    @Test
+    void getMissionsHistory_WhenHistoryDoesNotExists_ShouldReturnList() {
+        when(missionRepository.findChildMissionsHistory(childSn, 2024, 8)).thenReturn(Collections.emptyList());
+
+        List<Mission> result = missionRepository.findChildMissionsHistory(childSn, 2024, 8);
 
         assertThat(result).hasSize(0);
     }
