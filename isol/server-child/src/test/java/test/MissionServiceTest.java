@@ -2,6 +2,7 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.domain.mission.entity.Mission;
 import shinhan.server_common.domain.mission.repository.MissionRepository;
 
@@ -38,17 +40,17 @@ class MissionServiceTest {
         childSn = 1000000001L;
 
         mission1 = Mission.builder().id(1).childSn(childSn).parentsSn(parentsSn).content("status 1")
-            .status(1).build();
+            .price(1000).status(1).build();
         mission2 = Mission.builder().id(2).childSn(childSn).parentsSn(parentsSn).content("status 2")
-            .status(2).build();
+            .price(1000).status(2).build();
         mission3 = Mission.builder().id(3).childSn(childSn).parentsSn(parentsSn).content("status 3")
-            .status(3).build();
+            .price(1000).status(3).build();
         mission4 = Mission.builder().id(4).childSn(childSn).parentsSn(parentsSn).content("status 4")
-            .status(4).build();
+            .price(1000).status(4).build();
         mission5 = Mission.builder().id(5).childSn(childSn).parentsSn(parentsSn).content("status 5")
-            .status(5).build();
+            .price(1000).status(5).build();
         mission6 = Mission.builder().id(6).childSn(childSn).parentsSn(parentsSn).content("status 6")
-            .status(6).build();
+            .price(1000).status(6).build();
 
         lenient().when(missionRepository.findById(1)).thenReturn(Optional.of(mission1));
         lenient().when(missionRepository.findById(2)).thenReturn(Optional.of(mission2));
@@ -150,5 +152,22 @@ class MissionServiceTest {
         List<Mission> result = missionRepository.findChildMissionsHistory(childSn, 2024, 8);
 
         assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void createMission_ShouldCreateAndReturnMissionFindOneResponse() {
+        MissionSaveRequest missionSaveRequest = MissionSaveRequest.builder()
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .content("status 1")
+            .price(1000)
+            .build();
+
+        when(missionRepository.save(any(Mission.class))).thenReturn(mission1);
+
+        MissionFindOneResponse result = missionService.createMission(missionSaveRequest);
+
+        assertThat(result.getId()).isEqualTo(mission1.getId());
+        assertThat(result.getStatus()).isEqualTo(mission1.getStatus());
     }
 }
