@@ -1,8 +1,11 @@
 package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_common.domain.mission.entity.Mission;
 import shinhan.server_common.domain.mission.repository.MissionRepository;
 import shinhan.server_common.global.utils.user.UserUtils;
@@ -54,5 +58,26 @@ class MissionServiceTest {
         lenient().when(missionRepository.findById(4)).thenReturn(Optional.of(mission4));
         lenient().when(missionRepository.findById(5)).thenReturn(Optional.of(mission5));
         lenient().when(missionRepository.findById(6)).thenReturn(Optional.of(mission6));
+    }
+
+    @Test
+    public void contextLoads() {
+        assertThat(missionService).isNotNull();
+    }
+
+    @Test
+    void getMission_WhenMissionExists_ShouldReturnMissionFindOneResponse() {
+        MissionFindOneResponse result = missionService.getMission(1);
+
+        assertThat(result.getId()).isEqualTo(mission1.getId());
+    }
+
+    @Test
+    void getMission_WhenMissionDoesNotExists_ShouldThrowNoSuchElementException() {
+        when(missionRepository.findById(100)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> missionService.getMission(100))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage("미션이 존재하지 않습니다.");
     }
 }
