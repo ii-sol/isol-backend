@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,5 +81,48 @@ class MissionServiceTest {
         assertThatThrownBy(() -> missionService.getMission(100))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("미션이 존재하지 않습니다.");
+    }
+
+    @Test
+    void first_getMissions_WhenMissionsExists_ShouldReturnList() {
+        when(missionRepository.findParentsMissions(childSn, parentsSn, 1, 2)).thenReturn(
+            List.of(mission1, mission2));
+
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, parentsSn, 1, 2);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getId()).isEqualTo(mission1.getId());
+        assertThat(result.get(1).getId()).isEqualTo(mission2.getId());
+    }
+
+    @Test
+    void first_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
+        when(missionRepository.findParentsMissions(childSn, parentsSn, 1, 2)).thenReturn(
+            Collections.emptyList());
+
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, parentsSn, 1, 2);
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void second_getMissions_WhenMissionsExists_ShouldReturnList() {
+        when(missionRepository.findParentsMissions(childSn, parentsSn, 1)).thenReturn(
+            List.of(mission1));
+
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, parentsSn, 1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getId()).isEqualTo(mission1.getId());
+    }
+
+    @Test
+    void second_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
+        when(missionRepository.findParentsMissions(childSn, parentsSn, 1)).thenReturn(
+            Collections.emptyList());
+
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, parentsSn, 1);
+
+        assertThat(result).hasSize(0);
     }
 }
