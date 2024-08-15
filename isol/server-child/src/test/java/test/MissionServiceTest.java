@@ -86,11 +86,11 @@ class MissionServiceTest {
         when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(
             List.of(mission1, mission2));
 
-        List<Mission> result = missionRepository.findChildMissions(childSn, 1, 2);
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, 1, 2);
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0)).isEqualTo(mission1);
-        assertThat(result.get(1)).isEqualTo(mission2);
+        assertThat(result.get(0).getId()).isEqualTo(mission1.getId());
+        assertThat(result.get(1).getId()).isEqualTo(mission2.getId());
     }
 
     @Test
@@ -98,7 +98,7 @@ class MissionServiceTest {
         when(missionRepository.findChildMissions(childSn, 1, 2)).thenReturn(
             Collections.emptyList());
 
-        List<Mission> result = missionRepository.findChildMissions(childSn, 1, 2);
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, 1, 2);
 
         assertThat(result).hasSize(0);
     }
@@ -107,17 +107,17 @@ class MissionServiceTest {
     void second_getMissions_WhenMissionsExists_ShouldReturnList() {
         when(missionRepository.findChildMissions(childSn, 1)).thenReturn(List.of(mission1));
 
-        List<Mission> result = missionRepository.findChildMissions(childSn, 1);
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, 1);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(mission1);
+        assertThat(result.get(0).getId()).isEqualTo(mission1.getId());
     }
 
     @Test
     void second_getMissions_WhenMissionsDoseNotExists_ShouldReturnList() {
         when(missionRepository.findChildMissions(childSn, 1)).thenReturn(Collections.emptyList());
 
-        List<Mission> result = missionRepository.findChildMissions(childSn, 1);
+        List<MissionFindOneResponse> result = missionService.getMissions(childSn, 1);
 
         assertThat(result).hasSize(0);
     }
