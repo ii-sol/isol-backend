@@ -40,11 +40,14 @@ allprojects {
 		implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 		implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+		runtimeOnly 'com.h2database:h2'
+
 
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 		testImplementation 'org.mockito:mockito-core'
 		testImplementation 'org.mockito:mockito-junit-jupiter'
+		testImplementation 'com.h2database:h2'
 	}
 }
 
