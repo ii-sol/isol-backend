@@ -2,6 +2,7 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
+import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.domain.mission.entity.Mission;
 import shinhan.server_common.domain.mission.repository.MissionRepository;
 import shinhan.server_common.global.utils.user.UserUtils;
@@ -161,5 +163,22 @@ class MissionServiceTest {
             2024, 8, null);
 
         assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void createMission_ShouldCreateAndReturnMissionFindOneResponse() {
+        MissionSaveRequest missionSaveRequest = MissionSaveRequest.builder()
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .content("status 2")
+            .price(1000)
+            .build();
+
+        when(missionRepository.save(any(Mission.class))).thenReturn(mission2);
+
+        MissionFindOneResponse result = missionService.createMission(missionSaveRequest);
+
+        assertThat(result.getId()).isEqualTo(mission2.getId());
+        assertThat(result.getStatus()).isEqualTo(mission2.getStatus());
     }
 }
