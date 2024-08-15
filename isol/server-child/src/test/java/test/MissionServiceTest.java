@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import shinhan.server_child.domain.mission.service.MissionService;
+import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
 import shinhan.server_common.domain.mission.entity.Mission;
@@ -169,5 +171,103 @@ class MissionServiceTest {
 
         assertThat(result.getId()).isEqualTo(mission1.getId());
         assertThat(result.getStatus()).isEqualTo(mission1.getStatus());
+    }
+
+    @Test
+    void updateMission_WhenAnswerIsTrueAndStatusIs2_ShouldReturnStatusIs3()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(2)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(true)
+            .build();
+
+        when(missionRepository.save(mission2)).thenReturn(mission2);
+
+        MissionFindOneResponse result = missionService.updateMission(missionAnswerSaveRequest);
+
+        assertThat(result.getStatus()).isEqualTo(3);
+    }
+
+    @Test
+    void updateMission_WhenAnswerIsTrueAndStatusIs3_ShouldReturnStatusIs6()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(3)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(true)
+            .build();
+
+        when(missionRepository.save(mission3)).thenReturn(mission3);
+
+        MissionFindOneResponse result = missionService.updateMission(missionAnswerSaveRequest);
+
+        assertThat(result.getStatus()).isEqualTo(6);
+    }
+
+    @Test
+    void updateMission_WhenAnswerIsFalseAndStatusIs2_ShouldReturnStatusIs5()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(2)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(false)
+            .build();
+
+        when(missionRepository.save(mission2)).thenReturn(mission2);
+
+        MissionFindOneResponse result = missionService.updateMission(missionAnswerSaveRequest);
+
+        assertThat(result.getStatus()).isEqualTo(5);
+    }
+
+    @Test
+    void updateMission_WhenAnswerIsFalseAndStatusIs3_ShouldReturnStatusIs5()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(3)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(false)
+            .build();
+
+        when(missionRepository.save(mission3)).thenReturn(mission3);
+
+        MissionFindOneResponse result = missionService.updateMission(missionAnswerSaveRequest);
+
+        assertThat(result.getStatus()).isEqualTo(5);
+    }
+
+    @Test
+    void updateMission_WhenMissionMissionDoesNotExists_ShouldThrowNoSuchElementException()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(100)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(true)
+            .build();
+
+        assertThatThrownBy(() -> missionService.updateMission(missionAnswerSaveRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage("미션이 존재하지 않습니다.");
+    }
+
+    @Test
+    void updateMission_WhenMissionAnswerSaveRequestIsInvalid_ShouldThrowBadRequestException()
+        throws BadRequestException {
+        MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
+            .id(1)
+            .childSn(childSn)
+            .parentsSn(parentsSn)
+            .answer(true)
+            .build();
+
+        assertThatThrownBy(() -> missionService.updateMission(missionAnswerSaveRequest))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessage("잘못된 사용자 요청입니다.");
     }
 }
