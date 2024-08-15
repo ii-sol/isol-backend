@@ -129,7 +129,8 @@ class MissionServiceTest {
         when(missionRepository.findChildMissionsHistory(childSn, 2024, 8)).thenReturn(
             List.of(mission4, mission5));
 
-        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8, null);
+        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8,
+            null);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getId()).isEqualTo(mission4.getId());
@@ -141,7 +142,8 @@ class MissionServiceTest {
         when(missionRepository.findChildMissionsHistory(childSn, 2024, 8, 4)).thenReturn(
             List.of(mission4));
 
-        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8, 4);
+        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8,
+            4);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(mission4.getId());
@@ -149,9 +151,11 @@ class MissionServiceTest {
 
     @Test
     void getMissionsHistory_WhenHistoryDoesNotExists_ShouldReturnList() {
-        when(missionRepository.findChildMissionsHistory(childSn, 2024, 8)).thenReturn(Collections.emptyList());
+        when(missionRepository.findChildMissionsHistory(childSn, 2024, 8)).thenReturn(
+            Collections.emptyList());
 
-        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8, null);
+        List<MissionFindOneResponse> result = missionService.getMissionsHistory(childSn, 2024, 8,
+            null);
 
         assertThat(result).hasSize(0);
     }
@@ -242,8 +246,7 @@ class MissionServiceTest {
     }
 
     @Test
-    void updateMission_WhenMissionMissionDoesNotExists_ShouldThrowNoSuchElementException()
-        throws BadRequestException {
+    void updateMission_WhenMissionMissionDoesNotExists_ShouldThrowNoSuchElementException() {
         MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
             .id(100)
             .childSn(childSn)
@@ -257,8 +260,7 @@ class MissionServiceTest {
     }
 
     @Test
-    void updateMission_WhenMissionAnswerSaveRequestIsInvalid_ShouldThrowBadRequestException()
-        throws BadRequestException {
+    void updateMission_WhenMissionAnswerSaveRequestIsInvalid_ShouldThrowBadRequestException() {
         MissionAnswerSaveRequest missionAnswerSaveRequest = MissionAnswerSaveRequest.builder()
             .id(1)
             .childSn(childSn)
