@@ -76,8 +76,10 @@ class AllowanceServiceTest {
         allowanceService.handleAllowanceAcception(temporalAllowance.getId(), true);
         Account findChildAccount = accountRepository.findByUserSerialNumberAndStatus(1111L, 1).get();
         Account findParentsAccount = accountRepository.findByUserSerialNumberAndStatus(2222L, 3).get();
-        TemporalAllowance findTemporalAllowance = temporalAllowanceRepository.findById(temporalAllowance.getId()).get();
+//        TemporalAllowance findTemporalAllowance = temporalAllowanceRepository.findById(temporalAllowance.getId()).get();
 
+        System.out.println("지역변수 주소: "+childAccount);
+        System.out.println("레포지토레에서 찾아온 값 주소:" + findChildAccount);
         assertThat(findChildAccount.getBalance()).isEqualTo(1500);
         assertThat(findParentsAccount.getBalance()).isEqualTo(500);
 //        assertThat(findTemporalAllowance.getStatus()).isEqualTo(4);
