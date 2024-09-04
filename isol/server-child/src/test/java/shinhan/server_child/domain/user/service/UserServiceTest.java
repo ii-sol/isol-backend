@@ -1,4 +1,4 @@
-package test;
+package shinhan.server_child.domain.user.service;
 
 import java.sql.Date;
 import java.util.List;
