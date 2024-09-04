@@ -41,7 +41,7 @@ allprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 		runtimeOnly 'com.h2database:h2'
-
+		implementation 'org.quartz-scheduler:quartz'
 
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
