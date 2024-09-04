@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import shinhan.server_child.domain.mission.service.MissionService;
 import shinhan.server_common.domain.mission.dto.MissionAnswerSaveRequest;
 import shinhan.server_common.domain.mission.dto.MissionFindOneResponse;
 import shinhan.server_common.domain.mission.dto.MissionSaveRequest;
