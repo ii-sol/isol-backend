@@ -1,8 +1,9 @@
 package shinhan.server_common.domain.mission.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import shinhan.server_common.domain.mission.entity.Mission;
 
@@ -87,6 +88,8 @@ public interface MissionRepository extends JpaRepository<Mission, Integer> {
         "ORDER BY m.completeDate DESC")
     List<Mission> findParentsMissionsHistory(@Param("childSn") long childSn, @Param("parentsSn") long parentsSn, @Param("year") int year, @Param("month") int month, @Param("status") int status);
 
-    @Procedure(name = "update_mission_expiration")
+    @Modifying
+    @Transactional
+    @Query(value = "CALL update_mission_expiration()", nativeQuery = true)
     void updateMissionExpiration();
 }
