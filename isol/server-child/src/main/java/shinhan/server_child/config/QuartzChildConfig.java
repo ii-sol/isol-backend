@@ -15,7 +15,7 @@ public class QuartzChildConfig {
     @Bean
     public JobDetail myJobDetail() {
         return JobBuilder.newJob(ChildJob.class)
-            .withIdentity("myJob")
+            .withIdentity("childJob")
             .storeDurably()
             .build();
     }
@@ -24,8 +24,8 @@ public class QuartzChildConfig {
     public Trigger myJobTrigger() {
         return TriggerBuilder.newTrigger()
             .forJob(myJobDetail())
-            .withIdentity("myJobTrigger")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ?")) // 매 5분마다 실행
+            .withIdentity("childJobTrigger")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * * * ?")) // 30초마다 실행
             .build();
     }
 }

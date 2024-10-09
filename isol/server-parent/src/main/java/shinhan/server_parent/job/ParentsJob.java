@@ -11,6 +11,6 @@ public class ParentsJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         // 작업 내용
-        System.out.println("Job executed!");
+        System.out.println("Parents Job executed!");
     }
 }
