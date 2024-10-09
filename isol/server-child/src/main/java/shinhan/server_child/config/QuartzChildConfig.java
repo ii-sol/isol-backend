@@ -13,7 +13,7 @@ import shinhan.server_child.job.ChildJob;
 public class QuartzChildConfig {
 
     @Bean
-    public JobDetail myJobDetail() {
+    public JobDetail childJobDetail() {
         return JobBuilder.newJob(ChildJob.class)
             .withIdentity("childJob")
             .storeDurably()
@@ -23,7 +23,7 @@ public class QuartzChildConfig {
     @Bean
     public Trigger myJobTrigger() {
         return TriggerBuilder.newTrigger()
-            .forJob(myJobDetail())
+            .forJob(childJobDetail())
             .withIdentity("childJobTrigger")
             .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * * * ?")) // 30초마다 실행
             .build();
