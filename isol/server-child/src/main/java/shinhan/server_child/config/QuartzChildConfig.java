@@ -21,7 +21,7 @@ public class QuartzChildConfig {
     }
 
     @Bean
-    public Trigger myJobTrigger() {
+    public Trigger childJobTrigger() {
         return TriggerBuilder.newTrigger()
             .forJob(childJobDetail())
             .withIdentity("childJobTrigger")
